@@ -2,10 +2,53 @@
 
 Updated: 2026-10-22 (Asia/Kolkata).
 
-**Steps 1–14 and Step 15A are complete locally. This snapshot records the
-reviewed initial local commit on `main`.** GitHub publication and Vercel
-connection/deployment are not authorized. No external operations or AI calls were
-made in Step 15A.
+**Steps 1–14, Step 15A and Step 15B are complete.** The reviewed repository is
+published privately on GitHub. Vercel remains unconnected; no deployment, paid
+service or live Gemini request was made.
+
+## Step 15B — private GitHub publication, 2026-10-22
+
+- Repository: https://github.com/abhi0874/resolveflow-ai
+- Visibility: **PRIVATE**, confirmed by GitHub API (`private=true`,
+  `visibility=private`). Owner `abhi0874` is the authenticated personal User account,
+  not an organization. The name was checked before creation and returned 404;
+  a new empty private repository was created without README or duplicate history.
+- Branch: `main`, tracking `origin/main`. Remote:
+  `https://github.com/abhi0874/resolveflow-ai.git`.
+- Initial pushed code commit: `5d6d203666abcdd64afbdf069f22295755ba2036`.
+  GitHub's branch endpoint confirmed that exact SHA after the first push.
+  This status entry is a subsequent documentation-only commit on the same branch;
+  its resulting SHA is reported in the completion message and is available with
+  `git rev-parse origin/main`. No force-push or history rewrite is used.
+- Before upload: clean working tree, expected commit, no existing remote, and
+  all 264 file versions in reachable history scanned again for credential patterns,
+  exact configured private secrets and forbidden paths. No findings. Only safe
+  environment templates are tracked; local secrets, services/data, uploads, models,
+  virtualenvs, dependencies and generated outputs remain excluded and preserved.
+- After upload: recursive GitHub tree was not truncated; all **264 file paths,
+  modes and blob hashes matched the reviewed local commit**. Working tree was clean.
+  This proves the uploaded tree is the audited tree, not a claim that heuristic
+  scanning can identify every possible unknown secret.
+- Access verification: collaborator list contained only `abhi0874` with admin
+  role; zero pending invitations. No collaborators, public visibility, paid
+  features, Actions purchases or infrastructure were enabled.
+- GitHub CLI was installed. Sandboxed authentication initially failed, but a
+  normal network/keychain-access check confirmed the existing personal account;
+  no interactive login or token disclosure was needed. Git used the existing CLI
+  credential helper only for the push command, without global credential changes.
+- Live demo inference remains disabled and needs no Gemini key. No application
+  code/configuration changed, so prior Step 14 tests were not rerun. The documented
+  development-only lint advisory remains open; no breaking dependency changes.
+
+The documentation update is reviewed, committed and pushed after the initial code
+upload; final verification checks GitHub main against local HEAD and confirms a
+clean worktree and private visibility. The final commit cannot contain its own SHA;
+the explicit SHA above identifies the verified initial code snapshot, while the
+completion report identifies the final pushed documentation revision.
+
+Ready for a separately authorized Vercel integration step. Hobby eligibility,
+hosted build/function behavior and independent-device acceptance remain unverified.
+Stop after Step 15B: do not connect Vercel, deploy, enable billing or activate live AI.
 
 ## Step 15A — local Git publication preparation, 2026-10-22
 
@@ -1259,7 +1302,7 @@ build validation; Vitest and a persistent Playwright suite remain planned.
 
 ## Next action
 
-Stop after Step 15A. Do not publish, connect Vercel, deploy or make live Gemini requests
+Stop after Step 15B. Do not connect Vercel, deploy or make live Gemini requests
 without separate explicit authorization. Use [WORKER_OPERATIONS.md](WORKER_OPERATIONS.md)
 to start the database, broker, API, dispatcher, worker and frontend. Local ports are
 55433 / 56379 / 8000 / 3000. Keep the existing private key in `apps/api/.env` and
