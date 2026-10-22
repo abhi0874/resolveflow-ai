@@ -1,0 +1,24 @@
+# Optional broker only; do not run alongside the native broker on port 56379.
+# API, dispatcher and RQ workers remain independent Python processes/services.
+services:
+  broker:
+    image: valkey/valkey:9.1.2
+    ports:
+      - "127.0.0.1:56379:6379"
+    volumes:
+      - resolveflow_broker:/data
+      - ./infra/valkey-container.sh:/opt/resolveflow/start.sh:ro
+    secrets:
+      - broker_password
+    entrypoint: ["sh", "/opt/resolveflow/start.sh"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "VALKEYCLI_AUTH=$$(cat /run/secrets/broker_password) valkey-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+secrets:
+  broker_password:
+    file: ./.local/valkey/docker-password
+volumes:
+  resolveflow_broker:

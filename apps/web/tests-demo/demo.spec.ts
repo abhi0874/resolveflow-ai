@@ -1,0 +1,153 @@
+import { test as base, expect } from "@playwright/test";
+
+const test = base.extend<{ isolation: void }>({
+  isolation: [async ({ context }, use) => {
+    const blocked: string[] = [], errors: string[] = [];
+    context.on("page", page => page.on("pageerror", error => errors.push(error.name)));
+    await context.route("**/*", route => {
+      const url = new URL(route.request().url());
+      if (url.origin !== "http://127.0.0.1:3200" || url.pathname.startsWith("/api/")) {
+        // Fail on attempted requests, even when aborting prevents network access.
+        blocked.push(`${url.origin}${url.pathname}`);
+        return route.abort("blockedbyclient");
+      }
+      return route.continue();
+    });
+    await use();
+    expect(blocked, "Demo browsers must not attempt API or external requests").toEqual([]);
+    expect(errors, "Demo pages must not raise uncaught exceptions").toEqual([]);
+  }, { auto: true }],
+});
+test("public demo, local ticket edits, search, filters, creation, persistence and reset", async ({ page }) => {
+  const apiRequests: string[] = []; page.on("request", request => { if (request.url().includes("/api/")) apiRequests.push(request.url()); });
+  await page.goto("/"); await page.getByRole("link", { name: "Explore Live Demo" }).click();
+  await expect(page.getByRole("heading", { name: "Every request. A considered response." })).toBeVisible();
+  await expect(page.getByRole("article", { name: "Support tickets" }).locator("strong")).toHaveText("8");
+  await page.getByRole("navigation", { name: "Demo navigation" }).getByRole("link", { name: "Ticket inbox" }).click();
+  await page.getByLabel("Search tickets").fill("refund"); await expect(page.locator("tbody tr")).toHaveCount(1);
+  await page.getByLabel("Filter priority").selectOption("urgent"); await expect(page.getByRole("heading", { name: "No matching demo tickets" })).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await page.getByLabel("Filter status").selectOption("waiting_for_approval"); await expect(page.locator("tbody tr")).toHaveCount(2);
+  await page.getByRole("link", { name: "Can I request a refund?", exact: true }).click();
+  await page.getByLabel("Status", { exact: true }).selectOption("resolved");
+  await page.getByLabel("Assigned to", { exact: true }).selectOption("Alex Morgan");
+  await page.getByLabel("Add a synthetic internal note").fill("<script>window.demoInjected=true</script>");
+  await page.getByRole("button", { name: "Add local note" }).click();
+  await page.reload(); await expect(page.getByLabel("Status", { exact: true })).toHaveValue("resolved");
+  await expect(page.getByLabel("Assigned to", { exact: true })).toHaveValue("Alex Morgan");
+  await expect(page.locator(".demo-note").last()).toHaveText("<script>window.demoInjected=true</script>");
+  expect(await page.evaluate(() => "demoInjected" in window)).toBe(false);
+  await page.goto("/demo/tickets"); await page.getByRole("button", { name: "Create demo ticket", exact: true }).click();
+  await page.getByLabel("Ticket title").fill("Synthetic temporary request"); await page.getByLabel("Customer request").fill("Example request for demo testing.");
+  await page.getByRole("button", { name: "Save demo ticket" }).click(); await expect(page.locator("tbody tr")).toHaveCount(9);
+  await page.goto("/demo/analytics"); await expect(page.getByRole("article", { name: "Tickets created" }).locator("strong")).toHaveText("9");
+  await page.getByRole("button", { name: "Reset demo", exact: true }).click(); await page.getByRole("button", { name: "Confirm reset" }).click();
+  await expect(page.getByRole("article", { name: "Tickets created" }).locator("strong")).toHaveText("8");
+  expect(apiRequests).toEqual([]);
+});
+test("knowledge keyword search and exact citation navigation", async ({ page }) => {
+  await page.goto("/demo/knowledge"); await page.getByLabel("Search documents").fill("30 minutes");
+  await expect(page.getByRole("heading", { name: "Account Recovery Guide" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Refund Policy" })).toHaveCount(0);
+  await page.getByRole("link", { name: /Account Recovery Guide/ }).click();
+  await expect(page.locator("#recovery-1")).toContainText("Never share a password");
+  await page.goto("/demo/workflows/billing"); await page.getByRole("link", { name: "Inspect source [refund-1]" }).click();
+  await expect(page.locator("#refund-1")).toContainText("14 days");
+});
+test("replays are bounded, exact reviews persist and abstentions cannot be approved", async ({ page }) => {
+  await page.goto("/demo/workflows/billing"); await expect(page.getByRole("button", { name: "Approve example" })).toBeDisabled();
+  await page.getByRole("button", { name: "Replay example" }).click();
+  await expect(page.getByText("Replay ready for human review", { exact: true })).toBeVisible();
+  await page.getByLabel("I reviewed this exact example draft and its sources.").check();
+  await page.getByRole("button", { name: "Approve example" }).click();
+  await expect(page.getByText(/Recorded demo decision:/)).toContainText("approved");
+  await page.reload(); await expect(page.getByText(/Recorded demo decision:/)).toContainText("approved");
+  await page.goto("/demo/workflows/insufficient"); await page.getByRole("button", { name: "Show all stages" }).click();
+  await page.getByLabel("I reviewed this exact example draft and its sources.").check();
+  await expect(page.getByRole("button", { name: "Approve example" })).toBeDisabled();
+  await page.getByRole("button", { name: "Request revision" }).click(); await expect(page.getByText(/Recorded demo decision:/)).toContainText("needs revision");
+  await page.goto("/demo/workflows/account"); await page.getByRole("button", { name: "Next stage" }).click();
+  await expect(page.getByText("Example stage 2 of 7 · Priority", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Show all stages" }).click(); await page.getByLabel("I reviewed this exact example draft and its sources.").check();
+  await page.getByRole("button", { name: "Reject example" }).click(); await expect(page.getByText(/Recorded demo decision:/)).toContainText("rejected");
+});
+test("analytics filters, navigation, responsive layout and theme", async ({ page }) => {
+  await page.goto("/demo/analytics"); await expect(page.getByRole("article", { name: "Tickets created" }).locator("strong")).toHaveText("8");
+  await expect(page.locator(".recharts-surface").first()).toBeVisible();
+  await page.getByLabel("From (UTC)").fill("2020-01-01"); await page.getByLabel("Through (UTC)").fill("2020-01-02"); await page.getByRole("button", { name: "Apply range" }).click();
+  await expect(page.getByRole("heading", { name: "No activity in this range" })).toBeVisible();
+  await page.goto("/demo"); await page.screenshot({ path: "../../.cache/verification/demo-desktop.png", fullPage: true });
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 }); await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
+    for (const path of ["/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics", "/demo/knowledge", "/demo/architecture"]) {
+      await page.goto(path); await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+    }
+  }
+  await page.goto("/demo"); await page.screenshot({ path: "../../.cache/verification/demo-mobile.png", fullPage: true });
+});
+test("corrupt or blocked storage recovers and unknown records are safe", async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem("resolveflow-demo-v1", '{"private":"invalid"}'));
+  await page.goto("/demo"); await expect(page.getByText(/Saved demo data could not be restored/)).toBeVisible();
+  await page.goto("/demo/tickets/private-workspace-id"); await expect(page.getByRole("heading", { name: "Demo ticket not found" })).toBeVisible();
+});
+test("demo deployment rejects full API access, real sessions, and all live generation attempts", async ({ request, page }) => {
+  for (const path of ["auth/me", "workspaces", "workspaces/00000000-0000-0000-0000-000000000000/documents"]) {
+    expect((await request.get(`/api/v1/${path}`, { headers: { Cookie: `resolveflow_session=${"a".repeat(43)}` } })).status()).toBe(404);
+    expect((await request.post(`/api/v1/${path}`, { data: { title: "synthetic" } })).status()).toBe(404);
+  }
+  for (const data of [{}, { scenario: "billing" }, { scenario: "arbitrary", prompt: "unbounded", maxOutputTokens: 999999 }, { apiKey: "synthetic-canary-key" }]) {
+    const response = await request.post("/api/demo/generate", { data }); expect(response.status()).toBe(403);
+    expect((await response.json()).error.code).toBe("demo_live_disabled"); expect(await response.text()).not.toContain("synthetic-canary-key");
+  }
+  await page.goto("/app"); await expect(page).toHaveURL(/\/demo$/);
+  await page.goto("/login"); await expect(page).toHaveURL(/\/demo$/);
+  expect(await page.context().cookies()).toEqual([]);
+});
+
+test("release headers and backend-only routes remain safe", async ({ request, page }) => {
+  for (const path of ["/", "/demo", "/demo/tickets", "/api/v1/auth/me"]) {
+    const response = await request.get(path);
+    const headers = response.headers();
+    expect(headers["x-content-type-options"]).toBe("nosniff");
+    expect(headers["x-frame-options"]).toBe("DENY");
+    expect(headers["referrer-policy"]).toBe("same-origin");
+    expect(headers["strict-transport-security"]).toContain("max-age=31536000");
+    expect(headers["x-powered-by"]).toBeUndefined();
+    expect(headers["set-cookie"]).toBeUndefined();
+  }
+  for (const path of ["/login?next=https://example.invalid", "/register", "/app", "/app/tickets", "/app/tickets/synthetic", "/app/knowledge-base", "/app/knowledge-base/synthetic", "/app/analytics"]) {
+    // Suspense routes may stream a redirect in HTML rather than an HTTP 3xx.
+    await page.goto(path);
+    await expect(page).toHaveURL("http://127.0.0.1:3200/demo");
+    await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+  }
+  for (const method of ["PATCH", "DELETE", "PUT"]) {
+    const response = await request.fetch("/api/v1/workspaces/synthetic", { method });
+    expect([404, 405]).toContain(response.status());
+  }
+});
+
+test("all reachable landing and demo links resolve within the demonstration", async ({ page }) => {
+  const pending = ["/", "/demo"], visited = new Set<string>();
+  while (pending.length) {
+    const path = pending.shift()!;
+    if (visited.has(path)) continue;
+    visited.add(path);
+    expect(visited.size, "Navigation crawl must stay bounded").toBeLessThan(60);
+    const response = await page.goto(path);
+    expect(response?.status(), path).toBe(200);
+    if (path.startsWith("/demo")) await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+    const links = await page.locator("a[href]").evaluateAll(anchors => anchors.map(a => (a as HTMLAnchorElement).href));
+    for (const href of links) {
+      const url = new URL(href);
+      expect(url.origin).toBe("http://127.0.0.1:3200");
+      expect(url.pathname === "/" || url.pathname.startsWith("/demo")).toBe(true);
+      if (url.pathname === new URL(page.url()).pathname && url.hash) {
+        expect(await page.locator(`[id=${JSON.stringify(decodeURIComponent(url.hash.slice(1)))}]`).count(), href).toBe(1);
+      }
+      if (!visited.has(url.pathname)) pending.push(url.pathname);
+    }
+  }
+  expect(visited.size).toBeGreaterThan(20);
+});

@@ -1,0 +1,52 @@
+[project]
+name = "resolveflow-api"
+version = "0.1.0"
+description = "ResolveFlow AI API foundation"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "alembic==1.20.0",
+    "argon2-cffi==25.1.0",
+    "email-validator==2.3.0",
+    "fastapi==0.143.3",
+    "google-genai==2.31.0",
+    "langgraph==1.2.16",
+    "langgraph-checkpoint-postgres==3.2.0",
+    "numpy==2.5.4",
+    "pgvector==0.5.1",
+    "psutil==7.2.2",
+    "psycopg[binary]==3.3.6",
+    "pydantic==2.14.1",
+    "pydantic-settings==2.16.0",
+    "pypdf==6.21.1",
+    "redis==8.1.0",
+    "rq==2.12.0",
+    "scikit-learn==1.9.1",
+    "sentence-transformers==6.1.0",
+    "sqlalchemy==2.0.55",
+    "threadpoolctl==3.7.0",
+    "torch==2.14.1",
+    "transformers==5.20.2",
+    "uvicorn==0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2==2.13.1",
+    "pytest==9.1.1",
+    "ruff==0.17.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"

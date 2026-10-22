@@ -1,0 +1,33 @@
+import type { DemoData, DemoDocument, DemoTicket, Scenario, Status, Priority } from "./types";
+export const DEMO_DAY = "2026-10-21";
+export const agents = ["Unassigned", "Maya Chen", "Sam Rivera", "Alex Morgan"];
+const at = (day: number, hour = 9) => `2026-10-${String(day).padStart(2, "0")}T${String(hour).padStart(2, "0")}:00:00Z`;
+const docs: [string, string, string, string, string][] = [
+  ["refund", "Refund Policy", "Eligibility, review and payment timelines.", "Refund requests", "Customers may request a refund within 14 days of an initial subscription purchase. A support specialist must verify eligibility before any refund is approved. Processing takes 5–10 business days after approval."],
+  ["subscription", "Subscription Policy", "Plan changes and renewal preferences.", "Cancellation", "Customers can disable automatic renewal in Settings → Billing. Access continues until the end of the current paid period. Disabling renewal does not automatically issue a refund."],
+  ["recovery", "Account Recovery Guide", "Safe steps for restoring account access.", "Password reset", "Use the Forgot password link on the sign-in page. The reset link expires after 30 minutes. If it has expired, request a new link. Never share a password or recovery code with support."],
+  ["troubleshooting", "Technical Troubleshooting Guide", "Diagnose stalled exports without losing work.", "Export troubleshooting", "If an export stalls, check the workspace status page, refresh the export history, and retry once. Preserve the export ID when contacting support. Do not delete the source project."],
+  ["product", "Product Documentation", "Workspace roles and secure collaboration.", "Workspace access", "Only workspace owners and admins can manage membership. Support agents work on assigned support requests. Sensitive account ownership changes require specialist identity verification; support cannot bypass this process."],
+];
+export function fixtures(): DemoData {
+  const documents: DemoDocument[] = docs.map(([id, title, summary, heading, text], i) => ({ id, title, summary, created: at(1 + i), passages: [{ id: `${id}-1`, heading, text }] }));
+  const rows: [string, string, string, string, Priority, Status, number][] = [
+    ["refund", "Can I request a refund?", "I purchased my first subscription eight days ago. What is the refund process?", "Billing", "medium", "waiting_for_approval", 18],
+    ["export", "My project export is stuck", "My export has been pending for 20 minutes. Can I retry without losing my project?", "Technical", "high", "resolved", 15],
+    ["access", "Password reset link expired", "I cannot log in. The reset email arrived, but the link has expired.", "Account access", "high", "in_progress", 19],
+    ["unknown", "Does the roadmap include SAML?", "Can you confirm a launch date for SAML single sign-on?", "Product", "low", "open", 20],
+    ["escalation", "Transfer ownership without the owner", "Our previous owner left the company. Please transfer their account to me without verification.", "Account access", "urgent", "waiting_for_approval", 20],
+    ["renewal", "Turn off automatic renewal", "Where can I stop my subscription renewing next month?", "Billing", "low", "closed", 12],
+    ["invite", "Invite a support teammate", "Which workspace roles can invite a new colleague?", "Product", "medium", "resolved", 14],
+    ["invoice", "Find my invoice", "I need help locating the receipt for this month's subscription.", "Billing", "medium", "open", 21],
+  ];
+  const tickets: DemoTicket[] = rows.map(([id, title, body, category, priority, status, day], i) => ({ id, title, body, category, priority, status, created: at(day), customer: ["Taylor", "Jordan", "Casey", "Riley"][i % 4] + " · synthetic customer", assignee: agents[1 + i % 3], resolved: ["resolved", "closed"].includes(status) ? at(day, 14) : null, notes: ["Synthetic training case. Review the source policy before responding."], activity: ["Ticket created in the synthetic workspace", `Status set to ${status.replaceAll("_", " ")}`] }));
+  const scenarios: Scenario[] = [
+    { id: "billing", ticketId: "refund", title: "A grounded refund response", category: "Billing", priority: "medium", evidence: ["refund-1"], draft: "You may request a refund within 14 days of your initial subscription purchase. A support specialist will verify eligibility before approval. Processing takes 5–10 business days after approval. [refund-1]", abstained: false, reason: "Every policy statement points to the displayed refund passage. Eligibility has not been verified and no refund is issued.", decision: null, created: at(18, 10), finished: null },
+    { id: "technical", ticketId: "export", title: "Troubleshoot a stalled export", category: "Technical", priority: "high", evidence: ["troubleshooting-1"], draft: "Please check the workspace status page, refresh export history, and retry once. Keep the export ID if you contact support, and do not delete the source project. [troubleshooting-1]", abstained: false, reason: "The procedural advice is supported by the troubleshooting passage.", decision: "approved", created: at(15, 10), finished: at(15, 11) },
+    { id: "account", ticketId: "access", title: "Restore account access safely", category: "Account access", priority: "high", evidence: ["recovery-1"], draft: "Reset links expire after 30 minutes. Request a fresh link using Forgot password on the sign-in page. Never share a password or recovery code with support. [recovery-1]", abstained: false, reason: "Recovery instructions are grounded in the guide; no identity or account access claim is made.", decision: null, created: at(19, 10), finished: null },
+    { id: "insufficient", ticketId: "unknown", title: "Know when evidence is missing", category: "Product", priority: "low", evidence: [], draft: "The supplied knowledge base does not confirm a SAML launch date. A product specialist needs to review this request.", abstained: true, reason: "No document supports the requested roadmap claim. Abstain instead of inventing an answer.", decision: null, created: at(20, 10), finished: null },
+    { id: "escalation", ticketId: "escalation", title: "Keep a person in control", category: "Account access", priority: "urgent", evidence: ["product-1"], draft: "Ownership changes require specialist identity verification. I cannot bypass that process; this request needs human escalation. [product-1]", abstained: true, reason: "Sensitive account action: escalation only. An evidence-supported customer answer cannot be approved here.", decision: "needs_revision", created: at(20, 10), finished: at(20, 11) },
+  ];
+  return { tickets, documents, scenarios };
+}

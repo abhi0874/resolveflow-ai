@@ -1,0 +1,74 @@
+# Local credentials and environment configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+.secrets/
+secrets/
+*.pem
+*.key
+.aws/
+
+# JavaScript dependencies, builds, and caches
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+.npm/
+*.tsbuildinfo
+next-env.d.ts
+
+# Python environments, builds, and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.ipynb_checkpoints/
+
+# Test outputs
+coverage/
+.coverage
+.coverage.*
+htmlcov/
+test-results/
+playwright-report/
+blob-report/
+
+# Runtime data, downloaded ML assets, and local services
+*.log
+*.pid
+*.sqlite
+*.sqlite3
+*.db
+*.rdb
+*.aof
+.cache/
+/.local/
+/data/local/
+/data/private/
+/models/downloaded/
+/models/trained/
+/uploads/
+/backups/
+/tmp/
+.docker-data/
+
+# Deployment metadata and local editor/OS files
+.vercel/
+.DS_Store
+._*
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Keep dependency lockfiles and curated fixtures versioned when introduced.

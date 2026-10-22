@@ -1,0 +1,15 @@
+{
+  "model_version": "baseline-v1",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "python": "3.14.6",
+  "samples": 500,
+  "warmup": 20,
+  "batch_size": 1,
+  "threads": 1,
+  "input_source": "held-out synthetic test examples; no database or HTTP",
+  "load_ms": 3.4004580229520798,
+  "median_ms": 0.16110448632389307,
+  "p95_ms": 0.18221731152152643,
+  "max_ms": 0.2684170030988753
+}

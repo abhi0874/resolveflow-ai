@@ -1,0 +1,38 @@
+{
+  "name": "@resolveflow/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test:e2e": "playwright test",
+    "demo:build": "node scripts/demo.mjs build",
+    "demo:start": "node scripts/demo.mjs start",
+    "demo:dev": "node scripts/demo.mjs dev",
+    "test:demo": "playwright test --config playwright.demo.config.ts"
+  },
+  "engines": {
+    "node": ">=22.13.0 <27"
+  },
+  "dependencies": {
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "recharts": "3.10.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "10.13.0",
+    "eslint-config-next": "16.4.2",
+    "postcss": "8.5.30",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3"
+  }
+}

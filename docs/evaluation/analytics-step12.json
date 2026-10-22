@@ -1,0 +1,22 @@
+{
+  "tickets": 20000,
+  "status_events": 20000,
+  "creation_events": 20000,
+  "scoped_tickets": 10000,
+  "request_ms": [
+    71.43670799996471,
+    49.50716599705629,
+    49.70445799699519,
+    48.4153330035042,
+    48.33883300307207
+  ],
+  "median_ms": 49.50716599705629,
+  "resolution_query_ms": 44.668,
+  "planning_ms": 0.574,
+  "shared_hit_blocks": 90849,
+  "note": "Local synthetic in-process HTTP, warm database; not a production SLA.",
+  "date": "2026-10-21",
+  "database": "PostgreSQL 18.6 / pgvector 0.8.6",
+  "platform": "Apple Silicon macOS",
+  "runs": 5
+}

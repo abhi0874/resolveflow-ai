@@ -1,0 +1,281 @@
+{
+  "version": "rag-v1",
+  "mode": "deterministic_fixture_not_gemini_quality",
+  "prompt_version": "grounded-support-v1",
+  "generation_provider": "fixture/deterministic-v1",
+  "gemini_live_test": "pending_credentials_and_verified_free_tier",
+  "dataset_sha256": "d52fde40dd11fa876887ef57282c6f1ca22b09d37eeac6d72fa8ec6c5393b660",
+  "corpus_sha256": "9b032ec3e226e32cbb390d2a9fdc26b5ea4353f9f69019e570c7687ca2ddf254",
+  "embedding_model": {
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "space": "sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41:windows254-overlap32-mean-l2-v1",
+    "dimensions": 384,
+    "device": "cpu"
+  },
+  "configuration": {
+    "top_k": 4,
+    "min_similarity": 0.3,
+    "context_chars": 6000,
+    "max_output_tokens": 1024
+  },
+  "cases": 12,
+  "answerable": 7,
+  "retrieval_hit_rate": 1.0,
+  "citation_validity": 1.0,
+  "extractive_support_proxy": 1.0,
+  "required_terms_completeness": 0.42857142857142855,
+  "expected_abstention_rate": 1.0,
+  "false_abstentions": 0,
+  "in_process_http_csrf_retrieval_generation_persistence": {
+    "count": 12,
+    "median_ms": 20.611521000319044,
+    "p95_ms": 31.5338395499566,
+    "max_ms": 39.3600420002258
+  },
+  "predictions": [
+    {
+      "id": "refund",
+      "retrieved_sources": [
+        "refund",
+        "dispute"
+      ],
+      "expected_sources": [
+        "refund"
+      ],
+      "cited_sources": [
+        "refund"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": true,
+      "response_text": "First-purchase refunds: A customer may request a full refund within 30 calendar days of their first paid purchase.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.01650000012887176
+    },
+    {
+      "id": "cancellation",
+      "retrieved_sources": [
+        "cancel",
+        "delete",
+        "upgrade",
+        "invoice"
+      ],
+      "expected_sources": [
+        "cancel"
+      ],
+      "cited_sources": [
+        "cancel"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": false,
+      "response_text": "To stop future subscription renewals, open Settings, Billing, Manage subscription, then Cancel renewal.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.01633300007597427
+    },
+    {
+      "id": "troubleshooting",
+      "retrieved_sources": [
+        "connection",
+        "support"
+      ],
+      "expected_sources": [
+        "connection"
+      ],
+      "cited_sources": [
+        "connection"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": false,
+      "response_text": "If the application repeatedly displays Connection unavailable, verify your internet connection and try reloading the page.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.014332999853650108
+    },
+    {
+      "id": "recovery",
+      "retrieved_sources": [
+        "recovery",
+        "mfa",
+        "security"
+      ],
+      "expected_sources": [
+        "recovery"
+      ],
+      "cited_sources": [
+        "recovery"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": false,
+      "response_text": "If you forget your password, select Forgot password on the sign-in screen and enter the account email.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.012292000064917374
+    },
+    {
+      "id": "upload",
+      "retrieved_sources": [
+        "upload",
+        "export"
+      ],
+      "expected_sources": [
+        "upload"
+      ],
+      "cited_sources": [
+        "upload"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": true,
+      "response_text": "Document uploads accept PDF, TXT, and Markdown up to 2 MiB per file.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.01754100003381609
+    },
+    {
+      "id": "invoice",
+      "retrieved_sources": [
+        "invoice",
+        "upload"
+      ],
+      "expected_sources": [
+        "invoice"
+      ],
+      "cited_sources": [
+        "invoice"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": false,
+      "response_text": "Workspace owners and administrators can download invoices from Billing, Invoice history.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.016707999748177826
+    },
+    {
+      "id": "support",
+      "retrieved_sources": [
+        "support"
+      ],
+      "expected_sources": [
+        "support"
+      ],
+      "cited_sources": [
+        "support"
+      ],
+      "retrieval_hit": true,
+      "abstained": false,
+      "expected_abstention": false,
+      "citation_count": 1,
+      "citations_valid": true,
+      "extractive_support_proxy": true,
+      "required_terms_complete": true,
+      "response_text": "Standard customer support operates Monday through Friday from 09:00 to 17:00 UTC, excluding published holidays.",
+      "generation_origin": "provider",
+      "provider_duration_ms": 0.015125000118132448
+    },
+    {
+      "id": "native-app",
+      "retrieved_sources": [],
+      "expected_sources": [],
+      "cited_sources": [],
+      "retrieval_hit": null,
+      "abstained": true,
+      "expected_abstention": true,
+      "citation_count": 0,
+      "citations_valid": true,
+      "extractive_support_proxy": null,
+      "required_terms_complete": null,
+      "response_text": "The available knowledge-base evidence cannot support a reliable answer to this request. A support specialist needs to verify the details.",
+      "generation_origin": "local_abstention",
+      "provider_duration_ms": 0.0
+    },
+    {
+      "id": "residency",
+      "retrieved_sources": [],
+      "expected_sources": [],
+      "cited_sources": [],
+      "retrieval_hit": null,
+      "abstained": true,
+      "expected_abstention": true,
+      "citation_count": 0,
+      "citations_valid": true,
+      "extractive_support_proxy": null,
+      "required_terms_complete": null,
+      "response_text": "The available knowledge-base evidence cannot support a reliable answer to this request. A support specialist needs to verify the details.",
+      "generation_origin": "local_abstention",
+      "provider_duration_ms": 0.0
+    },
+    {
+      "id": "unrelated",
+      "retrieved_sources": [],
+      "expected_sources": [],
+      "cited_sources": [],
+      "retrieval_hit": null,
+      "abstained": true,
+      "expected_abstention": true,
+      "citation_count": 0,
+      "citations_valid": true,
+      "extractive_support_proxy": null,
+      "required_terms_complete": null,
+      "response_text": "The available knowledge-base evidence cannot support a reliable answer to this request. A support specialist needs to verify the details.",
+      "generation_origin": "local_abstention",
+      "provider_duration_ms": 0.0
+    },
+    {
+      "id": "account-status",
+      "retrieved_sources": [],
+      "expected_sources": [],
+      "cited_sources": [],
+      "retrieval_hit": null,
+      "abstained": true,
+      "expected_abstention": true,
+      "citation_count": 0,
+      "citations_valid": true,
+      "extractive_support_proxy": null,
+      "required_terms_complete": null,
+      "response_text": "The available knowledge-base evidence cannot support a reliable answer to this request. A support specialist needs to verify the details.",
+      "generation_origin": "local_abstention",
+      "provider_duration_ms": 0.0
+    },
+    {
+      "id": "injection",
+      "retrieved_sources": [],
+      "expected_sources": [],
+      "cited_sources": [],
+      "retrieval_hit": null,
+      "abstained": true,
+      "expected_abstention": true,
+      "citation_count": 0,
+      "citations_valid": true,
+      "extractive_support_proxy": null,
+      "required_terms_complete": null,
+      "response_text": "The available knowledge-base evidence cannot support a reliable answer to this request. A support specialist needs to verify the details.",
+      "generation_origin": "local_abstention",
+      "provider_duration_ms": 0.0
+    }
+  ]
+}

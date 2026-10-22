@@ -1,0 +1,1558 @@
+{
+  "info": {
+    "model_version": "baseline-v1",
+    "trained_at": "2026-10-19T16:09:02.223274+00:00",
+    "dataset_version": "ticket-classification-v1",
+    "category_mapping_version": "support-categories-v1",
+    "algorithm": "TF-IDF + Logistic Regression"
+  },
+  "config": {
+    "seed": 42,
+    "c": 4.0,
+    "max_features": 12000,
+    "ngram_max": 2,
+    "max_iter": 1000,
+    "threshold": 0.45
+  },
+  "dataset_sha256": "029f27dfb47e5d6011e074146611b0063351b1a8b1ad9d5b9aae57f5a7373d54",
+  "artifact_sha256": "28a6f5bd2049d6f321d6fbda7759cdc15ba61579dec2e63683458ddd49bc4f56",
+  "sklearn_version": "1.9.1",
+  "numpy_version": "2.5.4",
+  "split": {
+    "train": {
+      "ids": [
+        "account-access-01-1",
+        "account-access-01-2",
+        "account-access-02-1",
+        "account-access-02-2",
+        "account-access-03-1",
+        "account-access-03-2",
+        "account-access-04-1",
+        "account-access-04-2",
+        "account-access-05-1",
+        "account-access-05-2",
+        "account-access-07-1",
+        "account-access-07-2",
+        "account-access-08-1",
+        "account-access-08-2",
+        "account-access-09-1",
+        "account-access-09-2",
+        "account-access-12-1",
+        "account-access-12-2",
+        "account-access-16-1",
+        "account-access-16-2",
+        "account-access-17-1",
+        "account-access-17-2",
+        "account-access-18-1",
+        "account-access-18-2",
+        "billing-01-1",
+        "billing-01-2",
+        "billing-03-1",
+        "billing-03-2",
+        "billing-04-1",
+        "billing-04-2",
+        "billing-05-1",
+        "billing-05-2",
+        "billing-06-1",
+        "billing-06-2",
+        "billing-09-1",
+        "billing-09-2",
+        "billing-10-1",
+        "billing-10-2",
+        "billing-11-1",
+        "billing-11-2",
+        "billing-13-1",
+        "billing-13-2",
+        "billing-14-1",
+        "billing-14-2",
+        "billing-15-1",
+        "billing-15-2",
+        "billing-19-1",
+        "billing-19-2",
+        "general-support-01-1",
+        "general-support-01-2",
+        "general-support-03-1",
+        "general-support-03-2",
+        "general-support-04-1",
+        "general-support-04-2",
+        "general-support-08-1",
+        "general-support-08-2",
+        "general-support-10-1",
+        "general-support-10-2",
+        "general-support-12-1",
+        "general-support-12-2",
+        "general-support-13-1",
+        "general-support-13-2",
+        "general-support-14-1",
+        "general-support-14-2",
+        "general-support-16-1",
+        "general-support-16-2",
+        "general-support-17-1",
+        "general-support-17-2",
+        "general-support-18-1",
+        "general-support-18-2",
+        "general-support-20-1",
+        "general-support-20-2",
+        "other-03-1",
+        "other-03-2",
+        "other-04-1",
+        "other-04-2",
+        "other-08-1",
+        "other-08-2",
+        "other-09-1",
+        "other-09-2",
+        "other-10-1",
+        "other-10-2",
+        "other-12-1",
+        "other-12-2",
+        "other-13-1",
+        "other-13-2",
+        "other-14-1",
+        "other-14-2",
+        "other-15-1",
+        "other-15-2",
+        "other-16-1",
+        "other-16-2",
+        "other-17-1",
+        "other-17-2",
+        "other-18-1",
+        "other-18-2",
+        "product-inquiry-01-1",
+        "product-inquiry-01-2",
+        "product-inquiry-03-1",
+        "product-inquiry-03-2",
+        "product-inquiry-04-1",
+        "product-inquiry-04-2",
+        "product-inquiry-05-1",
+        "product-inquiry-05-2",
+        "product-inquiry-07-1",
+        "product-inquiry-07-2",
+        "product-inquiry-08-1",
+        "product-inquiry-08-2",
+        "product-inquiry-10-1",
+        "product-inquiry-10-2",
+        "product-inquiry-11-1",
+        "product-inquiry-11-2",
+        "product-inquiry-13-1",
+        "product-inquiry-13-2",
+        "product-inquiry-16-1",
+        "product-inquiry-16-2",
+        "product-inquiry-17-1",
+        "product-inquiry-17-2",
+        "product-inquiry-20-1",
+        "product-inquiry-20-2",
+        "subscription-management-01-1",
+        "subscription-management-01-2",
+        "subscription-management-03-1",
+        "subscription-management-03-2",
+        "subscription-management-04-1",
+        "subscription-management-04-2",
+        "subscription-management-05-1",
+        "subscription-management-05-2",
+        "subscription-management-07-1",
+        "subscription-management-07-2",
+        "subscription-management-12-1",
+        "subscription-management-12-2",
+        "subscription-management-13-1",
+        "subscription-management-13-2",
+        "subscription-management-14-1",
+        "subscription-management-14-2",
+        "subscription-management-15-1",
+        "subscription-management-15-2",
+        "subscription-management-17-1",
+        "subscription-management-17-2",
+        "subscription-management-18-1",
+        "subscription-management-18-2",
+        "subscription-management-19-1",
+        "subscription-management-19-2",
+        "technical-support-01-1",
+        "technical-support-01-2",
+        "technical-support-05-1",
+        "technical-support-05-2",
+        "technical-support-06-1",
+        "technical-support-06-2",
+        "technical-support-09-1",
+        "technical-support-09-2",
+        "technical-support-10-1",
+        "technical-support-10-2",
+        "technical-support-11-1",
+        "technical-support-11-2",
+        "technical-support-12-1",
+        "technical-support-12-2",
+        "technical-support-13-1",
+        "technical-support-13-2",
+        "technical-support-14-1",
+        "technical-support-14-2",
+        "technical-support-15-1",
+        "technical-support-15-2",
+        "technical-support-16-1",
+        "technical-support-16-2",
+        "technical-support-17-1",
+        "technical-support-17-2"
+      ],
+      "groups": [
+        "account-access-01",
+        "account-access-02",
+        "account-access-03",
+        "account-access-04",
+        "account-access-05",
+        "account-access-07",
+        "account-access-08",
+        "account-access-09",
+        "account-access-12",
+        "account-access-16",
+        "account-access-17",
+        "account-access-18",
+        "billing-01",
+        "billing-03",
+        "billing-04",
+        "billing-05",
+        "billing-06",
+        "billing-09",
+        "billing-10",
+        "billing-11",
+        "billing-13",
+        "billing-14",
+        "billing-15",
+        "billing-19",
+        "general-support-01",
+        "general-support-03",
+        "general-support-04",
+        "general-support-08",
+        "general-support-10",
+        "general-support-12",
+        "general-support-13",
+        "general-support-14",
+        "general-support-16",
+        "general-support-17",
+        "general-support-18",
+        "general-support-20",
+        "other-03",
+        "other-04",
+        "other-08",
+        "other-09",
+        "other-10",
+        "other-12",
+        "other-13",
+        "other-14",
+        "other-15",
+        "other-16",
+        "other-17",
+        "other-18",
+        "product-inquiry-01",
+        "product-inquiry-03",
+        "product-inquiry-04",
+        "product-inquiry-05",
+        "product-inquiry-07",
+        "product-inquiry-08",
+        "product-inquiry-10",
+        "product-inquiry-11",
+        "product-inquiry-13",
+        "product-inquiry-16",
+        "product-inquiry-17",
+        "product-inquiry-20",
+        "subscription-management-01",
+        "subscription-management-03",
+        "subscription-management-04",
+        "subscription-management-05",
+        "subscription-management-07",
+        "subscription-management-12",
+        "subscription-management-13",
+        "subscription-management-14",
+        "subscription-management-15",
+        "subscription-management-17",
+        "subscription-management-18",
+        "subscription-management-19",
+        "technical-support-01",
+        "technical-support-05",
+        "technical-support-06",
+        "technical-support-09",
+        "technical-support-10",
+        "technical-support-11",
+        "technical-support-12",
+        "technical-support-13",
+        "technical-support-14",
+        "technical-support-15",
+        "technical-support-16",
+        "technical-support-17"
+      ],
+      "distribution": {
+        "Account Access": 24,
+        "Billing": 24,
+        "General Support": 24,
+        "Other": 24,
+        "Product Inquiry": 24,
+        "Subscription Management": 24,
+        "Technical Support": 24
+      }
+    },
+    "validation": {
+      "ids": [
+        "account-access-10-1",
+        "account-access-10-2",
+        "account-access-11-1",
+        "account-access-11-2",
+        "account-access-14-1",
+        "account-access-14-2",
+        "account-access-19-1",
+        "account-access-19-2",
+        "billing-02-1",
+        "billing-02-2",
+        "billing-16-1",
+        "billing-16-2",
+        "billing-17-1",
+        "billing-17-2",
+        "billing-18-1",
+        "billing-18-2",
+        "general-support-07-1",
+        "general-support-07-2",
+        "general-support-09-1",
+        "general-support-09-2",
+        "general-support-11-1",
+        "general-support-11-2",
+        "general-support-19-1",
+        "general-support-19-2",
+        "other-06-1",
+        "other-06-2",
+        "other-07-1",
+        "other-07-2",
+        "other-19-1",
+        "other-19-2",
+        "other-20-1",
+        "other-20-2",
+        "product-inquiry-06-1",
+        "product-inquiry-06-2",
+        "product-inquiry-12-1",
+        "product-inquiry-12-2",
+        "product-inquiry-14-1",
+        "product-inquiry-14-2",
+        "product-inquiry-15-1",
+        "product-inquiry-15-2",
+        "subscription-management-02-1",
+        "subscription-management-02-2",
+        "subscription-management-06-1",
+        "subscription-management-06-2",
+        "subscription-management-09-1",
+        "subscription-management-09-2",
+        "subscription-management-20-1",
+        "subscription-management-20-2",
+        "technical-support-02-1",
+        "technical-support-02-2",
+        "technical-support-03-1",
+        "technical-support-03-2",
+        "technical-support-07-1",
+        "technical-support-07-2",
+        "technical-support-20-1",
+        "technical-support-20-2"
+      ],
+      "groups": [
+        "account-access-10",
+        "account-access-11",
+        "account-access-14",
+        "account-access-19",
+        "billing-02",
+        "billing-16",
+        "billing-17",
+        "billing-18",
+        "general-support-07",
+        "general-support-09",
+        "general-support-11",
+        "general-support-19",
+        "other-06",
+        "other-07",
+        "other-19",
+        "other-20",
+        "product-inquiry-06",
+        "product-inquiry-12",
+        "product-inquiry-14",
+        "product-inquiry-15",
+        "subscription-management-02",
+        "subscription-management-06",
+        "subscription-management-09",
+        "subscription-management-20",
+        "technical-support-02",
+        "technical-support-03",
+        "technical-support-07",
+        "technical-support-20"
+      ],
+      "distribution": {
+        "Account Access": 8,
+        "Billing": 8,
+        "General Support": 8,
+        "Other": 8,
+        "Product Inquiry": 8,
+        "Subscription Management": 8,
+        "Technical Support": 8
+      }
+    },
+    "test": {
+      "ids": [
+        "account-access-06-1",
+        "account-access-06-2",
+        "account-access-13-1",
+        "account-access-13-2",
+        "account-access-15-1",
+        "account-access-15-2",
+        "account-access-20-1",
+        "account-access-20-2",
+        "billing-07-1",
+        "billing-07-2",
+        "billing-08-1",
+        "billing-08-2",
+        "billing-12-1",
+        "billing-12-2",
+        "billing-20-1",
+        "billing-20-2",
+        "general-support-02-1",
+        "general-support-02-2",
+        "general-support-05-1",
+        "general-support-05-2",
+        "general-support-06-1",
+        "general-support-06-2",
+        "general-support-15-1",
+        "general-support-15-2",
+        "other-01-1",
+        "other-01-2",
+        "other-02-1",
+        "other-02-2",
+        "other-05-1",
+        "other-05-2",
+        "other-11-1",
+        "other-11-2",
+        "product-inquiry-02-1",
+        "product-inquiry-02-2",
+        "product-inquiry-09-1",
+        "product-inquiry-09-2",
+        "product-inquiry-18-1",
+        "product-inquiry-18-2",
+        "product-inquiry-19-1",
+        "product-inquiry-19-2",
+        "subscription-management-08-1",
+        "subscription-management-08-2",
+        "subscription-management-10-1",
+        "subscription-management-10-2",
+        "subscription-management-11-1",
+        "subscription-management-11-2",
+        "subscription-management-16-1",
+        "subscription-management-16-2",
+        "technical-support-04-1",
+        "technical-support-04-2",
+        "technical-support-08-1",
+        "technical-support-08-2",
+        "technical-support-18-1",
+        "technical-support-18-2",
+        "technical-support-19-1",
+        "technical-support-19-2"
+      ],
+      "groups": [
+        "account-access-06",
+        "account-access-13",
+        "account-access-15",
+        "account-access-20",
+        "billing-07",
+        "billing-08",
+        "billing-12",
+        "billing-20",
+        "general-support-02",
+        "general-support-05",
+        "general-support-06",
+        "general-support-15",
+        "other-01",
+        "other-02",
+        "other-05",
+        "other-11",
+        "product-inquiry-02",
+        "product-inquiry-09",
+        "product-inquiry-18",
+        "product-inquiry-19",
+        "subscription-management-08",
+        "subscription-management-10",
+        "subscription-management-11",
+        "subscription-management-16",
+        "technical-support-04",
+        "technical-support-08",
+        "technical-support-18",
+        "technical-support-19"
+      ],
+      "distribution": {
+        "Account Access": 8,
+        "Billing": 8,
+        "General Support": 8,
+        "Other": 8,
+        "Product Inquiry": 8,
+        "Subscription Management": 8,
+        "Technical Support": 8
+      }
+    }
+  },
+  "split_strategy": "stratified scenario groups 60/20/20",
+  "validation": {
+    "count": 56,
+    "accuracy": 0.8928571428571429,
+    "macro_precision": 0.8964285714285714,
+    "macro_recall": 0.8928571428571429,
+    "macro_f1": 0.885927960927961,
+    "per_category": {
+      "Account Access": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 8.0
+      },
+      "Billing": {
+        "precision": 0.875,
+        "recall": 0.875,
+        "f1-score": 0.875,
+        "support": 8.0
+      },
+      "General Support": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 8.0
+      },
+      "Other": {
+        "precision": 0.8,
+        "recall": 0.5,
+        "f1-score": 0.6153846153846154,
+        "support": 8.0
+      },
+      "Product Inquiry": {
+        "precision": 1.0,
+        "recall": 0.875,
+        "f1-score": 0.9333333333333333,
+        "support": 8.0
+      },
+      "Subscription Management": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 8.0
+      },
+      "Technical Support": {
+        "precision": 0.8,
+        "recall": 1.0,
+        "f1-score": 0.8888888888888888,
+        "support": 8.0
+      }
+    },
+    "confusion_labels": [
+      "Account Access",
+      "Billing",
+      "General Support",
+      "Other",
+      "Product Inquiry",
+      "Subscription Management",
+      "Technical Support"
+    ],
+    "confusion_matrix": [
+      [
+        8,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        7,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        2,
+        4,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        7,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        8,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ]
+    ],
+    "log_loss": 1.152504628964366,
+    "multiclass_brier_sum": 0.5380723407230372,
+    "score_bins": [
+      {
+        "lower": 0.0,
+        "upper": 0.2,
+        "count": 2,
+        "mean_score": 0.19672759679220858,
+        "accuracy": 0.5
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.4,
+        "count": 41,
+        "mean_score": 0.29503164055012954,
+        "accuracy": 0.8780487804878049
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.6000000000000001,
+        "count": 10,
+        "mean_score": 0.47946348424986845,
+        "accuracy": 1.0
+      },
+      {
+        "lower": 0.6000000000000001,
+        "upper": 0.8,
+        "count": 3,
+        "mean_score": 0.6868268203624096,
+        "accuracy": 1.0
+      },
+      {
+        "lower": 0.8,
+        "upper": 1.0,
+        "count": 0,
+        "mean_score": null,
+        "accuracy": null
+      }
+    ],
+    "threshold_behavior": [
+      {
+        "threshold": 0.25,
+        "suggested": 43,
+        "coverage": 0.7678571428571429,
+        "suggestion_accuracy": 0.9534883720930233
+      },
+      {
+        "threshold": 0.35,
+        "suggested": 22,
+        "coverage": 0.39285714285714285,
+        "suggestion_accuracy": 0.9545454545454546
+      },
+      {
+        "threshold": 0.45,
+        "suggested": 10,
+        "coverage": 0.17857142857142858,
+        "suggestion_accuracy": 1.0
+      },
+      {
+        "threshold": 0.55,
+        "suggested": 5,
+        "coverage": 0.08928571428571429,
+        "suggestion_accuracy": 1.0
+      },
+      {
+        "threshold": 0.65,
+        "suggested": 3,
+        "coverage": 0.05357142857142857,
+        "suggestion_accuracy": 1.0
+      }
+    ],
+    "predictions": [
+      {
+        "id": "account-access-10-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.35103164772879036
+      },
+      {
+        "id": "account-access-10-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.22684097960120786
+      },
+      {
+        "id": "account-access-11-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.29103132486432337
+      },
+      {
+        "id": "account-access-11-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.33031218445436866
+      },
+      {
+        "id": "account-access-14-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.4409741677780483
+      },
+      {
+        "id": "account-access-14-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.2614124036922896
+      },
+      {
+        "id": "account-access-19-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.6948767290632345
+      },
+      {
+        "id": "account-access-19-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.39561164216008265
+      },
+      {
+        "id": "billing-02-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.2647969475928464
+      },
+      {
+        "id": "billing-02-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.3636274219558347
+      },
+      {
+        "id": "billing-16-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.3111601340200952
+      },
+      {
+        "id": "billing-16-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.20416133619799182
+      },
+      {
+        "id": "billing-17-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.29978908269112925
+      },
+      {
+        "id": "billing-17-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.4623249592108262
+      },
+      {
+        "id": "billing-18-1",
+        "actual": "Billing",
+        "predicted": "Other",
+        "score": 0.24473947944120986
+      },
+      {
+        "id": "billing-18-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.45391063834021306
+      },
+      {
+        "id": "general-support-07-1",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.3950514764912036
+      },
+      {
+        "id": "general-support-07-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.19513896637292769
+      },
+      {
+        "id": "general-support-09-1",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.36720608388815107
+      },
+      {
+        "id": "general-support-09-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.25723509311633086
+      },
+      {
+        "id": "general-support-11-1",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.3401226094294227
+      },
+      {
+        "id": "general-support-11-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.37816906538055106
+      },
+      {
+        "id": "general-support-19-1",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.32826493190962047
+      },
+      {
+        "id": "general-support-19-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.24961944345060164
+      },
+      {
+        "id": "other-06-1",
+        "actual": "Other",
+        "predicted": "Billing",
+        "score": 0.22148952503054384
+      },
+      {
+        "id": "other-06-2",
+        "actual": "Other",
+        "predicted": "General Support",
+        "score": 0.27822797450716885
+      },
+      {
+        "id": "other-07-1",
+        "actual": "Other",
+        "predicted": "Technical Support",
+        "score": 0.19831622721148948
+      },
+      {
+        "id": "other-07-2",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.31676784774074285
+      },
+      {
+        "id": "other-19-1",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.37143287096244526
+      },
+      {
+        "id": "other-19-2",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.22690844992927495
+      },
+      {
+        "id": "other-20-1",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.22561086141486078
+      },
+      {
+        "id": "other-20-2",
+        "actual": "Other",
+        "predicted": "General Support",
+        "score": 0.22165649620617334
+      },
+      {
+        "id": "product-inquiry-06-1",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.4083409333665765
+      },
+      {
+        "id": "product-inquiry-06-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.32563509156050235
+      },
+      {
+        "id": "product-inquiry-12-1",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.31684428456172736
+      },
+      {
+        "id": "product-inquiry-12-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.6815612496716683
+      },
+      {
+        "id": "product-inquiry-14-1",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.4825856738142283
+      },
+      {
+        "id": "product-inquiry-14-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.2661548276834132
+      },
+      {
+        "id": "product-inquiry-15-1",
+        "actual": "Product Inquiry",
+        "predicted": "Technical Support",
+        "score": 0.3600600371701171
+      },
+      {
+        "id": "product-inquiry-15-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.5558544882756016
+      },
+      {
+        "id": "subscription-management-02-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.3168179958478618
+      },
+      {
+        "id": "subscription-management-02-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.46021465105933235
+      },
+      {
+        "id": "subscription-management-06-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.4373458367992973
+      },
+      {
+        "id": "subscription-management-06-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.39330487291394955
+      },
+      {
+        "id": "subscription-management-09-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.5019867850171292
+      },
+      {
+        "id": "subscription-management-09-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.2541661473815106
+      },
+      {
+        "id": "subscription-management-20-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.6840424823523263
+      },
+      {
+        "id": "subscription-management-20-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.5910967088374315
+      },
+      {
+        "id": "technical-support-02-1",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.3375670867692909
+      },
+      {
+        "id": "technical-support-02-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.27015722819086546
+      },
+      {
+        "id": "technical-support-03-1",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.2476413682802104
+      },
+      {
+        "id": "technical-support-03-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.25219976060692845
+      },
+      {
+        "id": "technical-support-07-1",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.30069105875583596
+      },
+      {
+        "id": "technical-support-07-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.26269433644583245
+      },
+      {
+        "id": "technical-support-20-1",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.24394960937413573
+      },
+      {
+        "id": "technical-support-20-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.22613624315586667
+      }
+    ]
+  },
+  "test": {
+    "count": 56,
+    "accuracy": 0.7857142857142857,
+    "macro_precision": 0.7945578231292518,
+    "macro_recall": 0.7857142857142857,
+    "macro_f1": 0.7845804988662132,
+    "per_category": {
+      "Account Access": {
+        "precision": 0.7,
+        "recall": 0.875,
+        "f1-score": 0.7777777777777778,
+        "support": 8.0
+      },
+      "Billing": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 8.0
+      },
+      "General Support": {
+        "precision": 0.6,
+        "recall": 0.75,
+        "f1-score": 0.6666666666666666,
+        "support": 8.0
+      },
+      "Other": {
+        "precision": 0.7142857142857143,
+        "recall": 0.625,
+        "f1-score": 0.6666666666666666,
+        "support": 8.0
+      },
+      "Product Inquiry": {
+        "precision": 0.8333333333333334,
+        "recall": 0.625,
+        "f1-score": 0.7142857142857143,
+        "support": 8.0
+      },
+      "Subscription Management": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 8.0
+      },
+      "Technical Support": {
+        "precision": 0.7142857142857143,
+        "recall": 0.625,
+        "f1-score": 0.6666666666666666,
+        "support": 8.0
+      }
+    },
+    "confusion_labels": [
+      "Account Access",
+      "Billing",
+      "General Support",
+      "Other",
+      "Product Inquiry",
+      "Subscription Management",
+      "Technical Support"
+    ],
+    "confusion_matrix": [
+      [
+        7,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        6,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        5,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        2,
+        0,
+        5,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        8,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        1,
+        0,
+        5
+      ]
+    ],
+    "log_loss": 1.149452875999279,
+    "multiclass_brier_sum": 0.5336237917071295,
+    "score_bins": [
+      {
+        "lower": 0.0,
+        "upper": 0.2,
+        "count": 3,
+        "mean_score": 0.18516603445998783,
+        "accuracy": 0.0
+      },
+      {
+        "lower": 0.2,
+        "upper": 0.4,
+        "count": 36,
+        "mean_score": 0.28551215065768903,
+        "accuracy": 0.75
+      },
+      {
+        "lower": 0.4,
+        "upper": 0.6000000000000001,
+        "count": 13,
+        "mean_score": 0.4869904702000393,
+        "accuracy": 1.0
+      },
+      {
+        "lower": 0.6000000000000001,
+        "upper": 0.8,
+        "count": 4,
+        "mean_score": 0.6588202878046018,
+        "accuracy": 1.0
+      },
+      {
+        "lower": 0.8,
+        "upper": 1.0,
+        "count": 0,
+        "mean_score": null,
+        "accuracy": null
+      }
+    ],
+    "threshold_behavior": [
+      {
+        "threshold": 0.25,
+        "suggested": 41,
+        "coverage": 0.7321428571428571,
+        "suggestion_accuracy": 0.926829268292683
+      },
+      {
+        "threshold": 0.35,
+        "suggested": 20,
+        "coverage": 0.35714285714285715,
+        "suggestion_accuracy": 0.95
+      },
+      {
+        "threshold": 0.45,
+        "suggested": 13,
+        "coverage": 0.23214285714285715,
+        "suggestion_accuracy": 1.0
+      },
+      {
+        "threshold": 0.55,
+        "suggested": 7,
+        "coverage": 0.125,
+        "suggestion_accuracy": 1.0
+      },
+      {
+        "threshold": 0.65,
+        "suggested": 2,
+        "coverage": 0.03571428571428571,
+        "suggestion_accuracy": 1.0
+      }
+    ],
+    "predictions": [
+      {
+        "id": "account-access-06-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.585890655291073
+      },
+      {
+        "id": "account-access-06-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.5664710809110208
+      },
+      {
+        "id": "account-access-13-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.26753650874798557
+      },
+      {
+        "id": "account-access-13-2",
+        "actual": "Account Access",
+        "predicted": "General Support",
+        "score": 0.24771059533166767
+      },
+      {
+        "id": "account-access-15-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.20078713713612284
+      },
+      {
+        "id": "account-access-15-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.40028969509373347
+      },
+      {
+        "id": "account-access-20-1",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.28134165737110484
+      },
+      {
+        "id": "account-access-20-2",
+        "actual": "Account Access",
+        "predicted": "Account Access",
+        "score": 0.4327812254778295
+      },
+      {
+        "id": "billing-07-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.34697945730979946
+      },
+      {
+        "id": "billing-07-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.3469222816094855
+      },
+      {
+        "id": "billing-08-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.24533296566663804
+      },
+      {
+        "id": "billing-08-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.5651792607277351
+      },
+      {
+        "id": "billing-12-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.30165296723567625
+      },
+      {
+        "id": "billing-12-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.3327375521981448
+      },
+      {
+        "id": "billing-20-1",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.5130657065097133
+      },
+      {
+        "id": "billing-20-2",
+        "actual": "Billing",
+        "predicted": "Billing",
+        "score": 0.31750308303963554
+      },
+      {
+        "id": "general-support-02-1",
+        "actual": "General Support",
+        "predicted": "Other",
+        "score": 0.18383867414997299
+      },
+      {
+        "id": "general-support-02-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.2984760892251471
+      },
+      {
+        "id": "general-support-05-1",
+        "actual": "General Support",
+        "predicted": "Other",
+        "score": 0.18143551737569696
+      },
+      {
+        "id": "general-support-05-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.47412516258885107
+      },
+      {
+        "id": "general-support-06-1",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.3481354970558178
+      },
+      {
+        "id": "general-support-06-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.4642684879125211
+      },
+      {
+        "id": "general-support-15-1",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.3562598321599802
+      },
+      {
+        "id": "general-support-15-2",
+        "actual": "General Support",
+        "predicted": "General Support",
+        "score": 0.29865002885320185
+      },
+      {
+        "id": "other-01-1",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.3196254494082096
+      },
+      {
+        "id": "other-01-2",
+        "actual": "Other",
+        "predicted": "General Support",
+        "score": 0.3571415428793652
+      },
+      {
+        "id": "other-02-1",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.4261757437481935
+      },
+      {
+        "id": "other-02-2",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.30953504183851327
+      },
+      {
+        "id": "other-05-1",
+        "actual": "Other",
+        "predicted": "Account Access",
+        "score": 0.22922566808699144
+      },
+      {
+        "id": "other-05-2",
+        "actual": "Other",
+        "predicted": "Technical Support",
+        "score": 0.20811209052772903
+      },
+      {
+        "id": "other-11-1",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.3285319276563558
+      },
+      {
+        "id": "other-11-2",
+        "actual": "Other",
+        "predicted": "Other",
+        "score": 0.2981505853128002
+      },
+      {
+        "id": "product-inquiry-02-1",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.34611868220129693
+      },
+      {
+        "id": "product-inquiry-02-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.4086403163827838
+      },
+      {
+        "id": "product-inquiry-09-1",
+        "actual": "Product Inquiry",
+        "predicted": "Technical Support",
+        "score": 0.19022391185429355
+      },
+      {
+        "id": "product-inquiry-09-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.24325277160202197
+      },
+      {
+        "id": "product-inquiry-18-1",
+        "actual": "Product Inquiry",
+        "predicted": "General Support",
+        "score": 0.2840528778991153
+      },
+      {
+        "id": "product-inquiry-18-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.31803681729829325
+      },
+      {
+        "id": "product-inquiry-19-1",
+        "actual": "Product Inquiry",
+        "predicted": "General Support",
+        "score": 0.24132265530774966
+      },
+      {
+        "id": "product-inquiry-19-2",
+        "actual": "Product Inquiry",
+        "predicted": "Product Inquiry",
+        "score": 0.6315011972112354
+      },
+      {
+        "id": "subscription-management-08-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.7049957606519262
+      },
+      {
+        "id": "subscription-management-08-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.3242978316961089
+      },
+      {
+        "id": "subscription-management-10-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.3992109507138786
+      },
+      {
+        "id": "subscription-management-10-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.6896129955763317
+      },
+      {
+        "id": "subscription-management-11-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.47743756217882455
+      },
+      {
+        "id": "subscription-management-11-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.5333952069940405
+      },
+      {
+        "id": "subscription-management-16-1",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.6091711977789137
+      },
+      {
+        "id": "subscription-management-16-2",
+        "actual": "Subscription Management",
+        "predicted": "Subscription Management",
+        "score": 0.48315600878419146
+      },
+      {
+        "id": "technical-support-04-1",
+        "actual": "Technical Support",
+        "predicted": "Product Inquiry",
+        "score": 0.20475174816823427
+      },
+      {
+        "id": "technical-support-04-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.21867048286442173
+      },
+      {
+        "id": "technical-support-08-1",
+        "actual": "Technical Support",
+        "predicted": "Account Access",
+        "score": 0.25448296931878184
+      },
+      {
+        "id": "technical-support-08-2",
+        "actual": "Technical Support",
+        "predicted": "Account Access",
+        "score": 0.21920994023213772
+      },
+      {
+        "id": "technical-support-18-1",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.25111347091830366
+      },
+      {
+        "id": "technical-support-18-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.27146298072569
+      },
+      {
+        "id": "technical-support-19-1",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.22199999845823115
+      },
+      {
+        "id": "technical-support-19-2",
+        "actual": "Technical Support",
+        "predicted": "Technical Support",
+        "score": 0.24010528762216798
+      }
+    ]
+  },
+  "limitations": "Synthetic English data only; no production accuracy or calibrated confidence claim. Fixed parameters and threshold; no test-set tuning."
+}
