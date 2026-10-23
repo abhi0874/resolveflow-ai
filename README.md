@@ -5,7 +5,9 @@ teams classify tickets, retrieve relevant knowledge, draft grounded responses,
 and review those responses before taking action. The long-term goal is a secure,
 maintainable, deployable product with a polished, responsive interface.
 
-**Current state: Step 14 deployment preparation and local verification complete; nothing publicly deployed.**
+**Current state: the standalone recruiter demo is live on Vercel Hobby and passed Step 15D hosted verification. Step 16 UI polish is local and not deployed.**
+
+[Explore the recruiter demo](https://resolveflow-ai-rosy.vercel.app/demo). Start with a citation-linked workflow, review the example draft, then open **Under the hood** for the implemented architecture. The public demo uses synthetic data and precomputed examples; it does not run live Gemini or the full backend.
 The interactive recruiter demo runs alongside the complete local application and workspace analytics.
 Registration, login/logout, server-side sessions, workspace selection/settings,
 and role-controlled membership management now work with the local PostgreSQL API.
@@ -47,7 +49,7 @@ Production readiness is a future acceptance gate, not a current claim.
 | Background jobs | RQ, Valkey and Python workers | Durable PostgreSQL outbox, dedicated workers and recovery implemented |
 | Initial inference | Google Gemini API, `gemini-3.6-flash` | Official SDK adapter verified in one approved synthetic test; live calls remain disabled |
 | Checks | Pytest, Ruff, TypeScript, ESLint, Next.js build, Playwright | Backend and real browser auth/workspace/ticket/document/classification suites implemented; Vitest remains planned |
-| Initial frontend hosting | Vercel, personal non-commercial recruiter demo | Not deployed |
+| Frontend hosting | Vercel Hobby, personal recruiter demonstration | Standalone demo deployed; full backend remains local |
 
 ## Intended architecture
 
@@ -64,9 +66,9 @@ require adapter/configuration changes and evaluation, without rewriting ticket
 or approval business logic. Local tests will run without API credentials.
 
 The recruiter demo uses a separate synthetic data adapter and requires only Next.js
-and the visitor's browser. It is prepared for Vercel Hobby without an API, database,
-worker or Gemini key. Hosted operation with the MacBook offline remains unverified
-until an explicitly approved deployment. Hosting the full application still requires
+and the visitor's browser. It is hosted on Vercel Hobby without an API, database,
+worker or Gemini key. Hosted browser verification found no local-service requests;
+a physical MacBook-off test on a separate device has not been performed. Hosting the full application still requires
 a separate API/storage/worker/ML arrangement.
 
 ## Development boundaries

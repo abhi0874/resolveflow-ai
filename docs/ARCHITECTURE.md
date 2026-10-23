@@ -575,5 +575,7 @@ Generated traces stay within `apps/web`; their combined unique file set is about
 30.6 MB, with about 1.51 MB static assets. These are local measurements, not Vercel
 function bundle sizes. The remaining development-only lint advisory, security audit
 scope and hosted acceptance gates are recorded in
-[VERCEL_RELEASE_READINESS.md](VERCEL_RELEASE_READINESS.md). No deployment has run;
-actual HTTPS/CDN/function behavior and MacBook-offline operation remain unverified.
+[VERCEL_RELEASE_READINESS.md](VERCEL_RELEASE_READINESS.md). At that Step 14 gate no deployment had run. Steps 15C–15D subsequently deployed
+and verified the standalone Next.js demo on Vercel Hobby. The full backend remains
+local. Physical MacBook-off testing is still unperformed; hosted browser journeys
+were verified independent of local services. See HOSTED_DEMO_VERIFICATION.md.

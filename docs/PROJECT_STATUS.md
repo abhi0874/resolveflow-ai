@@ -1,10 +1,123 @@
 # Project status
 
-Updated: 2026-10-22 (Asia/Kolkata).
+Updated: 2026-10-23 (Asia/Kolkata).
 
-**Steps 1–14, Step 15A and Step 15B are complete.** The reviewed repository is
-published privately on GitHub. Vercel remains unconnected; no deployment, paid
-service or live Gemini request was made.
+**Steps 1–17A are complete locally; the reviewed release is not pushed or deployed.** The standalone synthetic recruiter
+demo is deployed on Vercel Hobby. GitHub remains private; the full backend and
+live Gemini inference remain disabled for this deployment.
+
+## Step 17A — local release security gate, 2026-10-23
+
+- Reviewed all pending Step 15C–16 source/docs and preserved synthetic demo isolation.
+  Added production-demo-only CSP in Next.js config; same-origin network/scripts,
+  no plugins/frames/workers/base changes, no eval, inline event handlers blocked.
+  Inline script/style compatibility remains necessary: this is not strict nonce CSP.
+- Production build and **16 demo tests passed** with CSP active, including direct
+  browser enforcement, existing UI/reset/review behavior, light/dark accessibility,
+  keyboard/table scrolling, target sizes and four-width layouts. No normal-flow
+  console/uncaught/network errors. TypeScript, ESLint and Ruff lint/format passed.
+- Fresh full npm audit: five high dev-only lint-chain entries; runtime audit zero.
+  No compatible patched braces release; breaking downgrade rejected. All affected
+  packages absent from 16 production traces. No dependency changes.
+- Credential patterns: no findings in 266 candidate files; exact configured-secret
+  comparison found none in candidates or 282 history blobs. Ignore cases passed;
+  credentials/private data were not printed, staged or modified.
+- Release identifier: Step 17A, subject `chore: polish recruiter demo and harden release`,
+  parent `be7efbc`. The resulting hash is reported after commit and can be resolved
+  with the command in PORTFOLIO_READINESS.md; a commit cannot include its own hash.
+- Local release only: no push, remote configuration change, deployment, paid service
+  or Gemini request. Live site remains on `be7efbc`. Vercel CSP verification waits
+  for a separately approved deployment. Ready to push only after that authorization.
+
+## Step 16 — local UI polish and portfolio review, 2026-10-23
+
+- Enlarged demo links/buttons/disclosures and landing header targets; improved
+  checkbox target, keyboard skip/focus behavior, table region/column semantics
+  and visible scroll instructions. Tablet demo analytics uses wider stacked charts.
+- Overview suggests a concise workflow-first tour. Architecture and documentation
+  distinguish live Vercel synthetic demo from the implemented local full backend.
+- Local production build, TypeScript and ESLint passed; Ruff lint/format passed
+  (118 files). **15 demo checks passed**, including all existing interactions and
+  new keyboard, target-dimension, four-width layout, contrast and axe-core checks.
+  Five key pages in light/dark had zero tested WCAG A/AA violations. Local mobile
+  and tablet screenshots inspected. No screen-reader/real-device certification.
+- New keyboard test was synchronized with hydration and contrast helper corrected
+  for shorthand hex colors; assertions were preserved. No app regression remained.
+- No dependency, credential, backend, provider, worker or production configuration
+  change. Gemini disabled, no live calls. No commit, push or Vercel deployment.
+- Ready for reviewed commit and separately authorized redeployment. Hosted commit
+  remains `be7efbc`; local evidence does not certify production has this polish.
+  Prior local documentation edits remain preserved. See
+  [PORTFOLIO_READINESS.md](PORTFOLIO_READINESS.md) for files, evidence and limits.
+
+## Step 15D — independent hosted verification, 2026-10-23
+
+- Existing production alias https://resolveflow-ai-rosy.vercel.app/demo independently
+  verified anonymously in fresh Chrome contexts. Vercel reports READY for exact
+  `be7efbcc0070d1e96b778011e7d6639b3293b407`; GitHub remains private.
+- Eight hosted browser scenarios passed (zero retries), covering actual edits,
+  search/filter, documents, workflow replay/review safeguards, citations, analytics,
+  reset, error states, redirects and bounded navigation crawl. Separate touch,
+  fresh-session isolation and selective-reset checks passed.
+- Desktop/tablet/mobile checks at 1440/768/390/320px passed page-width assertions.
+  No console errors, uncaught exceptions, unexpected API/external requests or
+  non-navigation network failures were found. Backend independence verified for
+  tested flows; physical MacBook-off acceptance remains unperformed.
+- Public asset scan observed 61 responses / 1,098,273 text bytes with no tested
+  credential-pattern matches. Full API rejected, live generation disabled; no
+  Gemini requests. Security review is bounded, not an exhaustive certification.
+- Active Hobby/no trial reconfirmed; integration list empty. Billing charge API
+  returned 404 “Costs not found”, so exact cost/usage totals are unverified.
+- Ready for recruiters with nonblocking small text-link touch targets, subtle mobile
+  table scrolling, narrow tablet charts and historical documentation wording.
+  No code fix or redeployment required by these results. Existing dev-only audit
+  findings and absent CSP remain documented limitations.
+- Created [HOSTED_DEMO_VERIFICATION.md](HOSTED_DEMO_VERIFICATION.md), including
+  evidence, reproduction details and proposed improvements. Documentation remains
+  local and uncommitted/unpushed; previous Step 15C edits are preserved.
+  No deployment/configuration/protection changes or paid services were made.
+
+## Step 15C — hosted recruiter demo verified
+
+- Public demo: https://resolveflow-ai-rosy.vercel.app/demo
+- Project `resolveflow-ai` in the personal `abhishesh1` workspace; authenticated
+  owner and workspace active Hobby plan/no trial verified before creation.
+  The connector scope error was resolved by user-completed official CLI login.
+  No authentication credential was printed or added to source control.
+- One production deployment: `dpl_ZjGM3VxtvSppKSeEoWrLWFk4xTk7`, **READY**.
+  Built private GitHub `abhi0874/resolveflow-ai`, branch `main`, exact commit
+  `be7efbcc0070d1e96b778011e7d6639b3293b407`. Deployment listing confirms one
+  deployment. GitHub API recheck confirms private visibility and default main.
+- Verified settings: Next.js, root `apps/web`, Node 24.x, `npm ci`,
+  `npm run demo:build`, default output, outside-root source disabled.
+  Exactly three configured variables: `NEXT_PUBLIC_APP_MODE=demo`,
+  `DEMO_LIVE_AI_ENABLED=false`, `NEXT_TELEMETRY_DISABLED=1`.
+  No Gemini key, database credential or backend URL was configured in Vercel.
+- Hosted build succeeded, including TypeScript. Nonfatal npm lint peer-range and
+  optional install-hook warnings remain; no dependency changes were needed.
+  The broad package Node engines range also produced an upgrade warning;
+  the deployed project/runtime selection is explicitly 24.x.
+- Public HTTPS checks: homepage and `/demo` 200; `/api/v1/auth/me` 404;
+  POST `/api/demo/generate` 403 with `demo_live_disabled`. Responses include
+  HSTS, nosniff, DENY framing and same-origin referrer policy.
+- Hosted Playwright smoke passed: landing entry, synthetic tickets, search,
+  status persistence, review, citation navigation, analytics chart, reset,
+  full-app redirects, and six demo views at both 390px and 320px without overflow.
+  External-origin and API requests were blocked during this browser test:
+  zero attempted forbidden requests and zero uncaught browser errors.
+  This establishes no local-backend dependency in the tested journeys;
+  a separate physical MacBook-off/independent-device test was not performed.
+- Standard Vercel Authentication protects generated production deployment URLs
+  and previews; the production alias is public for recruiters. No paid protection,
+  upgrade, marketplace purchase, custom domain or backend infrastructure was enabled.
+  No Gemini request was made. Hobby quotas remain finite; no billing-ledger audit
+  or continuous production monitoring is claimed.
+- Only the status and deployment documentation changed locally. They are not
+  included in the deployed commit and remain unpushed to avoid another Git-triggered
+  build. No runtime code changed; no local regression suite was rerun.
+
+Stop after Step 15C. Step 15D and any further deployment or live AI use require
+separate authorization. See [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
 
 ## Step 15B — private GitHub publication, 2026-10-22
 
@@ -1292,19 +1405,18 @@ build validation; Vitest and a persistent Playwright suite remain planned.
   (`braces` → micromatch → fast-glob → Next ESLint plugin/config). Runtime audit is
   clean. The proposed incompatible downgrade was not applied; see
   [AUTHENTICATION.md](AUTHENTICATION.md) for the advisory and exposure limits.
-- Node/Python compatibility is verified for this foundation on this Mac. The eventual Vercel runtime needs separate compatibility checks.
+- Node/Python compatibility is verified for this foundation on this Mac. The standalone demo also passed its Step 15C Vercel build and hosted smoke checks.
 - A sustainable free hosted API/data/worker/embedding arrangement for the full system
   remains unresolved. The standalone synthetic demo does not need that infrastructure;
-  its actual hosted MacBook-offline acceptance remains pending.
+  hosted checks found no laptop/backend dependency, but physical MacBook-off acceptance remains pending.
 - GPT-6 Astra remains the requested primary development agent; this repository
   does not select or verify the active chat model. No subagents or agent TOML
   configuration were created.
 
 ## Next action
 
-Stop after Step 15B. Do not connect Vercel, deploy or make live Gemini requests
-without separate explicit authorization. Use [WORKER_OPERATIONS.md](WORKER_OPERATIONS.md)
-to start the database, broker, API, dispatcher, worker and frontend. Local ports are
-55433 / 56379 / 8000 / 3000. Keep the existing private key in `apps/api/.env` and
-live inference disabled. The latest isolated verification resources are cleaned up;
-development service data remains intact.
+Stop after Step 17A. The reviewed local release is ready for a separately authorized
+push and deployment. Live demo remains at https://resolveflow-ai-rosy.vercel.app/demo
+on `be7efbc`. Do not proceed to Step 17B, modify Vercel or enable Gemini without
+explicit permission. See PORTFOLIO_READINESS.md and DEMO_SECURITY.md for release
+identification, verified CSP scope and remaining limitations.

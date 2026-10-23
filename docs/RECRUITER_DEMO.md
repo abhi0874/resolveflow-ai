@@ -2,7 +2,10 @@
 
 The public `/demo` route presents a self-contained synthetic workspace. It requires
 JavaScript and Next.js hosting, but no FastAPI, PostgreSQL, Redis/Valkey, Python
-worker, embedding model or AI quota. Nothing has been publicly deployed.
+worker, embedding model or AI quota. The existing public demo is available at
+https://resolveflow-ai-rosy.vercel.app/demo (deployed commit `be7efbc`).
+Step 16 improvements are local pending reviewed commit/push and deployment approval.
+See [PORTFOLIO_READINESS.md](PORTFOLIO_READINESS.md) for the current review.
 
 ## Launch locally
 
@@ -106,3 +109,16 @@ NEXT_PUBLIC_APP_MODE=full RESOLVEFLOW_AI_LIVE_ENABLED=false .venv/bin/python scr
 
 The isolated harness uses synthetic model fixtures and disposable data, preserving
 existing development artifacts. No live provider call is authorized by these commands.
+
+## Recruiter walkthrough and local UI polish
+
+Start with **Explore a workflow**: inspect its source citation and exact draft,
+advance to human review, and record an example decision. Then browse tickets,
+search documents and inspect analytics. **Under the hood** explains the implemented
+FastAPI/PostgreSQL/pgvector, ML, LangGraph and worker system; none of those services
+runs in this hosted demonstration. Replay is an authored animation, not inference.
+
+Step 16 enlarges interactive link targets, labels the horizontally scrollable ticket
+region, adds a keyboard scrolling hint and column scopes, preserves visible focus,
+and stacks tablet charts for readability. These changes are not yet on Vercel.
+Reset affects only this tab's demo journal; no customer data or message is changed.

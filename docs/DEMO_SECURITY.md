@@ -56,3 +56,53 @@ separately verify real auth/workspace behavior.
 No real records or credentials were exported; no customer action, AI request or service
 purchase occurs. This foundation is not a penetration-test certification. Hosting
 quotas, future production controls and public-domain acceptance remain separate gates.
+
+## Step 17A production-demo CSP and release review
+
+Reviewed 2026-10-23. `next.config.ts` adds an enforced CSP only for production
+builds in demo mode. Full application and development mode retain their existing
+headers/behavior. HSTS, nosniff, framing DENY and referrer policy remain intact.
+
+Policy: default/script/font/connect sources are same-origin; images additionally
+allow data URLs. Plugins, base URL changes, frames, framing ancestors and workers
+are prohibited; forms are same-origin. Inline event-handler attributes are blocked.
+No wildcard host, external host, `unsafe-eval`, reporting service or paid dependency
+is allowed. Inline scripts and styles remain allowed for Next.js hydration and
+React/chart styles. **This is a baseline origin-restriction CSP, not a strict
+nonce-based XSS defense**; injected inline script elements remain a limitation.
+
+This follows the installed Next.js guidance and its
+[official CSP guide](https://nextjs.org/docs/app/guides/content-security-policy).
+Per-request nonces would require dynamic rendering of the static homepage and
+careful cache/streaming/style handling. That larger rendering change is deferred;
+a future strict policy should test fresh nonces across navigation and hydration.
+Experimental SRI was not enabled. Next.js response headers are the supported
+integration mechanism on Vercel; actual hosted enforcement must be checked after
+an approved deployment. No Vercel change or compatibility claim based on a new
+hosted build is made here. Authenticated preview toolbar scripts may be blocked;
+the public standalone demo does not require them.
+
+All **16 local demo tests pass with CSP active**, including light/dark axe checks,
+keyboard/target/contrast tests and major interactions. Normal browser tests assert
+no console errors, uncaught exceptions or unexpected network failures (navigation
+cancellations excluded). A separate negative test observes CSP violations for an
+external fetch and inline event handler, with zero external request escaping the
+browser; expected negative-test console violations are not application errors.
+Production build, TypeScript, ESLint and Ruff lint/format pass.
+
+Fresh npm audit: runtime zero findings; full five high findings in
+`eslint-config-next@16.4.2` → `@next/eslint-plugin-next@16.4.2` →
+`fast-glob@3.3.1` → `micromatch@4.0.8` → `braces@3.0.3`.
+All are development-only and absent from all 16 rebuilt runtime trace manifests.
+The registry still lists braces 3.0.3 as latest; npm proposes a breaking lint-config
+14.2.35 downgrade. No compatible safe fix identified; no package/lockfile changed.
+[Advisory GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm)
+affects nested-pattern stack exhaustion in build/developer tooling. Do not feed
+untrusted glob patterns into tooling. It is not a publicly reachable demo API.
+
+Release review scanned 266 candidate files for common credential patterns, and
+compared exact configured local secrets against candidate contents and 282 history
+blobs without printing values: no matches. Seven representative ignore cases pass
+for private environment, CLI credentials, uploads, data, models and caches.
+Only safe source/templates/docs/tests are staged. Fixture provenance remains
+synthetic. This bounded scan cannot prove absence of every unknown secret.

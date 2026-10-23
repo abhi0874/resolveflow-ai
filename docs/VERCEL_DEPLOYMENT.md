@@ -1,10 +1,17 @@
-# Vercel deployment preparation — not deployed
+# Vercel recruiter demo deployment
 
-Steps 13–14 prepare and locally verify only the self-contained Next.js demo. Public deployment, project
-linking, account changes and publication require a later explicit instruction.
-No Vercel project, domain, database or paid service was provisioned.
+Step 15C completed: one production deployment is **READY** on the personal
+`abhishesh1` Hobby workspace. Public demo:
+https://resolveflow-ai-rosy.vercel.app/demo
 
-## Build settings for later approved deployment
+Private source: https://github.com/abhi0874/resolveflow-ai, branch `main`.
+Deployed commit: `be7efbcc0070d1e96b778011e7d6639b3293b407`.
+Deployment: `dpl_ZjGM3VxtvSppKSeEoWrLWFk4xTk7`.
+Only the standalone synthetic demo is hosted; no full backend or paid service was
+provisioned. These documentation updates are local and unpushed, avoiding another
+Git-triggered deployment.
+
+## Verified deployment settings
 
 | Setting | Value |
 | --- | --- |
@@ -31,8 +38,8 @@ Official references checked during preparation:
 [Vercel Next.js support](https://vercel.com/docs/frameworks/full-stack/nextjs),
 [monorepo root configuration](https://vercel.com/docs/monorepos),
 [Node runtime versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
-Recheck platform/runtime support at the later deployment gate. This local compatibility
-check does not claim a successful Vercel build or a publicly tested URL.
+Step 15C subsequently confirmed the hosted build and public HTTPS behavior with
+these settings. Recheck support before a future runtime upgrade.
 
 ## Environment and secrets
 
@@ -51,11 +58,11 @@ Included quotas are finite; exceeding them can pause service. There is no promis
 of unlimited free traffic, commercial eligibility or an availability SLA. Do not enable
 billing, upgrades, marketplace integrations, analytics add-ons or custom domains.
 
-After a later approved deployment, all demo assets, server rendering and interactions
-will run on Vercel/the visitor's browser without contacting the developer's laptop.
+All demo assets, server rendering and interactions now run on Vercel/the visitor's browser without contacting the developer's laptop.
 The visitor needs an internet connection. The full FastAPI/PostgreSQL/Valkey/LangGraph
-system is not deployed by this configuration. A MacBook-offline hosted acceptance
-check can only occur after deployment; it is not falsely claimed here.
+system is not deployed by this configuration. Hosted browser checks blocked external origins and API requests and passed without
+any attempted forbidden request. A physical MacBook-off test on a separate device
+was not performed.
 
 ## Local release check
 
@@ -89,9 +96,38 @@ and Ruff also passed. The runtime dependency audit is clean; five high entries i
 one development-only lint chain remain unresolved, with no patched version listed.
 No runtime/dependency/configuration change was needed for compatibility.
 
-At the Step 14 audit Git had no commits or remote. Step 15A records the reviewed
-initial local commit; approved repository publication and explicit deployment
-authorization remain prerequisites. No remote is configured. Do not run
-Vercel linking/import/deployment commands during Step 14. Actual platform build,
-function packaging, public HTTPS behavior, quota/eligibility and MacBook-offline
-acceptance remain **NOT YET VERIFIED ON VERCEL**. Stop before Step 15.
+At the Step 14 audit Git had no commits or remote. Steps 15A–15B subsequently
+created the reviewed history and private GitHub repository. Step 15C connected
+that existing repository and completed the deployment described above.
+
+## Step 15C hosted verification
+
+Official CLI login completed securely after the connector could not access the
+workspace. The target workspace plan was verified as active Hobby/no trial before
+creation; no upgrade or paid feature was enabled. Project configuration includes
+only the three nonsecret variables above. Outside-root source is disabled.
+
+- Build and TypeScript completed successfully; Vercel reports READY.
+- Homepage and `/demo`: HTTPS 200. Full API `/api/v1/auth/me`: 404.
+- POST `/api/demo/generate`: 403, `demo_live_disabled`; no live provider request.
+- HSTS, nosniff, DENY framing and same-origin referrer policy verified.
+- Hosted browser smoke passed landing entry, tickets, search, status persistence,
+  review, citations, analytics chart, reset and full-app redirects.
+- Six demo views passed 390px and 320px layout checks with no overflow.
+- No unexpected API/external requests or uncaught browser errors occurred.
+- GitHub remains private. The deployment listing contains exactly one deployment.
+
+[Vercel Authentication](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/vercel-authentication)
+uses the standard `prod_deployment_urls_and_all_previews` setting. Generated
+production deployment URLs and previews require authentication; the production
+alias is public. No paid protection was added.
+
+Existing nonfatal lint peer-range/optional install-hook warnings and the recorded
+development-only audit findings remain. Vercel also warned about the package's
+broad Node engines range; the project and deployment select 24.x. No application
+or dependency change was necessary. Hosted checks are bounded smoke evidence,
+not a load test, billing-ledger audit or continuous monitoring.
+
+Future pushes to the linked production branch may trigger deployments. The two
+completion documents remain local; no extra deployment was created for them.
+Stop after Step 15C; do not proceed to Step 15D or enable live inference.

@@ -2028,3 +2028,35 @@ button:disabled {
 @media (max-width: 1000px) { .demo-detail-grid, .demo-scenario-grid { grid-template-columns: minmax(0, 1fr); } .demo-section-heading { display: block; } }
 @media (max-width: 600px) { .demo-heading h1 { font-size: 2.6rem; } .demo-heading.compact h1 { font-size: 2.2rem; } .demo-controls { display: grid; grid-template-columns: minmax(0, 1fr); } .demo-notice { margin-bottom: 28px; } }
 @media (prefers-reduced-motion: reduce) { .demo-scenario { transition: none; } .demo-scenario:hover { transform: none; } }
+
+/* Demo-only interaction polish; full-application controls retain their styles. */
+.demo-page a:not(.skip-link):not(.demo-scenario),
+.demo-page button,
+.demo-page summary {
+  min-height: 44px;
+  min-width: 44px;
+}
+.demo-page a:not(.skip-link):not(.demo-scenario) {
+  display: inline-flex;
+  align-items: center;
+}
+.demo-page .ticket-nav a { display: flex; }
+.demo-page summary { padding-block: 12px; }
+.demo-page .draft-confirmation { min-height: 44px; align-items: center; cursor: pointer; }
+.demo-page .draft-confirmation input { width: 24px; height: 24px; margin-top: 0; }
+.demo-page :is(textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+.demo-scroll-hint { max-width: 65ch; }
+.demo-table-wrap { scrollbar-gutter: stable; }
+.demo-table-wrap:focus-visible { outline-offset: -4px; }
+@media (max-width: 1000px) {
+  .demo-page .analytics-grid { grid-template-columns: minmax(0, 1fr); }
+}
+.site-header :is(.brand, .main-nav a, .header-link) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+}

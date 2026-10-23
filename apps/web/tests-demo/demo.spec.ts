@@ -3,7 +3,11 @@ import { test as base, expect } from "@playwright/test";
 const test = base.extend<{ isolation: void }>({
   isolation: [async ({ context }, use) => {
     const blocked: string[] = [], errors: string[] = [];
-    context.on("page", page => page.on("pageerror", error => errors.push(error.name)));
+    context.on("page", page => {
+      page.on("pageerror", error => errors.push(error.name));
+      page.on("console", message => { if (message.type() === "error") errors.push(message.text()); });
+      page.on("requestfailed", request => { if (!request.failure()?.errorText.includes("ERR_ABORTED")) errors.push("Network failure: " + new URL(request.url()).pathname); });
+    });
     await context.route("**/*", route => {
       const url = new URL(route.request().url());
       if (url.origin !== "http://127.0.0.1:3200" || url.pathname.startsWith("/api/")) {
@@ -109,6 +113,9 @@ test("release headers and backend-only routes remain safe", async ({ request, pa
   for (const path of ["/", "/demo", "/demo/tickets", "/api/v1/auth/me"]) {
     const response = await request.get(path);
     const headers = response.headers();
+    expect(headers["content-security-policy"]).toContain("connect-src 'self'");
+    expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+    expect(headers["content-security-policy"]).not.toContain("unsafe-eval");
     expect(headers["x-content-type-options"]).toBe("nosniff");
     expect(headers["x-frame-options"]).toBe("DENY");
     expect(headers["referrer-policy"]).toBe("same-origin");
@@ -150,4 +157,84 @@ test("all reachable landing and demo links resolve within the demonstration", as
     }
   }
   expect(visited.size).toBeGreaterThan(20);
+});
+
+test("demo keyboard access, touch targets, table scrolling and contrast", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/demo/tickets");
+  await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Skip to demo content" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#demo-content")).toBeFocused();
+  const table = page.getByRole("region", { name: "Support ticket table" });
+  await expect(table).toHaveAccessibleDescription(/Scroll horizontally/);
+  await table.focus();
+  expect(await table.evaluate(el => getComputedStyle(el).outlineStyle)).toBe("solid");
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(() => table.evaluate(el => el.scrollLeft)).toBeGreaterThan(0);
+  await expect(page.locator("th[scope=col]")).toHaveCount(4);
+  for (const theme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme: theme });
+    const contrast = await page.evaluate(() => {
+      const css = getComputedStyle(document.documentElement);
+      function luminance(hex: string) { const raw = hex.trim().replace("#", ""); const normalized = raw.length === 3 ? raw.split("").map(c => c + c).join("") : raw; const c = normalized.match(/../g)!.map(v => parseInt(v, 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return c[0] * .2126 + c[1] * .7152 + c[2] * .0722; }
+      const ratios: number[] = [];
+      for (const fg of ["--foreground", "--muted"]) for (const bg of ["--background", "--surface"]) { const a = luminance(css.getPropertyValue(fg)), b = luminance(css.getPropertyValue(bg)); ratios.push((Math.max(a,b)+.05)/(Math.min(a,b)+.05)); }
+      return Math.min(...ratios);
+    });
+    expect(contrast).toBeGreaterThanOrEqual(4.5);
+  }
+  for (const width of [1440, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of ["/demo", "/demo/tickets", "/demo/knowledge", "/demo/workflows/billing", "/demo/analytics", "/demo/architecture"]) {
+      await page.goto(path);
+      await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      expect(await page.locator("h1").count()).toBe(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+      const small = await page.locator(".demo-page a:not(.skip-link), .demo-page button, .demo-page summary").evaluateAll(es => es.filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && (r.width < 43.9 || r.height < 43.9); }).map(el => el.textContent));
+      expect(small, `${width}px ${path} targets`).toEqual([]);
+    }
+  }
+});
+
+
+test("critical demo screens pass automated WCAG accessibility checks", async ({ page }) => {
+  for (const theme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme: theme });
+    for (const path of ["/", "/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics"]) {
+      await page.goto(path);
+      if (path !== "/") await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
+      const violations = await page.evaluate(async () => {
+        const axe = (window as unknown as { axe: { run: (options: object) => Promise<{ violations: { id: string; nodes: { target: string[] }[] }[] }> } }).axe;
+        const result = await axe.run({ runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } });
+        return result.violations.map(v => ({ id: v.id, targets: v.nodes.map(n => n.target) }));
+      });
+      expect(violations, `${theme} ${path}`).toEqual([]);
+    }
+  }
+});
+
+base("production CSP blocks external connections and inline event handlers", async ({ page, context }) => {
+  const escaped: string[] = [];
+  await context.route("https://example.invalid/**", route => { escaped.push(route.request().url()); return route.abort(); });
+  await page.goto("/demo");
+  await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+  const outcome = await page.evaluate(async () => {
+    const violations: string[] = [];
+    document.addEventListener("securitypolicyviolation", e => violations.push(e.effectiveDirective));
+    const button = document.createElement("button");
+    button.setAttribute("onclick", "document.documentElement.dataset.cspInjected='yes'");
+    document.body.append(button); button.click(); button.remove();
+    let blocked = false;
+    try { await fetch("https://example.invalid/csp-check"); } catch { blocked = true; }
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return { blocked, injected: document.documentElement.dataset.cspInjected, violations };
+  });
+  expect(outcome.blocked).toBe(true);
+  expect(outcome.injected).toBeUndefined();
+  expect(outcome.violations).toContain("connect-src");
+  expect(outcome.violations).toContain("script-src-attr");
+  expect(escaped).toEqual([]);
 });
