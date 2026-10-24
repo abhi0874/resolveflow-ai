@@ -16,6 +16,7 @@ from alembic import command
 from alembic.config import Config
 from broker_fixture import isolated_broker
 from local_db import API, ROOT, admin_connect, load_state, url
+from mailpit_fixture import isolated_mailpit
 from psycopg import sql
 from sqlalchemy import create_engine
 from sqlalchemy.engine import make_url
@@ -65,11 +66,13 @@ def main() -> int:
         model_root = Path(storage.name) / "models"
         train(model_root, "browser-v1", TrainingConfig())
         broker_url, _ = resources.enter_context(isolated_broker())
+        smtp_port, inbox_url = resources.enter_context(isolated_mailpit())
         env = {
+            **os.environ,
+            # Owned test services must override inherited development connections.
             "RESOLVEFLOW_REDIS_URL": broker_url,
             "RESOLVEFLOW_JOB_QUEUE": "browser-" + uuid.uuid4().hex,
             "RESOLVEFLOW_JOB_RECONCILE_SECONDS": "1",
-            **os.environ,
             "DATABASE_URL": engine.url.render_as_string(hide_password=False),
             "RESOLVEFLOW_ENVIRONMENT": "test",
             "RESOLVEFLOW_AI_PROVIDER": "fixture",
@@ -80,6 +83,14 @@ def main() -> int:
             "RESOLVEFLOW_AI_DAILY_WORKSPACE": "30",
             "RESOLVEFLOW_AI_DAILY_USER": "25",
             "RESOLVEFLOW_DOCUMENT_STORAGE_ROOT": str(Path(storage.name) / "documents"),
+            "RESOLVEFLOW_INVITATION_DELIVERY": "local",
+            "RESOLVEFLOW_EMAIL_DELIVERY": "local",
+            "RESOLVEFLOW_SMTP_HOST": "127.0.0.1",
+            "RESOLVEFLOW_SMTP_PORT": str(smtp_port),
+            "RESOLVEFLOW_SMTP_TLS": "none",
+            "RESOLVEFLOW_EMAIL_PUBLIC_ORIGIN": "http://127.0.0.1:3100",
+            "RESOLVEFLOW_TEST_INBOX_URL": inbox_url,
+            "RESOLVEFLOW_INVITATION_DELIVERY_ROOT": str(Path(storage.name) / "mailbox"),
             "RESOLVEFLOW_CLASSIFIER_ARTIFACT_ROOT": str(model_root),
             "RESOLVEFLOW_CLASSIFIER_MODEL_VERSION": "browser-v1",
             "RESOLVEFLOW_CLASSIFIER_THRESHOLD": "0.45",

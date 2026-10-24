@@ -1,3 +1,4 @@
+import { inviteMember } from "./invitation-helper";
 import {
   test,
   expect,
@@ -238,7 +239,7 @@ test("document role controls, tenant isolation and paginated library", async ({
     ).toBeVisible();
     expect(
       (
-        await write(page.request, `/workspaces/${workspace.id}/members`, {
+        await inviteMember(page.request, other.request, `/workspaces/${workspace.id}/members`, {
           email: user.email,
           role: "viewer",
         })

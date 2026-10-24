@@ -35,6 +35,85 @@ class Settings(BaseSettings):
 
     trusted_origins: list[str] = ["http://127.0.0.1:3000", "http://localhost:3000"]
     session_hours: int = Field(default=12, ge=1, le=168)
+    require_email_verification: bool | None = None
+    email_delivery: Literal["disabled", "local", "smtp"] = "disabled"
+    email_public_origin: str = "http://127.0.0.1:3000"
+    email_from: str = "no-reply@resolveflow.test"
+    smtp_host: str = "127.0.0.1"
+    smtp_port: int = Field(default=1025, ge=1, le=65535)
+    smtp_tls: Literal["starttls", "ssl", "none"] = "none"
+    smtp_username: str = ""
+    smtp_password: SecretStr | None = None
+    smtp_timeout_seconds: int = Field(default=5, ge=1, le=10)
+
+    @property
+    def email_verification_required(self) -> bool:
+        return self.environment == "production" or self.require_email_verification is True
+
+    @model_validator(mode="after")
+    def email_settings(self):
+        from email_validator import validate_email
+
+        validate_email(self.email_from, check_deliverability=False, test_environment=True)
+        origin = urlsplit(self.email_public_origin)
+        if (
+            origin.scheme not in {"http", "https"}
+            or not origin.hostname
+            or origin.username
+            or origin.password
+            or origin.path not in {"", "/"}
+            or origin.query
+            or origin.fragment
+        ):
+            raise ValueError("Email links require a configured origin without path or credentials")
+        if self.environment == "production":
+            if self.require_email_verification is False:
+                raise ValueError("Production requires email verification")
+            if self.email_delivery == "local":
+                raise ValueError("Local email delivery is forbidden in production")
+        if self.email_delivery == "local":
+            if (
+                self.smtp_host not in {"127.0.0.1", "::1"}
+                or self.smtp_tls != "none"
+                or self.smtp_username
+                or self.smtp_password
+            ):
+                raise ValueError("Local inbox must be loopback only without external credentials")
+        if self.email_delivery == "smtp":
+            if (
+                self.smtp_tls == "none"
+                or not self.smtp_username
+                or not self.smtp_password
+                or not self.smtp_password.get_secret_value()
+            ):
+                raise ValueError("SMTP requires authenticated TLS")
+            if origin.scheme != "https" or origin.hostname in {"localhost", "127.0.0.1", "::1"}:
+                raise ValueError("External SMTP links require an HTTPS public origin")
+        if any(c in self.smtp_host + self.smtp_username + self.email_from for c in "\r\n"):
+            raise ValueError("Invalid email transport configuration")
+        return self
+
+    invitation_delivery: Literal["disabled", "local"] = "disabled"
+    invitation_delivery_root: Path = API_ROOT.parents[1] / ".local" / "invitation-mailbox"
+
+    @model_validator(mode="after")
+    def invitation_settings(self):
+        if self.environment == "production" and self.invitation_delivery != "disabled":
+            raise ValueError("Local invitation delivery is forbidden in production")
+        root = self.invitation_delivery_root
+        if not root.is_absolute() or any(
+            root.resolve().is_relative_to(path.resolve())
+            or path.resolve().is_relative_to(root.resolve())
+            for path in (
+                API_ROOT.parent / "web" / "public",
+                self.document_storage_root,
+                self.classifier_artifact_root,
+                self.embedding_model_root,
+            )
+        ):
+            raise ValueError("Invitation delivery requires a separate absolute private path")
+        return self
+
     classifier_artifact_root: Path = API_ROOT.parents[1] / ".local" / "classifier"
     classifier_model_version: str = Field(
         default="baseline-v1", pattern=r"^[a-z0-9][a-z0-9-]{0,63}$"

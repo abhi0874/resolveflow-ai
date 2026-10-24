@@ -1,3 +1,4 @@
+import { invitationCode } from "./invitation-helper";
 import { test, expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 const password = "browser test passphrase 123!";
@@ -155,9 +156,19 @@ test("real membership UI and viewer protection", async ({ page, browser }) => {
     page.getByRole("heading", { name: "Shared team" }),
   ).toBeVisible();
   const workspaceUrl = page.url();
-  await page.getByLabel("Add a registered teammate").fill(memberEmail);
-  await page.getByRole("button", { name: "Add member", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Team member added.");
+  await page.getByLabel("Invite a registered teammate").fill(memberEmail);
+  await page.getByRole("button", { name: "Send invitation", exact: true }).click();
+  await expect(page.getByRole("status")).toHaveText("Invitation created. Access begins only after the recipient accepts.");
+  const workspaceId = new URL(workspaceUrl).searchParams.get("workspace")!;
+  const invitations = await page.request.get(`/api/v1/workspaces/${workspaceId}/invitations`);
+  expect(invitations.status()).toBe(200);
+  const invitation = (await invitations.json())[0];
+  expect((await memberPage.request.get(`/api/v1/workspaces/${workspaceId}`)).status()).toBe(404);
+  await memberPage.getByLabel("Invitation code").fill(await invitationCode(workspaceId, invitation.id));
+  await memberPage.getByRole("button", { name: "Accept invitation", exact: true }).click();
+  await expect(memberPage).toHaveURL(workspaceUrl);
+  expect((await memberPage.request.get("/api/v1/auth/me")).status()).toBe(200);
+  await page.reload();
   await memberPage.goto(workspaceUrl);
   await expect(
     memberPage.getByRole("heading", { name: "Shared team" }),
@@ -166,7 +177,7 @@ test("real membership UI and viewer protection", async ({ page, browser }) => {
     memberPage.getByRole("button", { name: "Save changes" }),
   ).toHaveCount(0);
   await expect(
-    memberPage.getByRole("button", { name: "Add member", exact: true }),
+    memberPage.getByRole("button", { name: "Send invitation", exact: true }),
   ).toHaveCount(0);
   await page
     .getByLabel(`Role for ${memberEmail}`)

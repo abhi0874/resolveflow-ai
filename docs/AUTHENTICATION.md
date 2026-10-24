@@ -1,5 +1,43 @@
 # Authentication — Step 4
 
+## Current identity behavior — Step 19B
+
+The original Step 4 narrative below is historical. Account verification and secure
+password recovery now reuse the same sessions, Argon2id hashing, CSRF middleware
+and shared rate limiter. See [EMAIL_DELIVERY.md](EMAIL_DELIVERY.md) for routes,
+settings, token lifetimes, outbox retries, local SMTP setup and rollout limitations.
+
+Registration creates a hash-only verification intent. With verification required,
+new/duplicate registration returns generic 202 and does not sign the account in.
+Local compatibility mode preserves the existing 201/session and duplicate-409
+behavior; do not mistake this local contract for production enumeration resistance.
+Production always requires exact-address SMTP verification; it rejects disabling
+the policy, local proof and old local mail tokens. Existing development users keep
+their default compatibility-mode access. Recovery/resend requests return generic
+202 responses regardless of account eligibility; confirmation errors are generic.
+
+Verify confirmation requires the email token plus the registration password to
+avoid activating an attacker-created preregistration. Recovery requires the token
+and matching new passwords, retains the 15–128 character policy, increments the
+credential version and revokes all account sessions and other identity tokens.
+Both actions are transactional, expiry-bound and single-use. Roles/memberships do
+not change. Structured audit rows contain account ID/event/time only. Password
+change and login serialize on the account row to prevent reset/login races.
+
+No public email-change endpoint exists. Exact-address proof and token bindings
+prevent a changed email from inheriting verification. A future change-address flow
+must require reauthentication and proof of the new address, not a direct update.
+Migration 0012 is tested locally in isolated databases and remains pending on the
+development database. External delivery, MFA, device-management UI, global abuse
+fairness, identity-record retention and commercial operational controls remain gaps.
+
+**Local follow-up, 2026-10-23:** migration 0011 and account-bound invitation
+acceptance now add a verification timestamp and rotate recipient sessions.
+Delivery is a private synthetic local sink only, disabled by default and forbidden
+in production; actual external email ownership remains unverified. The Step 4
+description below is historical. See [IDENTITY_AND_RECOVERY.md](IDENTITY_AND_RECOVERY.md)
+for current behavior, migration instructions and limitations.
+
 Implemented and verified 2026-10-19. Authentication runs in FastAPI and PostgreSQL;
 Next.js presents the forms and forwards a small, explicit set of first-party API
 routes. There is no hosted identity provider, JWT, social login, email delivery,

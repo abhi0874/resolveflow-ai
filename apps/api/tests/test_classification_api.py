@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from test_auth_workspaces import auth_env as auth_fixture
-from test_auth_workspaces import mutate, register, workspace
+from test_auth_workspaces import invite_member, mutate, register, workspace
 from test_ml import trained_model as trained_fixture
 from test_tickets import create, patch, setup
 
@@ -79,7 +79,9 @@ def test_classification_tenant_roles_and_csrf(auth_env, trained_model):
         )
         members = f"/workspaces/{space['id']}/members"
         assert (
-            mutate(owner_client, members, {"email": user["email"], "role": "viewer"}).status_code
+            invite_member(
+                owner_client, other, members, {"email": user["email"], "role": "viewer"}
+            ).status_code
             == 201
         )
         assert mutate(other, detail + "/classify").status_code == 403

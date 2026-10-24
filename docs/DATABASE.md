@@ -1,5 +1,129 @@
 # Database foundation — Steps 3 and 4
 
+## Step 19C — supported encrypted backup operations
+
+The existing 0012 development schema is unchanged. `apps/api/scripts/backups.py`
+now performs ownership-validated offline backups with matching PostgreSQL tools,
+exported snapshots, referenced private document objects, manifests and encrypted
+restic storage. Local development capture/restoration was verified without changing
+source record fingerprints. Earlier private Step 19A/19B.1 dumps remain intact.
+
+Default encrypted repository: `.local/encrypted-backups/`; private control/credential
+files: `.local/backup-control/`. These are separate and Git-ignored. Do not copy the
+credential into a snapshot; arrange independent secure key custody manually.
+Restore tests create and remove only marked disposable databases, verify pgvector,
+revision/head, schema and every table fingerprint. They never overwrite development
+or resume queued work. Full workflow/document recovery has synthetic coverage.
+
+Use [BACKUP_OPERATIONS.md](BACKUP_OPERATIONS.md) for the manual/scheduled commands,
+status, integrity, restore-test and retention preview. The schedule template is not
+active; off-host storage/PITR are not implemented or verified. Recovery scenarios and
+operator-controlled cutover are in [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md).
+The older sections below preserve historical evidence, not today's backup command.
+
+## Step 19B.1 — current development revision 0012
+
+On 2026-10-24, confirmed the owned development database `resolveflow_dev` on
+`127.0.0.1:55433` and its project data directory, then safely upgraded **0011 → 0012**.
+The code has one head, 0012. The new user verification/address/source/credential
+metadata and `identity_emails` / `identity_audit` schema match SQLAlchemy metadata;
+Alembic reported no pending upgrade operations. No existing migration was rewritten.
+
+Fresh private backup: **`.local/backups/step19b1-20261024T111834Z/resolveflow_dev.dump`**.
+The directory includes private table/file manifests, configured file/model copies,
+restore verification and migration verification markers. Archive SHA-256 and Git
+exclusion passed; directories are 0700 and files 0600. Restore to an owned empty
+disposable database, fingerprint comparison and migration rehearsal all passed
+before changing development. The backup is local, not encrypted/off-host/scheduled.
+
+All **22 original tables / 14 rows** retained their original-column fingerprints
+through migration, except the intentional revision update. The upgrade only adds
+columns/tables/constraints/indexes; no original record reset/deletion occurred.
+There were no pre-existing users. Subsequent actual frontend verification/recovery
+created and retained one synthetic account and owner workspace plus expected
+identity/audit/session/rate-limit records. Password reset preserved membership.
+This does not imply populated production-data rollout has been tested.
+
+Migration ran as the application database owner in a transaction with bounded lock
+and statement timeouts. Development readiness and real checkpoint access passed.
+Fresh backend migration/security regressions passed; results and service checks
+are recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md#step-19b1--protected-development-migration-and-real-local-email-flows).
+The private helpers `.cache/verification/step19b1_database.py` and
+`step19b1_startup.py` are one-off audit evidence, not new supported infrastructure.
+Do not rerun the migration helper: it intentionally requires source revision 0011.
+
+For recovery, verify the archive hash and restore into a **new owned empty database**
+using the existing restoration precautions below. Never restore over development
+or use downgrade as an automatic rollback: 0012 downgrade deletes new identity,
+audit and proof data. The retained pre-migration backup predates the synthetic
+verification account and is not a backup of later writes.
+
+## Step 19A — development migration and recovery verification
+
+Verification started 2026-10-23 (Asia/Kolkata). The historical foundation sections
+below retain their original counts; current test evidence is in
+[PROJECT_STATUS.md](PROJECT_STATUS.md).
+
+- Confirmed `DATABASE_URL` exactly matched the private project marker, database
+  `resolveflow_dev` on `127.0.0.1:55433`, and PostgreSQL's actual data directory
+  matched this checkout's `data/local/postgresql18`. No other development DB
+  sessions were present before backup or migration. No unrelated service changed.
+- Alembic had one linear history from 0001 through 0010, with one expected head,
+  **0011**. Reviewed 0011's operations: nullable `users.email_verified_at`, new
+  `workspace_invitations`, role/expiry checks, three foreign keys, unique token
+  hash, UUID primary key and workspace/expiry index. No existing-record update,
+  table drop or data reset occurs in the upgrade.
+- Created a custom-format full database dump, including the checkpoint schema,
+  at `.local/backups/step19a-20261023T182455Z/resolveflow_dev.dump`. The backup
+  folder also contains copies of existing configured private document/model/mailbox
+  roots, a private file/table hash manifest and verification markers. Missing roots
+  are recorded as absent. No `.env` or Gemini credential was copied or changed.
+- Verified Git exclusion, directory mode **0700**, file mode **0600**, archive
+  SHA-256 and copied-file hashes. The archive contains sensitive database state;
+  keep it local/private and do not attach it to issues or commit it. It is not an
+  encrypted off-host or scheduled backup.
+- Restored the archive into a freshly created ownership-marked disposable database,
+  compared every original table's row count and SHA-256 fingerprint, rehearsed
+  upgrade to 0011 and ran Alembic's metadata comparison. All passed. Removed only
+  that verified owned restore database afterward. The retained backup was not deleted.
+- Applied 0011 transactionally as the configured development owner, with a 5-second
+  lock timeout and 60-second statement timeout. `alembic current` reports
+  **0011 (head)** and `alembic check` reports **No new upgrade operations detected**.
+  Verified the new constraints/indexes and empty invitation table; no legacy account
+  was marked verified. Downgrade removes the new table/column and therefore loses
+  invitation/verification state; it was not run on development data.
+- All original data fingerprints still match after migration and startup checks,
+  excluding the intentionally changed Alembic revision. The source had **21 tables
+  and 14 rows**, consisting of revision/checkpoint metadata, two anonymous sessions
+  and one rate-limit row. It had **no users, tickets, documents, embeddings or
+  workflow executions**. Preservation of populated business records is demonstrated
+  by the fresh isolated migration/restore tests, not by claiming populated local data.
+- The real development checkpoint schema is accessible and version-compatible.
+  API readiness, local broker, worker and dispatcher health passed. Tests use owned
+  disposable databases and deterministic AI; they do not populate development data.
+
+The one-off audit helpers and logs are ignored local artifacts under
+`.cache/verification/step19a_database.py`, `.cache/verification/step19a_startup.py`
+and `.cache/verification/step19a/`. They are evidence for this checkout, not new
+supported infrastructure. Do not rerun the pre-0011 helper against an upgraded
+database; it intentionally requires revision 0010.
+
+For recovery, preserve the archive and manifest; verify the archive hash first.
+Restore into a **new empty, ownership-verified local database**, never over
+`resolveflow_dev`, using the matching PostgreSQL binaries and credentials in a
+child environment (not command arguments or logs). The verified rehearsal used
+`pg_restore --no-owner --no-privileges --exit-on-error --single-transaction
+--dbname <owned-empty-target> <archive>`. Compare original table/file fingerprints,
+apply the desired migration to the restored copy, verify model/document references
+and checkpoint access, then review any cutover separately. The original dump
+contains ownership/ACL metadata; the rehearsal intentionally did not apply it.
+No restore-over-development, downgrade or automatic cutover is authorized here.
+
+Operational backup scheduling, encryption/key management, independent retention,
+off-host recovery and business-approved RPO/RTO remain commercial release gates.
+
+## Historical foundation
+
 Verified 2026-10-19 on Apple Silicon macOS. PostgreSQL **18.6**, pgvector **0.8.6**,
 SQLAlchemy **2.0.55**, Alembic **1.20.0**, psycopg **3.3.6**, Python **3.14.6**.
 No Docker, cloud database, Redis, billing, or AI provider is required.

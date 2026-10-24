@@ -1,5 +1,11 @@
 # Portfolio readiness — Step 16
 
+> Historical assessment retained. Step 20 current implementation, fresh verification
+> and operating limits are recorded in [PORTFOLIO_EVIDENCE.md](PORTFOLIO_EVIDENCE.md),
+> [SYSTEM_ARCHITECTURE_OVERVIEW.md](SYSTEM_ARCHITECTURE_OVERVIEW.md) and the
+> [current readiness matrix](PRODUCTION_READINESS_MATRIX.md). Earlier pending-feature,
+> deployment and advisory statements below are dated evidence, not current setup instructions.
+
 Reviewed 2026-10-23 (Asia/Kolkata). **Ready for a reviewed Git commit and a separately
 approved redeployment.** Changes are local; nothing was committed, pushed or deployed.
 The live URL https://resolveflow-ai-rosy.vercel.app/demo still serves `be7efbc`.

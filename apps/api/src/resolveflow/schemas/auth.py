@@ -91,3 +91,42 @@ class MemberResponse(BaseModel):
     user_id: uuid.UUID
     email: str
     role: MembershipRole
+
+
+class InvitationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    email: str
+    role: MembershipRole
+    expires_at: datetime
+
+
+class AcceptInvitationInput(InputModel):
+    token: SecretStr = Field(min_length=43, max_length=43)
+
+
+class IdentityEmailInput(InputModel):
+    email: EmailStr = Field(max_length=320)
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def normalize(cls, value):
+        return value.strip().lower() if isinstance(value, str) else value
+
+
+class ResetPasswordInput(AcceptInvitationInput):
+    password: SecretStr = Field(min_length=15, max_length=128)
+    password_confirmation: SecretStr = Field(min_length=15, max_length=128)
+
+    @model_validator(mode="after")
+    def matching(self):
+        if (
+            self.password != self.password_confirmation
+            or not self.password.get_secret_value().strip()
+        ):
+            raise ValueError("Use matching nonblank passwords")
+        return self
+
+
+class VerifyEmailInput(AcceptInvitationInput):
+    password: SecretStr = Field(min_length=1, max_length=128)

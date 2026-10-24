@@ -103,10 +103,23 @@ def authenticated(request: Request, db: DB) -> User:
     user = db.get(User, session.user_id) if session and session.user_id else None
     if user is None or user.account_status != AccountStatus.ACTIVE:
         raise HTTPException(401)
+    config = request.app.state.settings
+    if not request.url.path.startswith("/api/v1/auth/") and not verification_allows(config, user):
+        raise HTTPException(403, detail="email_verification_required")
     return user
 
 
 CurrentUser = Annotated[User, Depends(authenticated)]
+
+
+def verification_allows(settings, user: User) -> bool:
+    return not settings.email_verification_required or email_proven(settings, user)
+
+
+def email_proven(settings, user: User) -> bool:
+    return user.email_verified and (
+        settings.environment != "production" or user.email_verification_source == "smtp"
+    )
 
 
 def issue_session(

@@ -1,10 +1,786 @@
 # Project status
 
-Updated: 2026-10-23 (Asia/Kolkata).
+Updated: **2026-10-25 (Asia/Kolkata), Step 20**.
 
-**Steps 1–17A are complete locally; the reviewed release is not pushed or deployed.** The standalone synthetic recruiter
+## Step 20 — local engineering hardening and portfolio checkpoint
+
+**Local review and fresh verification complete. No publication or deployment.**
+The current full application includes Steps 1–19C. Backup scheduling remains
+intentionally inactive; independent-key-copy confirmation and off-host recovery
+remain pending. That operational deferral does not block this authorized step.
+The prior Step 19C.1 activation gate is preserved, not implicitly approved.
+
+### Preservation and targeted hardening
+
+- Started on `main` at `759e5f87751cb49c1dd117755dcbdc08b14e31af`, with 69 short-status
+  entries from prior identity, migration, recovery and backup work; index was empty.
+  Inventoried tracked/untracked files and saved private baseline hashes. Created
+  the new local branch **`hardening/step20`** without overwriting an existing branch.
+- Reviewed backend/session/error boundaries, identity/RBAC and tenant-scoped resource
+  access, document storage, classifier training/artifacts, real retrieval, Gemini
+  contracts/parser/bounds, LangGraph workers/checkpoints, jobs, migrations and frontend
+  flows. This is a bounded source/test review, not a formal security proof.
+- Fixed a concrete browser-harness isolation defect in `apps/api/scripts/test_browser.py`:
+  inherited environment values previously overrode its disposable broker URL, queue
+  and reconciliation interval. Inherited values now come first. Full browser tests
+  passed with an intentionally unreachable inherited broker URL and conflicting
+  interval, proving owned test settings win. No business logic or public UI was redesigned.
+- Replaced stale README setup/readiness claims with current instructions. Added current
+  architecture, case study, recruiter walkthrough, interview guide and portfolio
+  evidence, with explicit full-app versus hosted-demo boundaries and factual metrics.
+  Retained historical audit/portfolio reports with clear current-evidence pointers.
+- Earlier source, tests, migrations and backup work are retained in the checkpoint.
+  No baseline file was removed. Private `.env`, backup encryption credential and
+  both dependency lockfiles are unchanged. No development data reset occurred.
+
+### Fresh verification evidence
+
+Private logs: `.cache/verification/step20/`. Safe committed summary and log hashes:
+[step20-verification.json](evaluation/step20-verification.json).
+
+| Check | Actual result |
+| --- | --- |
+| Full backend integration/regression suite | **317 passed, 1 existing SDK warning, 152.89s; no skips** |
+| Full application browser suite | **29 passed, 2.2m**, including real local Mailpit verification/recovery |
+| Standalone demo browser suite | **16 passed, 14.0s** |
+| Full / demo production builds | **Both passed**, installed Node 24.22.1, webpack |
+| TypeScript / ESLint | **Passed**, zero lint warnings |
+| Ruff lint / format | **Passed**, 146 Python files formatted |
+| Existing classifier re-evaluation | **Passed**, recorded predictions/metrics reproduced; baseline not retrained |
+| Development database | Owned `resolveflow_dev`, port **55433**, revision **0012 = head**, no Alembic metadata drift |
+| Checkpoint schema/access | **Passed**, existing PostgreSQL checkpointer version/read access |
+| Development preservation | All **24 table fingerprints / 34 records unchanged** across verification; zero remaining test DBs |
+| npm full / production audit | **0 / 0 reported findings**, no dependency changes |
+| Demo production dependency traces | **20 trace files**, no historical affected lint-chain package paths |
+
+The existing Google SDK `_UnionGenericAlias` warning remains an upstream compatibility
+watch item. All tests used synthetic data and bounded deterministic/mocked generation;
+no live Gemini request occurred. Mailpit is local SMTP evidence only. Classifier
+macro F1 **0.784580** is a small synthetic result; historical retrieval/RAG reports
+are retained, not relabeled as new metrics. The historical single successful Gemini
+smoke remains evidence of past transport/schema validation, not broad live quality.
+
+### Security, dependencies and checkpoint scope
+
+Reviewed the complete source/document candidate inventory and reachable history for
+credential patterns and exact configured secret values without displaying them.
+Validated ignore coverage for environment files, database files, private uploads,
+model caches, virtualenvs, build/log/test artifacts, backup repositories and encryption
+credentials. Synthetic fixtures/templates remain intentional project files. The
+source package named `resolveflow/backups` is reviewed code, not a backup payload.
+No unsafe or ambiguous file was identified for the local checkpoint. Pattern/exact-value
+checks are bounded and do not prove arbitrary secret/PII absence.
+
+The prior five high npm entries concerned the development-only `braces` → `micromatch`
+→ `fast-glob` → Next ESLint plugin/config chain. Current registry audits report zero
+without a lockfile change; no upstream patch is inferred and no breaking downgrade
+was applied. Those packages remain absent from the fresh demo production traces.
+A comprehensive Python dependency/penetration audit was not performed.
+
+The reviewed local checkpoint uses the subject:
+`chore: finalize engineering hardening and portfolio docs`.
+Its hash is reported after Git creates it; a commit cannot embed its own resulting
+hash. Resolve it locally using:
+
+```bash
+git log -1 --format=%H --fixed-strings --grep='chore: finalize engineering hardening and portfolio docs'
+```
+
+The checkpoint includes prior uncommitted Steps 18–19C.1 work as well as Step 20,
+not just new documentation. It preserves existing history and remains on the local
+hardening branch. No push, remote merge, repository visibility change or deployment
+is part of this step. The existing private GitHub/Vercel state is prior evidence,
+not a fresh external account inspection.
+
+### Remaining limits and stop boundary
+
+Commercial SaaS readiness remains incomplete: external account SMTP and production
+invitation delivery, independent credentials/off-host recovery, runtime privilege
+separation, supervision/alerts, aggregate quotas/ingress fairness, retention and
+representative quality/load/accessibility/security evidence remain open. See the
+[current matrix](PRODUCTION_READINESS_MATRIX.md) and [remaining work](REMAINING_WORK.md).
+Local backup/restore functionality is tested, but no schedule, off-host destination,
+external SMTP, paid service or live inference was activated. No existing backup was
+pruned or deleted. The recruiter demo was not modified remotely.
+
+**Stop after Step 20. Step 21 requires a new instruction.**
+
+## Historical milestone records
+
+The dated entries below retain their original evidence and restrictions. Their
+old branch, pending-feature and “next action” statements describe those milestones;
+the Step 20 entry above is the current development status.
+
+Updated: 2026-10-24 (Asia/Kolkata).
+
+**Steps 1–18, Step 19A, Step 19B's local implementation, Step 19B.1, and Step 19C's local backup foundation are complete. Development migration 0012 is applied and local authentication/recovery is verified. External email delivery remains unconfigured and unverified. This is not a new release.** The reviewed Step 17B release is pushed and deployed. The standalone synthetic recruiter
 demo is deployed on Vercel Hobby. GitHub remains private; the full backend and
 live Gemini inference remain disabled for this deployment.
+
+## Step 19C.1 — pre-activation review complete; awaiting credential recovery
+
+2026-10-24 (Asia/Kolkata). **LOCAL AUTOMATION INACTIVE. STEP 19C.1 NOT COMPLETE.**
+The user explicitly replied **“Not yet—keep scheduling inactive”** to the required
+independent-credential-recovery confirmation. No LaunchAgent installation, bootstrap,
+controlled launchd backup or activation-time restore was performed. Do not infer
+permission to proceed from the earlier general activation task or from elapsed time.
+
+- Reviewed existing backup CLI/repository/configuration/runbooks and preserved earlier
+  work. Key/config files are owner-only 0600; control/repository directories are 0700,
+  owned by the current user and not symlinks. Credential contents were not displayed
+  or modified. Independent recoverability is **not confirmed or verified**.
+- Validated the existing plist with `plutil` and exact-path assertions: project Python,
+  backup CLI, private state/log paths, daily **03:00**, restrictive umask, no embedded
+  environment secrets, RunAtLoad or KeepAlive. Mac timezone is IST (+05:30).
+  Default retention remains **7 daily / 4 weekly / 3 monthly**, latest two protected;
+  no pruning was performed or enabled.
+- Verified the target user LaunchAgent file is absent; launchd's exact service lookup
+  reports absent. A successful read-only launchd inventory found no ResolveFlow/restic
+  job, and the user has no crontab. No unrelated scheduler/service was changed.
+- Closed a small interruption-diagnostics gap in the existing CLI: SIGINT/ordinary
+  SIGTERM now report sanitized `backup_interrupted`, record failure and exit nonzero.
+  Existing locks/temporary contexts clean up on normal interruption. SIGKILL/power
+  failure remains uncatchable and requires existing incomplete-stage/status checks.
+- Fresh focused backup/security plus legacy/encrypted recovery regressions:
+  **11 passed, 74.83s**, evidence `.cache/verification/step19c1/focused.txt`.
+  Ruff lint/format passed for both edited Python files. Tests cover real encrypted
+  synthetic database/document/workflow restoration, wrong/missing credentials,
+  unavailable disposable repository, injected connection errors, corrupt manifest/
+  encrypted packs, missing documents, insufficient capacity, concurrency, safe
+  retention and interruption releasing database locks/staging without a success record.
+  No real development credential or snapshot was damaged for fault injection.
+- Database-unavailable CLI diagnostics were fault-injected; the development service
+  was not deliberately shut down. Real launchd operation and any macOS privacy access
+  requirements remain untested until confirmation/activation. No new development
+  snapshot or activation-time restore is claimed; Step 19C's results remain historical.
+
+Prepared manual credential-recovery instructions: use a trusted password manager's
+protected attachment/secure note or a separately encrypted external device; verify
+retrieval without this Mac, then confirm **without sharing the key**. The agent did
+not access a password manager/device or upload credentials. Status/launchd commands,
+sleep-versus-powered-off behavior and off-host limits are documented. Same-Mac
+backup/key storage still does not protect against complete machine loss.
+
+Changed in this step: `apps/api/scripts/backups.py`, `apps/api/tests/test_backups.py`,
+`docs/BACKUP_OPERATIONS.md`, `docs/DISASTER_RECOVERY.md`, `docs/PROJECT_STATUS.md`.
+Existing private `.env`, encryption credential, repository and earlier backups were
+preserved. Branch `main`, HEAD `759e5f8`; prior and current changes remain uncommitted.
+No commit/push/deployment, external storage/SMTP, paid service or Gemini call occurred.
+
+**Next required input:** the user's explicit confirmation that an independently
+recoverable credential copy has been secured. Until then, keep scheduling inactive.
+Off-host and production disaster recovery remain unverified. No later milestone begun.
+
+## Step 19C — encrypted local backup and disaster recovery foundation
+
+Completed locally on 2026-10-24 (Asia/Kolkata). **LOCAL BACKUP VERIFIED**.
+**OFF-HOST BACKUP NOT VERIFIED. PRODUCTION DISASTER RECOVERY NOT VERIFIED.**
+No schedule is active; no independent destination or independent key copy was
+configured/verified. This is an implemented/tested foundation with explicit remaining
+operational gates, not a claim of automatic production protection.
+
+### Implementation and protection scope
+
+- Reused the owned PostgreSQL lifecycle, `pg_dump`/`pg_restore`, LocalFileStorage,
+  migration/schema checks and the existing populated synthetic recovery drill.
+  Added the supported `scripts/backups.py` CLI and focused `resolveflow/backups/`
+  modules. API/business logic and migration history are unchanged; development
+  remains at **0012**, `resolveflow_dev`, **127.0.0.1:55433**.
+- Installed official **restic 0.19.1** locally, with release SHA-256 verification and
+  retained BSD-2-Clause license. Existing system TLS trust through curl was used;
+  certificate checks were not bypassed. No paid service/global package was introduced.
+- Backups contain the complete application/checkpoint database, referenced uploaded
+  objects verified against their DB size/checksum, immutable classifier artifacts,
+  optional pinned embedding manifest and non-secret recovery metadata. SQL includes
+  identities, memberships, tickets, chunks/embeddings, approvals, jobs and email audit.
+  Downloaded weights, environment credentials, caches/builds, private delivery inboxes
+  and reconstructable Valkey transport are deliberately excluded.
+- The operating contract requires stopped/drained API/worker/document/model writers.
+  Active DB clients cause refusal. Bounded SHARE locks and one exported PG snapshot
+  tie table fingerprints/dump to checksummed referenced files. Pending document
+  mutations/missing/corrupt objects fail capture. This is not claimed as an online
+  atomic snapshot across PostgreSQL and arbitrary filesystem writers.
+- Restic encrypts snapshots in **`.local/encrypted-backups/`**. Private config/key/status
+  are separate in **`.local/backup-control/`**, Git-ignored and owner-restricted.
+  Subprocess credentials use private files, never secret command arguments or logs.
+  Manifest/file/table verification and full encrypted repository checks precede success.
+  Normal staging cleanup is scoped to newly created temporary children; hard-interruption
+  remnants are detectable and require careful manual review, not broad deletion.
+- The CLI provides create/list/verify/status/failures/restore-test, scheduled execution,
+  launchd template generation and retention preview/application. Operations serialize
+  with a nonblocking local lock plus restic locks. Status records latest success/failure,
+  integrity, restore, age, size, capacity and incomplete stages; stale/missing/unavailable
+  conditions fail nonzero. Tool errors are sanitized.
+- Retention defaults to **7 daily / 4 weekly / 3 monthly**, retaining at least the latest
+  two when available. Policies are configurable and tag/repository scoped. Full integrity
+  and a successful restore of the latest snapshot are required before pruning. Local
+  development retention was previewed only; destructive pruning was exercised solely
+  in a newly created disposable test repository. Earlier backups were not deleted.
+
+### Actual local operations and measurements
+
+Two development snapshots were created through the supported CLI:
+
+| Operation | Result | Measured time |
+| --- | --- | --- |
+| Manual create, snapshot `dce3bfb0144b2457c49e1ff89749fc7fb76081d85e7eee257f0e017813d1d2d9` | Full encrypted bundle/integrity passed | **2.571s** |
+| Isolated restore of that snapshot | **24 tables**, exact fingerprints, pgvector/head/schema passed | **2.576s** |
+| Controlled `scheduled` command, snapshot `eb7c6a99b099faf40437a2bb452090ee00fed550daab64be7f719f99d36c1026` | Fresh distinct snapshot; no overwrite | **2.429s** |
+| Isolated restore of scheduled snapshot | Same record/component/schema checks passed | **2.448s** |
+| Populated encrypted synthetic workflow drill | One uploaded document, embeddings, checkpoint and exact approval recovered; no duplicate draft; tenant denial preserved | Backup **7.514s**, recovery/validation **2.860s** |
+
+Each development bundle had **617,998 component bytes**, with **zero development
+uploaded documents**; document recovery is demonstrated by the populated synthetic
+integration tests, not inferred from empty development storage. The two-snapshot
+repository used **149,723 bytes** at the status check. Development table fingerprints
+still match the first snapshot after both restores. All prior Step 19A/19B.1 dump
+hashes remain valid. No owned restore-test databases or normal staging directories
+remained. Original source data was never restored over or reset.
+
+Generated and `plutil -lint` validated
+**`.local/backup-control/local.resolveflow.backup.plist`**, daily **03:00 local time**
+(verify the Mac uses the intended Asia/Kolkata timezone). It is **not installed or
+bootstrapped**. One direct execution of its scheduled command passed; this is not
+proof of launchd firing across sleep/reboots. An intentional create without
+`--quiesced` failed safely and populated failure diagnostics. Fresh status reported
+available repository, non-stale backup, successful integrity/restore and zero
+incomplete stages. No automatic pruning or external notification was enabled.
+
+Actual backup frequency is these two controlled executions, not an active daily job.
+No guaranteed RPO/RTO is asserted. Backups cannot run while powered off, and scheduling
+fails safely when the required offline window is unavailable. Independent encrypted
+storage, an independent usable key, provisioning/cutover time, monitoring ownership,
+WAL/PITR and tested recovery on another host remain production prerequisites.
+
+### Fresh verification
+
+Evidence: `.cache/verification/step19c/` and
+`.cache/verification/encrypted-restore-drill.json` (private, Git-ignored).
+
+| Check | Actual result |
+| --- | --- |
+| Focused encrypted backup/security + legacy/encrypted populated recovery | **6 passed, 49.33s** |
+| Complete backend regression suite | **312 passed, 1 existing SDK warning, 123.87s; no skips** |
+| Complete full-application browser suite | **29 passed, 2.1m** |
+| Full application production build | **Passed**, Node 24.22.1 / webpack |
+| TypeScript / ESLint | **Passed**, zero lint warnings |
+| Ruff lint / format | **Passed**, 146 files already formatted |
+| Native launchd template syntax | **Passed**, not activated |
+| Development preservation / prior backup integrity / isolated cleanup | **Passed** |
+
+New coverage includes real encrypted DB/document recovery, complete manifest/table
+matching, repeated snapshots, missing/corrupt documents, encrypted pack corruption,
+wrong/missing/private-permission credentials, repository identity mismatch, unsafe
+paths/symlinks, active clients, unrelated/nonempty targets, disk shortage, concurrency,
+redacted subprocess failures, Git exclusion, scheduling and retention gates.
+The original workflow drill still runs unchanged in purpose; an additional encrypted
+variant preserves all original assertions, including recovery without regeneration.
+Backend/browser regressions include auth, recovery, memberships, tickets, documents,
+ML/retrieval, fixture RAG, LangGraph, workers and analytics. No Gemini call occurred.
+The standalone recruiter demo was not redeployed or modified; its earlier 16-test
+result is historical, not a fresh Step 19C demo test claim.
+
+### Changed files and remaining operations
+
+New: `apps/api/scripts/backups.py`, `scripts/install_restic.py`,
+`src/resolveflow/backups/{__init__,safety,repository,service}.py`,
+`tests/test_backups.py`; `docs/BACKUP_ARCHITECTURE.md`, `BACKUP_OPERATIONS.md`,
+`DISASTER_RECOVERY.md`. Updated: the existing `tests/test_restore.py` with a second
+execution path, README, ARCHITECTURE, DATABASE, PROJECT_STATUS,
+PRODUCTION_READINESS_MATRIX and REMAINING_WORK. Earlier modified/untracked work,
+frontend source and private `.env` are preserved. No application runtime changes,
+commit, push, deployment, paid resource, external SMTP or external data upload occurred.
+
+Branch **main**, HEAD **759e5f87751cb49c1dd117755dcbdc08b14e31af**; changes remain local
+and uncommitted. The encryption credential was generated locally, never printed,
+and is outside the encrypted repository. **The user still needs independent secure
+key custody** and an explicitly approved independent backup destination. Schedule
+activation also remains an explicit operator step; no global/per-user launch agent
+was installed automatically. Runbooks contain commands and scenario-specific recovery
+precautions. Stop after Step 19C; no next milestone has been started.
+
+## Step 19B.1 — protected development migration and real local email flows
+
+Completed 2026-10-24 (Asia/Kolkata). This supersedes the historical Step 19B
+migration-pending statements below. No application code or migration changes were
+needed; all earlier modified/untracked work was preserved.
+
+- Confirmed private configuration matches the ownership marker for **resolveflow_dev
+  on 127.0.0.1:55433**, and the running PostgreSQL data directory is this checkout's
+  `data/local/postgresql18`. Confirmed development environment, revision **0011**,
+  single code head **0012**, and no other database sessions before migration.
+- Reviewed 0012: three additive user columns plus identity-email/audit tables,
+  foreign keys, token uniqueness, status/purpose/attempt constraints and indexes.
+  Upgrade does not drop/reset existing tables or alter original record values.
+- Created fresh private backup **`.local/backups/step19b1-20261024T111834Z/resolveflow_dev.dump`**,
+  including the checkpoint schema, with a private manifest and configured private
+  file/model copies. Verified archive SHA-256, Git exclusion, directories 0700 and
+  files 0600. No environment file or Gemini credential was copied or changed.
+- Restored into a new ownership-marked disposable database; all **22 original table
+  fingerprints / 14 rows** matched. Rehearsed 0012 and Alembic metadata comparison,
+  then removed only that disposable restore database. Retained the verified backup.
+- Applied **0012** transactionally as the development owner, using 5-second lock and
+  60-second statement timeouts. Revision matches head; schema comparison reported
+  **No new upgrade operations detected**. Original columns/records retained identical
+  fingerprints, apart from the expected revision change. New identity tables started
+  empty and legacy verification was not silently elevated. Database health passed.
+- Started the owned PostgreSQL/Valkey plus FastAPI, Next.js production build, RQ
+  worker, dispatcher and a private loopback Mailpit inbox. API health/readiness
+  returned 200; unauthenticated auth returned 401 directly and through Next.js.
+  Non-allowlisted frontend health/readiness forwarding correctly returned 404.
+  Job health reported database/broker OK, one worker, dispatcher OK, empty workflow
+  queue; real PostgreSQL LangGraph checkpoint storage was accessible.
+- On the **migrated development database**, a fresh synthetic account registered
+  unverified and created a synthetic owner workspace under the existing development
+  compatibility policy. Actual Mailpit verification and recovery messages arrived.
+  Browser forms confirmed verification and password reset; reused links, old
+  sessions and the old password failed; new-password login succeeded. Workspace
+  role and permission lists remained identical. No browser page errors or external
+  browser requests occurred. The recovery success screen was visually checked.
+- Direct PostgreSQL checks confirmed persisted exact-address local proof, credential
+  version 2, one consumed delivery per purpose with one attempt each, four audit
+  events and unchanged owner membership. Immediate resend requests were coalesced.
+  Expired tokens and broader throttling/tenant/security cases passed in fresh isolated
+  backend tests; development timestamps were not modified to simulate expiration.
+- There were **zero pre-existing development users**. Compatibility settings were
+  preserved rather than claiming a populated-user rollout test. The one new synthetic
+  account/workspace and their audit records remain in development; no development
+  cleanup/reset occurred. Random test passwords were held in memory, not saved or
+  reported; this account is verification evidence, not a distributed login credential.
+
+| Fresh Step 19B.1 check | Actual result | Private evidence under `.cache/verification/step19b1/` |
+| --- | --- | --- |
+| Complete backend regression suite, including auth/recovery/migrations | **307 passed, 1 warning, 78.34s; no skips** | `backend.txt` |
+| Frontend auth and identity browser regressions | **7 passed, 12.2s**, one run | `browser.txt` |
+| Actual development frontend → API → worker → Mailpit → PostgreSQL flow | **Passed** | `startup.txt`, `startup.json`, `dev-flow.json`, `recovery-success.png` |
+| Full application production build | **Passed**, Node 24.22.1 / webpack | `full-build.txt` |
+| TypeScript / ESLint | **Passed**, zero lint warnings | `types.txt`, `lint.txt` |
+| Ruff lint / formatting | **Passed**, 139 files already formatted | Command output |
+| Private backup restore, preservation, migration rehearsal and development schema check | **Passed** | `database.txt` and private backup manifest |
+
+The existing Google SDK deprecation warning remains. The initial one-off development
+startup probe incorrectly selected the fixture AI provider, which is intentionally
+restricted to test environments. Corrected only the ignored probe to retain the
+configured development provider with **live inference disabled**; the subsequent
+startup and full local-email flow passed. Application validation was not weakened.
+
+Temporary API/web/worker/dispatcher/Mailpit processes were stopped after verification;
+owned PostgreSQL and Valkey remain running. The temporary inbox was removed by its
+existing scoped harness. No real external mail, Gemini request, paid service, commit,
+push, deployment or Step 19C work occurred. The live recruiter demo is unchanged;
+its 16-test result above/below belongs to Step 19B, not a new Step 19B.1 demo run.
+
+Only documentation changed in this step: **README.md**, **docs/PROJECT_STATUS.md**,
+**docs/DATABASE.md**, **docs/EMAIL_DELIVERY.md**, **docs/IDENTITY_AND_RECOVERY.md**,
+**docs/PRODUCTION_READINESS_MATRIX.md**, and **docs/REMAINING_WORK.md**. The extra
+short updates remove stale migration blockers. One-off verification helpers and
+artifacts remain ignored under `.cache/verification/`; the backup remains ignored.
+Branch **main**, HEAD **759e5f87751cb49c1dd117755dcbdc08b14e31af**; prior changes remain
+uncommitted. Private `.env` content is hash-identical to the start of this step.
+
+**No unresolved local migration/authentication blocker. External production email
+remains unconfigured and unverified**, and other commercial gates remain as documented.
+Manual local inbox startup is in [EMAIL_DELIVERY.md](EMAIL_DELIVERY.md). Stop after
+Step 19B.1; no further step or external delivery is authorized by this verification.
+
+## Step 19B — account email verification and secure password recovery
+
+Completed locally on 2026-10-24. Reused existing PostgreSQL users, Argon2id password
+hashing, server-side sessions, CSRF middleware, shared request throttles, workspace
+authorization, and RQ/Valkey workers. Previous uncommitted Step 18/19A and invitation/
+restore work is preserved. No authentication-provider replacement or hosted service
+was introduced.
+
+### Implemented and verified locally
+
+- Registration atomically creates a verification intent; resend and recovery use
+  generic responses, bounded inputs, shared request limits and a 60-second resend
+  cooldown. Production registration returns the same 202 shape for existing/new
+  addresses. Local compatibility mode retains its prior 201/409 contract.
+- Verification/reset use 32-byte random tokens, SHA-256 digests at rest, constant-time
+  digest comparison, expiry (24 hours / 30 minutes), invalidation, replay prevention,
+  account/address/purpose/credential-version binding and transactional row locks.
+  Tokens are absent from API responses and queue payloads. Browser links use a
+  fragment removed from history and retained only in component memory.
+- Verification requires the registration password as well as the emailed token,
+  preventing activation of an attacker-created preregistration merely by clicking
+  an unsolicited link. Recovery replaces the password securely and revokes all
+  sessions, other identity tokens and outstanding invitations for the account.
+  Workspace roles/memberships are preserved. Login/reset locking closes the
+  concurrent old-password session-creation race.
+- Production always requires exact-address email proof from SMTP. Client flags,
+  historical timestamps, local inbox proof and outstanding local tokens cannot
+  bypass it. HTTP authorization and queued privileged workflows enforce policy.
+  Development/test compatibility mode preserves existing users' access. ORM email
+  changes clear proof; address mismatches also fail authorization/token checks.
+- Provider-independent `EmailDelivery` supports verification and recovery. Local
+  SMTP uses the MIT-licensed Mailpit 1.32.0 binary on private loopback ports. The
+  external SMTP adapter requires authentication and certificate-validated TLS;
+  its protocol/error behavior is tested with mocks, not external delivery.
+- The PostgreSQL outbox queues UUIDs through existing RQ workers. Delivery uses
+  claim leases, duplicate-job suppression, a maximum of three attempts, bounded
+  timeouts, 60/120-second retry delays, safe status/error codes and audit events.
+  SMTP is not exactly-once: an ambiguous acceptance/crash can cause a bounded
+  duplicate. A retried attempt rotates the token, invalidating the older link.
+- Frontend verification notice, resend, confirmation, forgot/reset forms, loading,
+  invalid-link, generic request and success states are implemented. Passwords and
+  tokens are never displayed as application output. Existing demo routes/content
+  and disabled live inference are preserved.
+
+### Executed verification
+
+Evidence is private and Git-ignored under `.cache/verification/step19b/`.
+
+| Check | Actual result | Evidence |
+| --- | --- | --- |
+| Complete backend suite | **307 passed, 1 warning, 82.60s; no skips** | `backend.txt` |
+| Existing full-application browser regressions | **26 passed** in the full run | `browser.txt` |
+| New identity browser cases, after test-selector/navigation fixes | **3 passed, 6.1s** | `identity-browser.txt` |
+| Recruiter demo browser suite | **16 passed, 13.8s** | `demo.txt` |
+| Full application and demo production builds | **Both passed**, Node 24.22.1 / webpack | `full-build.txt`, `demo-build.txt` |
+| TypeScript / ESLint | **Passed**, zero lint warnings | `types.txt`, `lint.txt` |
+| Ruff lint / formatting | **Passed**, 139 files already formatted | Command output |
+| 0011 → 0012 upgrade, legacy preservation, downgrade, metadata comparison | **Passed in isolated databases** | Backend tests |
+| Development revision, read-only confirmation | **0011; not migrated by Step 19B** | Direct revision query |
+
+The browser SMTP flow used actual FastAPI, Next.js, PostgreSQL, dispatcher, RQ worker,
+Valkey and Mailpit: registration → delivered verification message → confirm → old
+session rejected → login → delivered recovery message → reset → replay rejected →
+new-password login. Temporary inboxes/databases/storage were removed by their
+ownership-scoped harnesses. Backend tests cover expiry, wrong account/address,
+inactive users, replay, concurrent resets/delivery, missing broker, crash recovery,
+retry bounds, queue redaction, production local-proof rejection and role preservation.
+Existing regression coverage includes tickets/documents, classification, retrieval,
+fixture RAG, LangGraph/checkpoints, workers, analytics and tenant boundaries.
+
+The first backend attempt after interruption encountered stopped project PostgreSQL;
+starting only the owned local cluster resolved that environment failure. Initial new
+browser cases hit ambiguous password/alert selectors and a same-document fragment
+navigation that retained the success form. Tests now use precise selectors and leave
+the page before replaying a link. Existing assertions were not weakened. The 26 old
+and 3 new browser passes are from separate runs, not a claimed single 29-pass run.
+The existing Google SDK deprecation warning remains; no live Gemini call occurred.
+
+### Migration, remaining gates and next step
+
+New additive migration **0012_identity_email** adds verification source/address,
+credential version and identity-email/audit tables. Existing migration 0011 is not
+rewritten. Development data and private environment files were not changed. **Do not
+start the updated full API/workers against development revision 0011.** The next
+recommended local step is a protected backup/rehearsal and deliberate application of
+0012, followed by a synthetic local-inbox startup check; it was not performed here.
+
+**External email deliverability is NOT verified.** It requires an explicitly approved
+SMTP account, verified sender/domain, HTTPS origin, safe credential provisioning,
+current free-tier/quota/overage checks and a controlled real-mail test. None was
+activated. No SMTP or Gemini credentials were modified or exposed. No commit, push,
+deployment, billing or paid dependency was introduced.
+
+Known limits: no public email-change API; SMTP invitation transport remains separate;
+local compatibility registration still distinguishes duplicate accounts; generic
+responses do not promise constant response timing; shared-IP throttling needs correct
+proxy configuration. Commercial mail reputation/bounces, abuse/fairness, retention,
+MFA, operational backup and hosting work remain outside this step. See
+[EMAIL_DELIVERY.md](EMAIL_DELIVERY.md) for setup, settings, security and limitations.
+
+### Step 19B file scope and Git state
+
+New files: migration `0012_identity_email.py`; `scripts/mailpit_fixture.py`;
+`services/identity.py`, `services/email_delivery.py`, `jobs/email.py`;
+`tests/test_identity_email.py`; four web route pages (`verify-email`,
+`verification-required`, `forgot-password`, `reset-password`);
+`components/auth/identity-form.tsx`; `tests/identity-email.spec.ts`;
+and `docs/EMAIL_DELIVERY.md`.
+
+Updated backend files: `.env.example`, `scripts/jobs.py`, `scripts/test_browser.py`,
+`api/v1/auth.py`, `core/config.py`, `core/errors.py`, `db/models.py`,
+`jobs/transport.py`, `jobs/worker.py`, `schemas/auth.py`, `services/auth.py`,
+`services/invitations.py`, `tests/test_database.py`, `tests/test_system.py`.
+Updated frontend files: API proxy allowlist, `/app` page, auth form, app shell,
+workspace panel and session API errors. Updated documentation: README,
+AUTHENTICATION, AUTHORIZATION, PROJECT_STATUS, PRODUCTION_READINESS_MATRIX,
+IDENTITY_AND_RECOVERY and REMAINING_WORK. Other existing dirty files belong to
+prior work and are preserved.
+
+Branch **main**, HEAD **759e5f87751cb49c1dd117755dcbdc08b14e31af**, with prior and
+Step 19B changes intentionally uncommitted. Local inbox binaries, databases,
+backups, credentials, test artifacts and caches remain Git-ignored. Stop at Step 19B.
+
+## Step 19A — protected local migration and fresh full-application verification
+
+Verification started 2026-10-23 and closed out 2026-10-24 (Asia/Kolkata). All results below were executed
+fresh for Step 19A, not copied from the prior closeout.
+
+- Verified the configured database against the private ownership marker and actual
+  PostgreSQL data directory: **resolveflow_dev, 127.0.0.1:55433**. Started only this
+  checkout's existing PostgreSQL and Valkey services. No unrelated service changed.
+- Reviewed linear Alembic history, current **0010**, expected single head **0011**.
+  Upgrade adds the nullable verification timestamp and constrained invitation table;
+  it does not delete/update original business records. Downgrade would lose the new
+  invitation/verification state and was not performed on development data.
+- Created and verified private backup
+  **`.local/backups/step19a-20261023T182455Z/resolveflow_dev.dump`**, with private
+  file/model copies and a hash manifest. Git-ignored; directories 0700, files 0600.
+  Restored into a fresh ownership-marked disposable database, compared every original
+  table fingerprint, rehearsed migration and schema comparison successfully, then
+  removed only the temporary restore database. Backup retained. See [DATABASE.md](DATABASE.md).
+- **Applied 0011 to development successfully** as the configured owner, with bounded
+  lock/statement timeouts. Current/head agree at **0011**; Alembic reports no new
+  upgrade operations. New foreign keys, role/expiry constraints, token uniqueness
+  and indexes verified. All original table fingerprints still match after startup,
+  except the intentionally changed revision. New invitation table empty.
+- Source contained **21 tables / 14 rows** of revision/checkpoint metadata,
+  anonymous sessions and rate-limit state. No users, tickets, documents, embeddings
+  or workflow executions existed in development. No populated-business-data claim
+  is inferred from this empty application database; fresh isolated tests cover that.
+
+| Fresh check | Actual result | Local evidence under `.cache/verification/step19a/` |
+| --- | --- | --- |
+| Backend, including DB integration, migration and recovery | **284 passed, 1 warning, 72.75s; no skips** | `backend.txt` |
+| Full application browser suite | **26 passed, 2.1m** | `browser.txt` |
+| Recruiter demo browser suite | **16 passed, 13.8s** | `demo.txt` |
+| Full and demo production builds | **Both passed**, installed Node 24.22.1 / webpack | `full-build.txt`, `demo-build.txt` |
+| TypeScript / ESLint | **Passed**, zero lint warnings | `typecheck.txt`, `eslint.txt` |
+| Ruff lint / formatting | **Passed**, 133 files already formatted | Command output |
+| Development application startup | **Passed** | `startup.txt`, `startup.json` |
+| Migration metadata comparison / original-row preservation | **Passed** | Private backup manifest and verification markers |
+
+The existing Google SDK `_UnionGenericAlias` deprecation warning remains. No
+application defect or test assertion required a change. The one-off startup probe
+initially expected frontend health forwarding, but the reviewed proxy deliberately
+returns 404 for health/readiness; its expectations were corrected to verify that
+boundary. A subsequent probe hit recently closed sockets; enabling SO_REUSEADDR,
+as in the existing browser harness, fixed that probe while still refusing listeners.
+These were verification-helper issues, not application-suite failures.
+
+Development API `/api/v1/health` and `/ready` returned **200**; unauthenticated
+`/auth/me` returned **401** both directly and through Next.js. Login rendered
+successfully. The frontend correctly returned **404** for non-allowlisted health
+proxy paths. Job health reported DB/broker OK, **one worker**, dispatcher OK and
+zero pending/transport messages. Real PostgreSQL checkpoint schema access/version
+passed. Dedicated API, Next.js, worker and dispatcher processes were started and
+then stopped after verification; owned PostgreSQL and Valkey remain running.
+
+The full browser harness independently started actual API/Next.js/Valkey/worker/
+dispatcher services against disposable synthetic data, exercising authentication,
+invitation acceptance, authorization, tickets, knowledge management, real ML and
+semantic retrieval, fixture RAG, LangGraph review/recovery, background execution
+and analytics. It reported cleanup of its own DB/storage. The fresh backend restore
+drill also passed: 0.137s backup, 0.481s restore/validation, restored checkpoint resume,
+zero duplicate drafts, tenant denial and missing/corrupt-file checks. These tiny
+synthetic timings are not production recovery objectives.
+
+### Exact Step 19A verification commands
+
+Dependencies and local models were already installed; no installation was needed.
+From repository root, for the one-off protected backup/rehearsal/migration:
+
+```bash
+RESOLVEFLOW_AI_LIVE_ENABLED=false apps/api/.venv/bin/python .cache/verification/step19a_database.py --apply
+```
+
+That ignored helper requires pre-migration revision 0010 and should **not** be
+rerun now. Its backup/recovery safeguards are described in DATABASE.md.
+
+From `apps/api`:
+
+```bash
+.venv/bin/python scripts/local_db.py start
+.venv/bin/alembic heads
+.venv/bin/alembic history
+RESOLVEFLOW_AI_LIVE_ENABLED=false .venv/bin/alembic current
+RESOLVEFLOW_AI_LIVE_ENABLED=false .venv/bin/alembic check
+.venv/bin/python scripts/local_broker.py start
+PYTEST_ADDOPTS=--tb=short RESOLVEFLOW_AI_LIVE_ENABLED=false RESOLVEFLOW_AI_FREE_TIER_VERIFIED=false GEMINI_API_KEY=synthetic-test-key .venv/bin/python scripts/local_db.py test > ../../.cache/verification/step19a/backend.txt 2>&1
+.venv/bin/ruff check .
+.venv/bin/ruff format --check .
+```
+
+From repository root, with the already installed Node 24 runtime:
+
+```bash
+export PATH="$PWD/.local/native/node-v24.22.1-darwin-arm64/bin:$PATH"
+NEXT_PUBLIC_APP_MODE=full NEXT_TELEMETRY_DISABLED=1 npm --prefix apps/web run build -- --webpack > .cache/verification/step19a/full-build.txt 2>&1
+npm --prefix apps/web run lint > .cache/verification/step19a/eslint.txt 2>&1
+npm --prefix apps/web run typecheck > .cache/verification/step19a/typecheck.txt 2>&1
+```
+
+Then from `apps/api`, before replacing the full build with demo mode:
+
+```bash
+export PATH="$PWD/../../.local/native/node-v24.22.1-darwin-arm64/bin:$PATH"
+RESOLVEFLOW_AI_LIVE_ENABLED=false .venv/bin/python scripts/test_browser.py > ../../.cache/verification/step19a/browser.txt 2>&1
+```
+
+From repository root, using the same Node PATH:
+
+```bash
+apps/api/.venv/bin/python .cache/verification/step19a_startup.py > .cache/verification/step19a/startup.txt 2>&1
+npm --prefix apps/web run demo:build > .cache/verification/step19a/demo-build.txt 2>&1
+npm --prefix apps/web run test:demo > .cache/verification/step19a/demo.txt 2>&1
+git diff --check
+```
+
+The final local production artifacts are **demo mode**. To run the full application,
+use the development commands in [WORKER_OPERATIONS.md](WORKER_OPERATIONS.md), with
+`NEXT_PUBLIC_APP_MODE=full` for Next.js; or rebuild full mode before `npm run start`.
+The development configuration retains Gemini with live inference disabled; complete
+deterministic inference is confined to the isolated test environment.
+
+### Remaining scope and repository state
+
+- **Local migration/startup gate passed.** Synthetic recruiter demo remains suitable
+  for sharing; no hosted service was changed or re-audited in Step 19A.
+- **Commercial SaaS remains blocked.** P0-1 real email ownership/delivery and legacy
+  identity review remain incomplete; local invitation tokens do not establish real
+  external mailbox ownership. Recommend a separately scoped identity/delivery design
+  before any external provider activation. P0-2 now has one verified local backup
+  and two forms of local restore evidence, but needs scheduled encrypted independent
+  backups, retention/monitoring, off-host restore exercises and approved recovery goals.
+- P0-3 least-privilege hosting/supervision and P0-4 privacy/retention remain; shared-IP
+  abuse fairness, aggregate quotas, strict/full-mode CSP, capacity and representative
+  AI quality evidence also remain. No remediation beyond Step 19A was implemented.
+- Step 19A changed **README.md**, **docs/DATABASE.md**, **docs/IDENTITY_AND_RECOVERY.md**,
+  **docs/PROJECT_STATUS.md**, and the current-evidence note in
+  **docs/PRODUCTION_READINESS_MATRIX.md**. Application source and migration semantics
+  were unchanged. Private backup/evidence files are ignored.
+- Branch **main**, HEAD **759e5f8** unchanged. Existing local implementation/audit
+  changes remain uncommitted. No commit, push, deployment, remote DB access,
+  visibility/billing change, Gemini request or private environment edit occurred.
+
+## Step 18 — technical, security and production-readiness audit, 2026-10-23
+
+### Subsequent local security/recovery follow-up — 2026-10-23
+
+The subsequent instruction to continue initiated the recommended P0-1/P0-2 local
+follow-up. Implementation and verification are complete for the local scope below.
+The Step 18 audit below remains historical evidence.
+
+- Replaced new direct email-based membership grants with account-bound, expiring,
+  single-use invitations, recipient acceptance, revocation and current issuer-role
+  checks. Acceptance rotates the recipient's sessions. Added corresponding UI and
+  migration 0011, preserving legacy users, memberships and sessions in tests.
+- Delivery defaults to disabled. Only an opt-in private synthetic local mailbox
+  exists; production issuance/acceptance is blocked. This verifies the protocol,
+  not ownership of real external mailboxes. Commercial identity readiness remains
+  incomplete pending an approved real delivery adapter and legacy identity review.
+- Added a quiesced synthetic pg_dump/pg_restore drill into a second owned empty
+  database, with document/model copies, hash checks, restored PostgreSQL checkpoints,
+  exact-review resume, no regeneration, tenant denial and corrupt/missing-file checks.
+  Final observed backup: 0.149 seconds; restore plus validation: 0.540 seconds,
+  within the 120-second local test target. No committed snapshot records lost.
+  These tiny local measurements are not production RPO/RTO or off-host recovery.
+- Final verification: **284 backend tests passed**, one existing SDK warning,
+  78.87 seconds; **26 full browser tests passed**, 2.1 minutes; **16 demo tests
+  passed**, 14.5 seconds. Full/demo production builds, TypeScript, ESLint, Ruff
+  lint and formatting passed (133 Python files). Existing assertions were retained;
+  membership fixtures now exercise invitation acceptance. Migration default mismatch
+  and test-fixture import issues found during development were corrected.
+- New runbook: [IDENTITY_AND_RECOVERY.md](IDENTITY_AND_RECOVERY.md). Development
+  database and private .env were not migrated or edited. Before starting the updated
+  full backend, apply migration 0011 using the runbook. Existing development data
+  and the deployed demo were preserved. Local build artifacts currently use demo mode.
+- All changes remain local/uncommitted. No push, deployment, external email,
+  credential change, paid service or live Gemini request. P0-3/P0-4 and the other
+  commercial requirements remain outstanding. No further remediation is started.
+
+### Original audit completion
+
+- Audited actual source, migrations, provider/schema boundaries, model training and
+  evaluation, graph/checkpoint/job recovery, authorization, document storage,
+  analytics and frontend behavior against application commit
+  **`759e5f87751cb49c1dd117755dcbdc08b14e31af`**. Existing Step 17B notes preserved.
+- **Local full application:** verified for tested isolated synthetic journeys.
+  **Public recruiter demo:** ready to share within its disclosed scope.
+  **Commercial SaaS:** blocked pending verified identity/membership, independent
+  restore evidence, production runtime/privilege boundaries, privacy/retention,
+  abuse/monitoring and representative capacity/quality gates.
+- Fresh backend result: **269 passed, 1 SDK deprecation warning, no skips,
+  73.07 seconds**. Includes real local embeddings/pgvector, PostgreSQL checkpoints,
+  dedicated RQ/broker interruption/recovery and tenant/security tests; no live AI.
+- Fresh frontend results: **26 full browser tests passed (2.0 minutes)** and
+  **16 local demo tests passed (14.5 seconds)**. Full production build, TypeScript,
+  ESLint, Ruff lint and formatting passed; 129 Python files already formatted.
+  Isolated browser database/storage/process cleanup completed; development data
+  preserved and the pre-existing PostgreSQL on 55433 left running.
+- **11 fresh hosted scenarios passed (1.6 minutes)** against the current public
+  alias, including real navigation/interactions, responsive/keyboard/axe checks,
+  headers, disabled backend/live-generation routes and negative CSP enforcement.
+  Initial sandbox browser-launch failures were rerun unchanged with required
+  permissions; no application assertion was weakened. No deployment occurred.
+- Existing classifier artifact independently re-evaluated without retraining:
+  validation accuracy **0.892857**, macro F1 **0.885928**; test accuracy **0.785714**,
+  macro F1 **0.784580**, exactly matching saved results. Test suggestions cover
+  13/56 at threshold 0.45. Recorded retrieval K=5 recall 0.928571 / hit rate 20/21
+  remains small synthetic evidence. Fixture RAG completeness is only 3/7; passing
+  citations are not proof of comprehensive or factually entailed live answers.
+- Historical one-call Gemini success on 2026-10-20 remains valid recorded evidence
+  for communication/schema/synthetic citations, not broad live RAG quality or
+  current remote availability. **No new Gemini requests or credential changes.**
+- Main security finding: unverified signup email can receive membership if an
+  owner/admin adds that claimed email; high conditional risk for commercial users,
+  not an observed public-demo compromise. Other findings cover proxy rate-limit
+  fairness, aggregate storage/abuse limits, retention, heuristic output checks,
+  infrastructure hardening and CSP. No critical exploit was established; this is
+  not exhaustive penetration testing or security certification.
+- Reviewed same-day Step 17A npm reports: five high entries in one dev-only lint
+  chain; runtime audit zero. Official braces advisory still lists no patched
+  version. No breaking dependency change or remediation performed.
+- Fresh Git review: 266 tracked paths, 285 reachable history blobs; no forbidden
+  runtime/secret paths or tested credential-pattern matches. Read-only GitHub
+  metadata reconfirmed private visibility and default branch main. Pattern review
+  is bounded, not a guarantee of detecting every secret. No key was printed.
+- Created [FINAL_TECHNICAL_AUDIT.md](FINAL_TECHNICAL_AUDIT.md),
+  [PRODUCTION_READINESS_MATRIX.md](PRODUCTION_READINESS_MATRIX.md),
+  [REMAINING_WORK.md](REMAINING_WORK.md) and
+  [PORTFOLIO_TECHNICAL_SUMMARY.md](PORTFOLIO_TECHNICAL_SUMMARY.md).
+  They classify all 18 components and define P0–P3 acceptance/verification/cost
+  requirements. Older current-tense milestone/deployment/provider docs contain
+  drift; use this entry and the audit as the current assessment.
+- No application code, dependencies, private environment, production settings,
+  repository visibility or development data changed. No commit, push, deployment
+  or paid service. Audit files remain local. Recommend a separately authorized
+  local security/recovery milestone, beginning with verified membership identity
+  and an isolated restore drill. **Stop after Step 18; no remediation started.**
+
+## Step 17B — reviewed release deployed and verified, 2026-10-23
+
+- One normal push of main advanced GitHub from `be7efbc` to
+  **`759e5f87751cb49c1dd117755dcbdc08b14e31af`**. GitHub branch endpoint confirms
+  exact SHA; repository remains private. Pre-push tree was clean, origin matched,
+  and all 266 commit paths/contents passed the credential-pattern/path recheck.
+- Existing personal Vercel project `resolveflow-ai` remains on active Hobby;
+  Next.js, apps/web, Node 24.x, npm ci and npm run demo:build retained. The exact
+  three nonsecret demo environment values matched; no configuration was changed.
+- Git integration automatically created **one** release production deployment:
+  `dpl_8FXUVgZtC3vVzUvkPHNsro8B9bNQ`. Vercel reports READY, Git source main and
+  exact release SHA. Completed build logs confirm successful output/deployment.
+  Existing alias https://resolveflow-ai-rosy.vercel.app now points to this release.
+  No CLI deployment, duplicate project or repeated deployment was initiated.
+- **11 hosted browser scenarios passed**, zero retries, fresh anonymous contexts:
+  landing/demo entry, ticket search/filter/edit/create/persistence/reset, documents,
+  citations, workflow replay/approval safeguards, analytics, error recovery,
+  redirects and bounded navigation crawl. Keyboard, scrolling, 44px demo targets,
+  desktop/tablet/mobile widths and light/dark accessibility checks passed.
+- Actual HTTPS response includes the expected enforced CSP. Charts, hydration,
+  styles, navigation and replay work. Direct negative checks confirm external fetch
+  and inline handler execution blocked before an external request leaves the browser.
+  Normal journeys produced no console errors, uncaught exceptions or unexpected
+  network failures; deliberate negative-test violations are expected.
+- CSP still permits inline scripts/styles for Next.js/React compatibility and is
+  not strict nonce-based XSS protection. Full API rejected, live generation returns
+  403; no Gemini call. Asset observation: 61 responses, 1,117,198 text bytes, zero
+  tested credential patterns, only production same-origin requests, no cookies.
+  Synthetic source remains unchanged. This is bounded evidence, not an exhaustive
+  secret scan of every deployment artifact or penetration-test certification.
+- No local backend services required. Physical MacBook-off/real-device and complete
+  screen-reader audits remain unperformed. Existing five dev-only lint advisories
+  and finite Hobby quotas remain; exact billing totals were not audited this step.
+- No paid service, upgrade, database, monitoring, domain, environment or deployment
+  protection change. No secret uploaded; full backend not deployed. Recruiter demo
+  is ready for public sharing: https://resolveflow-ai-rosy.vercel.app/demo.
+- This completion status update stays local and uncommitted/unpushed to avoid a
+  second Git-triggered build. HEAD and origin/main match the verified release SHA.
 
 ## Step 17A — local release security gate, 2026-10-23
 
@@ -1415,8 +2191,12 @@ build validation; Vitest and a persistent Playwright suite remain planned.
 
 ## Next action
 
-Stop after Step 17A. The reviewed local release is ready for a separately authorized
-push and deployment. Live demo remains at https://resolveflow-ai-rosy.vercel.app/demo
-on `be7efbc`. Do not proceed to Step 17B, modify Vercel or enable Gemini without
-explicit permission. See PORTFOLIO_READINESS.md and DEMO_SECURITY.md for release
-identification, verified CSP scope and remaining limitations.
+Stop after Step 19A. Migration 0011 is applied to the owned development database;
+private backup/restore verification and fresh full application tests passed.
+Changes remain local and uncommitted. Review the remaining P0 identity/delivery
+and operational backup requirements before authorizing the next milestone.
+
+The synthetic recruiter demo remains available at
+https://resolveflow-ai-rosy.vercel.app/demo, on release
+`759e5f87751cb49c1dd117755dcbdc08b14e31af`. No push, deployment, billing change or
+live Gemini request is authorized by this closeout.

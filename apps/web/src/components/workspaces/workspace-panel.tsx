@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { AcceptInvitation, PendingInvitations } from "./invitations";
 import {
   api,
   errorMessage,
@@ -114,6 +115,7 @@ export function WorkspacePanel({
         <div className="workspace-account">
           <span className="eyebrow">SIGNED IN AS</span>
           <p>{user.email}</p>
+          {!user.email_verified && <p className="field-help">Email is unverified. <Link href="/verification-required">Verify email</Link></p>}
           <button
             className="subtle-button"
             disabled={pending}
@@ -159,6 +161,7 @@ export function WorkspacePanel({
             {notice}
           </p>
         ) : null}
+        <AcceptInvitation verified={user.email_verified} />
         {creating ? (
           <section className="workspace-card create-card">
             <span className="eyebrow">NEW WORKSPACE</span>
@@ -166,7 +169,7 @@ export function WorkspacePanel({
             <form onSubmit={create} className="auth-form">
               <WorkspaceFields />
               <p className="field-help">
-                You’ll be the owner. You can add registered teammates after
+                You’ll be the owner. You can invite registered teammates after
                 creating the workspace.
               </p>
               <button className="action-button" disabled={pending}>
@@ -309,11 +312,11 @@ export function WorkspacePanel({
                   onAdd={(data) =>
                     perform(async () => {
                       await api(
-                        `/workspaces/${selected.id}/members`,
+                        `/workspaces/${selected.id}/invitations`,
                         "POST",
                         data,
                       );
-                      setNotice("Team member added.");
+                      setNotice("Invitation created. Access begins only after the recipient accepts.");
                       router.refresh();
                     })
                   }
@@ -324,6 +327,7 @@ export function WorkspacePanel({
                   access.
                 </p>
               )}
+              {manage && <PendingInvitations key={selected.id} workspace={selected} refresh={notice} />}
             </section>
             <section className="workspace-card">
               <span className="eyebrow">WORKSPACE DETAILS</span>
@@ -416,7 +420,7 @@ function AddMember({
       }}
     >
       <div className="form-field">
-        <label htmlFor="member-email">Add a registered teammate</label>
+        <label htmlFor="member-email">Invite a registered teammate</label>
         <input
           id="member-email"
           name="email"
@@ -440,7 +444,7 @@ function AddMember({
         </select>
       </div>
       <button className="action-button" disabled={pending}>
-        Add member
+        Send invitation
       </button>
     </form>
   );

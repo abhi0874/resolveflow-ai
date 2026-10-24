@@ -1,5 +1,20 @@
 # Workspace and ticket authorization — Steps 4–5
 
+**Step 19B:** production requires exact-address SMTP verification before login or
+privileged workspace access; the backend enforces this even for pre-existing
+sessions and queued workflow actors. Local development can retain its compatibility
+policy; no client flag controls it. Recovery changes credentials and invalidates
+sessions/tokens without adding membership or changing roles. Prior local proof is
+not promoted to production identity. Workspace invitation transport remains the
+separate local-only implementation; see [EMAIL_DELIVERY.md](EMAIL_DELIVERY.md).
+
+**Local follow-up, 2026-10-23:** new membership grants require account-bound,
+expiring invitation acceptance. The legacy POST members route now returns 409
+after authorization instead of granting access. Existing role-change/removal
+protections remain. The route table and original invitation limitations below
+describe the historical Steps 4–5 implementation; current routes and synthetic
+delivery restrictions are in [IDENTITY_AND_RECOVERY.md](IDENTITY_AND_RECOVERY.md).
+
 Implemented and verified 2026-10-19. Authentication identifies the caller;
 workspace membership and permissions determine what they may do. Neither a
 frontend selector nor possession of a workspace UUID grants access.

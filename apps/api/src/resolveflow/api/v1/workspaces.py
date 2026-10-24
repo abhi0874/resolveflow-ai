@@ -1,23 +1,25 @@
 import uuid
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from sqlalchemy import select
 
 from resolveflow.db.models import (
-    AccountStatus,
     MembershipRole,
     User,
     Workspace,
+    WorkspaceInvitation,
     WorkspaceMembership,
 )
 from resolveflow.schemas.auth import (
+    InvitationResponse,
     MemberInput,
     MemberResponse,
     RoleInput,
     WorkspaceInput,
     WorkspaceResponse,
 )
-from resolveflow.services.auth import CSRF, DB, CurrentUser
+from resolveflow.services import invitations
+from resolveflow.services.auth import CSRF, DB, CurrentUser, limited
 from resolveflow.services.authorization import (
     Permission,
     access,
@@ -84,19 +86,41 @@ def members(workspace_id: uuid.UUID, db: DB, user: CurrentUser):
 
 @router.post("/{workspace_id}/members", response_model=MemberResponse, status_code=201)
 def add_member(workspace_id: uuid.UUID, body: MemberInput, db: DB, user: CurrentUser, csrf: CSRF):
+    # Old clients must not silently bypass the recipient's invitation acceptance.
     _, actor = access(db, user, workspace_id, Permission.MEMBERS, lock=True)
     check_member_change(db, actor, None, body.role)
-    target_user = db.scalar(
-        select(User).where(
-            User.email == str(body.email), User.account_status == AccountStatus.ACTIVE
-        )
-    )
-    if target_user is None:
-        raise HTTPException(422)  # No public account lookup endpoint.
-    target = WorkspaceMembership(user_id=target_user.id, workspace_id=workspace_id, role=body.role)
-    db.add(target)
-    db.commit()
-    return MemberResponse(user_id=target.user_id, email=target_user.email, role=target.role)
+    raise HTTPException(409)
+
+
+@router.post("/{workspace_id}/invitations", response_model=InvitationResponse, status_code=202)
+def invite(
+    workspace_id: uuid.UUID,
+    body: MemberInput,
+    request: Request,
+    db: DB,
+    user: CurrentUser,
+    csrf: CSRF,
+):
+    limited(db, request, "invite", user.email)
+    return invitations.issue(db, user, workspace_id, body, request.app.state.settings)
+
+
+@router.get("/{workspace_id}/invitations", response_model=list[InvitationResponse])
+def list_invitations(workspace_id: uuid.UUID, db: DB, user: CurrentUser):
+    access(db, user, workspace_id, Permission.MEMBERS)
+    return db.scalars(
+        select(WorkspaceInvitation)
+        .where(*invitations.pending(workspace_id))
+        .order_by(WorkspaceInvitation.created_at)
+        .limit(50)
+    ).all()
+
+
+@router.delete("/{workspace_id}/invitations/{invitation_id}", status_code=204)
+def revoke_invitation(
+    workspace_id: uuid.UUID, invitation_id: uuid.UUID, db: DB, user: CurrentUser, csrf: CSRF
+):
+    invitations.revoke(db, user, workspace_id, invitation_id)
 
 
 def target_member(db, workspace_id, user_id):

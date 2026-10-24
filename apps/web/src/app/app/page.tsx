@@ -28,6 +28,10 @@ export default async function AppPage({
   const user: User = await identity.json();
   const response = await read("/workspaces");
   if (response?.status === 401) redirect("/login");
+  if (response?.status === 403) {
+    const failure = await response.clone().json().catch(() => null);
+    if (failure?.error?.code === "email_verification_required") redirect("/verification-required");
+  }
   if (!response?.ok) return <Unavailable />;
   const workspaces: Workspace[] = await response.json();
   const query = await searchParams;

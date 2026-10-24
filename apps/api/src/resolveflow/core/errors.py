@@ -68,7 +68,12 @@ def register_error_handlers(app: FastAPI) -> None:
             message = HTTPStatus(exc.status_code).phrase
         except ValueError:
             message = "Request failed"
-        response = error_response(exc.status_code, "http_error", message)
+        code = (
+            exc.detail
+            if exc.detail in ("email_verification_required", "identity_link_invalid")
+            else "http_error"
+        )
+        response = error_response(exc.status_code, code, message)
         if exc.headers:
             response.headers.update(exc.headers)
         return response

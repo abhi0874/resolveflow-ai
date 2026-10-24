@@ -1,3 +1,4 @@
+import { inviteMember } from "./invitation-helper";
 import { test, expect, type APIRequestContext } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 async function write(request: APIRequestContext, path: string, data: unknown) {
@@ -61,7 +62,7 @@ test("viewer analytics permissions are enforced in navigation and API", async ({
   try {
     const email = `analytics-viewer-${randomUUID()}@example.com`;
     expect((await write(context.request, "/auth/register", { email, password: "analytics viewer passphrase!", password_confirmation: "analytics viewer passphrase!" })).status()).toBe(201);
-    expect((await write(page.request, `/workspaces/${space.id}/members`, { email, role: "viewer" })).status()).toBe(201);
+    expect((await inviteMember(page.request, context.request, `/workspaces/${space.id}/members`, { email, role: "viewer" })).status()).toBe(201);
     const viewer = await context.newPage();
     await viewer.goto(`/app/analytics?workspace=${space.id}`);
     await expect(viewer.getByRole("heading", { name: "Analytics access restricted" })).toBeVisible();

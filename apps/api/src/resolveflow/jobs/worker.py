@@ -15,6 +15,7 @@ from resolveflow.jobs.models import WorkflowJob
 from resolveflow.jobs.service import now
 from resolveflow.jobs.transport import log_event, ownership
 from resolveflow.retrieval.contracts import EmbeddingUnavailable
+from resolveflow.services.auth import verification_allows
 from resolveflow.workflows import service as workflow
 from resolveflow.workflows.contracts import TERMINAL
 from resolveflow.workflows.models import WorkflowExecution
@@ -92,7 +93,7 @@ def process(database, settings, job_id, delivery_id, dependencies=None):
             provider = None
             try:
                 user = db.get(User, job.actor_id)
-                if user is None:
+                if user is None or not verification_allows(settings, user):
                     raise HTTPException(403)
                 # Current user, workspace, ticket and assignment authorization; never message scope.
                 workflow.scoped(db, user, row.workspace_id, row.id, write=True)

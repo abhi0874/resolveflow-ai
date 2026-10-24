@@ -1,3 +1,4 @@
+import json
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
@@ -63,6 +64,22 @@ def workspace(client, slug=None):
     )
     assert response.status_code == 201, response.text
     return response.json()
+
+
+def invite_member(client, recipient, path, body):
+    """Exercise the real invitation/acceptance flow using a private test mailbox."""
+    for current in (client, recipient):
+        assert current.app.app.state.settings.environment == "test"
+        current.app.app.state.settings.invitation_delivery = "local"
+    response = mutate(client, path.removesuffix("/members") + "/invitations", body)
+    assert response.status_code == 202, response.text
+    invitation = response.json()
+    assert "token" not in invitation
+    root = client.app.app.state.settings.invitation_delivery_root
+    token = json.loads(
+        (root / uuid.UUID(path.split("/")[2]).hex / uuid.UUID(invitation["id"]).hex).read_text()
+    )["token"]
+    return mutate(recipient, "/auth/invitations/accept", {"token": token})
 
 
 def test_registration_hash_cookie_rotation_me_logout(auth_env):
@@ -275,8 +292,8 @@ def test_roles_membership_uniqueness_and_owner_invariants(auth_env):
     with TestClient(create_asgi_app(app.app.state.settings)) as teammate:
         user = register(teammate)
         assert (
-            mutate(
-                client, base + "/members", {"email": user["email"], "role": "viewer"}
+            invite_member(
+                client, teammate, base + "/members", {"email": user["email"], "role": "viewer"}
             ).status_code
             == 201
         )
@@ -334,7 +351,12 @@ def test_concurrent_owner_removal_preserves_one_owner(auth_env):
     base = f"/workspaces/{space['id']}/members"
     with TestClient(create_asgi_app(app.app.state.settings)) as second:
         other = register(second)
-        assert mutate(first, base, {"email": other["email"], "role": "owner"}).status_code == 201
+        assert (
+            invite_member(
+                first, second, base, {"email": other["email"], "role": "owner"}
+            ).status_code
+            == 201
+        )
         with ThreadPoolExecutor(max_workers=2) as executor:
             a = executor.submit(mutate, first, base + "/" + owner["id"], None, "DELETE")
             b = executor.submit(mutate, second, base + "/" + other["id"], None, "DELETE")
@@ -380,14 +402,20 @@ def test_admin_can_manage_lower_roles_but_not_other_tenant_members(auth_env):
         admin = register(admin_client)
         agent = register(agent_client)
         assert (
-            mutate(
-                owner_client, base + "/members", {"email": admin["email"], "role": "admin"}
+            invite_member(
+                owner_client,
+                admin_client,
+                base + "/members",
+                {"email": admin["email"], "role": "admin"},
             ).status_code
             == 201
         )
         assert (
-            mutate(
-                admin_client, base + "/members", {"email": agent["email"], "role": "support_agent"}
+            invite_member(
+                admin_client,
+                agent_client,
+                base + "/members",
+                {"email": agent["email"], "role": "support_agent"},
             ).status_code
             == 201
         )

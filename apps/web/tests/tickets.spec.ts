@@ -1,3 +1,4 @@
+import { inviteMember } from "./invitation-helper";
 import {
   test,
   expect,
@@ -191,7 +192,7 @@ test("server pagination, viewer restrictions and agent assignment limits in brow
     const member = await account(memberPage);
     expect(
       (
-        await write(page.request, `/workspaces/${workspace.id}/members`, {
+        await inviteMember(page.request, memberPage.request, `/workspaces/${workspace.id}/members`, {
           email: member.email,
           role: "viewer",
         })

@@ -8,6 +8,8 @@ const allowedPath =
 const draftPath = /^workspaces\/[a-f0-9-]{36}\/tickets\/[a-f0-9-]{36}\/(?:generate-response|response-config|drafts(?:\/[a-f0-9-]{36}(?:\/review)?)?)$/;
 
 const analyticsPath = /^workspaces\/[a-f0-9-]{36}\/analytics\/overview$/;
+const invitationPath = /^(?:auth\/invitations\/accept|workspaces\/[a-f0-9-]{36}\/invitations(?:\/[a-f0-9-]{36})?)$/;
+const identityPath = /^auth\/(?:verification|password)\/(?:request|confirm)$/;
 const workflowPath = /^workspaces\/[a-f0-9-]{36}\/(?:tickets\/[a-f0-9-]{36}\/workflows|workflows\/[a-f0-9-]{36}(?:\/(?:resume|cancel))?)$/;
 
 async function proxy(
@@ -42,7 +44,7 @@ async function proxy(
       (key) => keys.has(key) && query.getAll(key).length === 1,
     ) &&
     request.nextUrl.search.length <= 2048;
-  if ((!analyticsPath.test(path) && !allowedPath.test(path) && !draftPath.test(path) && !workflowPath.test(path) && !/^workspaces\/[a-f0-9-]{36}\/knowledge-base\/search$/.test(path)) || (request.nextUrl.search && !queryAllowed && !analyticsQuery))
+  if ((!identityPath.test(path) && !invitationPath.test(path) && !analyticsPath.test(path) && !allowedPath.test(path) && !draftPath.test(path) && !workflowPath.test(path) && !/^workspaces\/[a-f0-9-]{36}\/knowledge-base\/search$/.test(path)) || (request.nextUrl.search && !queryAllowed && !analyticsQuery))
     return new Response(null, { status: 404 });
   const headers = new Headers({ cookie: await sessionCookies() });
   for (const name of [

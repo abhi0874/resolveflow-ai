@@ -69,6 +69,7 @@ export function AppShell({
         <div className="workspace-account">
           <span className="eyebrow">SIGNED IN AS</span>
           <p>{user.email}</p>
+          {!user.email_verified && <p className="field-help">Email is unverified. <Link href="/verification-required">Verify email</Link></p>}
           {error && (
             <p className="form-error" role="alert">
               {error}

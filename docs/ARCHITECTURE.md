@@ -1,8 +1,41 @@
 # Application architecture
 
-Updated 2026-10-21 (Asia/Kolkata). Steps 2–10 implement the foundation described
-below. The subsequent target architecture remains planned unless explicitly
-listed as implemented.
+Updated 2026-10-25 (Asia/Kolkata), Step 20. The current implemented system spans
+Steps 1–19C. See [SYSTEM_ARCHITECTURE_OVERVIEW.md](SYSTEM_ARCHITECTURE_OVERVIEW.md)
+for the current diagram, source map and trust boundaries. Sections labeled with
+earlier step numbers below retain milestone context; their “future” statements
+describe that milestone, not an absence of subsequently implemented features.
+
+Current local identity uses account verification/recovery, hash-only identity email
+outboxes and session invalidation (`services/identity.py`, `jobs/email.py`), tested
+through local Mailpit. Production rejects local proof; external account SMTP remains
+unverified and production invitation delivery is not implemented. Development schema
+0012 and checkpoint storage passed fresh read-only compatibility checks.
+
+Step 20 changes no production runtime or graph architecture. Its targeted code fix
+gives the browser harness’s owned broker/queue settings precedence over inherited
+environment values. The full application remains local, the hosted demo remains
+synthetic/precomputed, and automatic backups remain intentionally inactive. Fresh
+317 backend / 29 full browser / 16 demo test results and both builds are recorded in
+[PORTFOLIO_EVIDENCE.md](PORTFOLIO_EVIDENCE.md). Commercial readiness is incomplete.
+
+## Step 19C — encrypted local backup foundation
+
+The offline `scripts/backups.py` operational CLI is independent of API startup and
+business logic. It uses the existing owned PostgreSQL cluster and private file storage:
+quiesced writers → SHARE locks/exported PG snapshot → custom dump plus checksummed
+referenced documents and immutable classifiers → restic encrypted repository.
+A manifest binds migration, extension versions, table fingerprints, dependency hashes
+and files. The existing synthetic restore drill now also traverses this encrypted path.
+
+Automatic restore tests use new marked databases and separate document roots, never
+restore over development and never start workers/SMTP. Valkey transport is reconstructed
+only after review from authoritative PostgreSQL jobs/checkpoints. Downloadable model
+weights and environment credentials are excluded; reprovisioning/key custody remain
+explicit dependencies. A per-user launchd template is generated, not installed/activated.
+Local integrity and recovery are verified; off-host and production DR remain unverified.
+See [BACKUP_ARCHITECTURE.md](BACKUP_ARCHITECTURE.md),
+[BACKUP_OPERATIONS.md](BACKUP_OPERATIONS.md) and [DISASTER_RECOVERY.md](DISASTER_RECOVERY.md).
 
 ## Implemented foundation — Steps 2–10
 

@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from test_auth_workspaces import mutate, register, workspace
+from test_auth_workspaces import invite_member, mutate, register, workspace
 from test_database import migrate
 
 from resolveflow.core.config import Settings
@@ -206,8 +206,9 @@ def test_roles_and_cross_tenant_document_content(env):
             )
         assert mutate(other, path, method="DELETE").status_code == 404
         assert (
-            mutate(
+            invite_member(
                 client,
+                other,
                 f"/workspaces/{space['id']}/members",
                 {"email": member["email"], "role": "viewer"},
             ).status_code

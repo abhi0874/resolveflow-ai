@@ -23,12 +23,12 @@ export function AuthForm({ register = false }: { register?: boolean }) {
     }
     setPending(true);
     try {
-      await api(`/auth/${register ? "register" : "login"}`, "POST", {
+      const result = await api<{ status?: string }>(`/auth/${register ? "register" : "login"}`, "POST", {
         email: String(data.get("email")).trim(),
         password,
         ...(register ? { password_confirmation: confirmation } : {}),
       });
-      window.location.replace("/app");
+      window.location.replace(result.status === "accepted" ? "/verification-required" : "/app");
     } catch (error) {
       setError(errorMessage(error, true));
       setPending(false);
@@ -78,10 +78,11 @@ export function AuthForm({ register = false }: { register?: boolean }) {
       </p>
       {register ? (
         <p className="field-help">
-          Email ownership is not verified yet. Use a development account; email
-          invitations and recovery are not available.
+          Check your inbox for verification when email delivery is configured.
+          Local development may allow access before verification.
         </p>
       ) : null}
+      {!register && <p className="form-switch"><Link href="/forgot-password">Forgot password?</Link> · <Link href="/verification-required">Verify email</Link></p>}
     </form>
   );
 }

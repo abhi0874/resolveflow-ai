@@ -71,7 +71,7 @@ def test_connection_extension_migration_and_schema(engine):
         assert conn.scalar(text("SELECT 1")) == 1
         assert conn.scalar(text("SELECT extversion FROM pg_extension WHERE extname='vector'"))
         assert conn.scalar(text("SELECT '[1,2,3]'::vector <-> '[1,2,3]'::vector")) == 0
-        assert conn.scalar(text("SELECT version_num FROM alembic_version")) == "0010"
+        assert conn.scalar(text("SELECT version_num FROM alembic_version")) == "0012"
         context = MigrationContext.configure(
             conn, opts={"compare_type": True, "compare_server_default": True}
         )
@@ -86,6 +86,9 @@ def test_connection_extension_migration_and_schema(engine):
         "users",
         "workspaces",
         "workspace_memberships",
+        "workspace_invitations",
+        "identity_emails",
+        "identity_audit",
         "tickets",
         "ticket_notes",
         "ticket_activities",

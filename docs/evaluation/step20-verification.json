@@ -1,0 +1,75 @@
+{
+  "step": "20",
+  "date": "2026-10-25",
+  "timezone": "Asia/Kolkata",
+  "branch": "hardening/step20",
+  "base_commit": "759e5f87751cb49c1dd117755dcbdc08b14e31af",
+  "backend": {
+    "passed": 317,
+    "skipped": 0,
+    "warnings": 1,
+    "seconds": 152.89
+  },
+  "full_browser": {
+    "passed": 29,
+    "reported_duration": "2.2m",
+    "inherited_broker_conflict_tested": true
+  },
+  "demo_browser": {
+    "passed": 16,
+    "seconds": 14.0
+  },
+  "checks": {
+    "full_production_build": "passed",
+    "demo_production_build": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "classifier_saved_evaluation": "passed",
+    "migration_metadata": "passed",
+    "checkpoint_storage": "passed",
+    "development_fingerprints": "passed"
+  },
+  "development": {
+    "revision": "0012",
+    "tables_preserved": 24,
+    "records_preserved": 34,
+    "remaining_test_databases": 0
+  },
+  "npm_audit": {
+    "full": 0,
+    "production": 0,
+    "lockfile_changed": false,
+    "previous_lint_packages_absent_from_demo_traces": true,
+    "demo_trace_files": 20
+  },
+  "restrictions": {
+    "live_gemini_calls": 0,
+    "external_email": false,
+    "schedule_activated": false,
+    "off_host_configured": false,
+    "push": false,
+    "deployment": false
+  },
+  "limitations": [
+    "Synthetic evaluation is not real-world accuracy",
+    "No new hosted verification",
+    "No comprehensive Python vulnerability or external penetration audit",
+    "External SMTP and production invitation transport unverified",
+    "Automatic backups intentionally inactive; independent recovery unverified"
+  ],
+  "logs": {
+    "classifier.json": "14a8a90238ee2cc4e76e6019fbf36b6753c8d8fc14f41674dc557093877728bb",
+    "npm-audit.json": "c1f632023137a07819f08a77331aa96dd872933fae97b042b5ab14de467973d7",
+    "ruff.txt": "a8d9d8a11a6a4adcbc1b0eb07fe539243b20afff9eba1653e90be611e802f17c",
+    "demo-browser.txt": "8405740b65bb6115331a57bedee1e944c513f52aef31953d531ba0858db49feb",
+    "full-build.txt": "ef33d0e38c4538e39f7a12d6168a2e7fddd44d447509fc84baf7dbc0df9888b3",
+    "demo-build.txt": "55862a06fd46a1ddb7acbc22b70409e4758e1087190b82058a1fe1bd2c542fde",
+    "eslint.txt": "9d55275b2f3fbbe18fe704bcf9613a6086ce4f34c9423c77e5e5602c29fb5005",
+    "backend.txt": "a2ef87d4a05f1146620cc7bd8802c6bd2a6062af29d02e5d6db4c7ef433e66a5",
+    "typecheck.txt": "7c3493df95d2ac86c905a0399c4f289a351493872dd51b7669a00e443ca6b6d5",
+    "full-browser.txt": "7ec85ae3c789facb23b0e6637d8792f620a59f052f2a2fc21ce873fe02da0bb6",
+    "npm-runtime-audit.json": "c1f632023137a07819f08a77331aa96dd872933fae97b042b5ab14de467973d7"
+  }
+}

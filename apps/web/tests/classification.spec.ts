@@ -1,3 +1,4 @@
+import { inviteMember } from "./invitation-helper";
 import { test, expect, type Page, type APIRequestContext } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
@@ -109,7 +110,7 @@ test("ML viewer and assigned-agent controls match backend authorization", async 
     const other = await context.newPage();
     const user = await register(other);
     const members = `/workspaces/${workspace.id}/members`;
-    expect((await write(page.request, members, { email: user.email, role: "viewer" })).status()).toBe(201);
+    expect((await inviteMember(page.request, other.request, members, { email: user.email, role: "viewer" })).status()).toBe(201);
     await other.goto(url);
     await expect(other.getByRole("heading", { name: "Duplicate debit", exact: true })).toBeVisible();
     await expect(other.getByRole("button", { name: "Classify with ML" })).toHaveCount(0);
