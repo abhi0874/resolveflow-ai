@@ -1,6 +1,74 @@
 # Project status
 
-Updated: **2026-10-25 (Asia/Kolkata), Step 20**.
+Updated: **2026-10-25 (Asia/Kolkata), Step 21**.
+
+## Step 21 — full application preserved on a private GitHub branch
+
+**Branch-only push succeeded and was independently verified. Production unchanged.**
+
+- Repository: [abhi0874/resolveflow-ai](https://github.com/abhi0874/resolveflow-ai),
+  authenticated GitHub metadata confirms **private**, personal ownership and default
+  branch `main`, before and after the push.
+- Remote branch: **`hardening/step20`**, pushed exactly once without force, merge,
+  PR creation or history rewriting. Verified remote checkpoint:
+  **`3ac6700f35ce8dc1978e34eaecae9cfdb8a79999`**. This is the actual Step 20
+  hash; the supplied task hash contained a transcription difference.
+- Remote Git commit tree **`b7a27811608332a1c50f65a02759cc812417d970`** exactly
+  matches the reviewed local tree. The backend source file is accessible on the
+  remote branch. Remote `main` remains
+  `759e5f87751cb49c1dd117755dcbdc08b14e31af`.
+- Security review covered **306 project files and 364 reachable history blobs**
+  on the final pre-push scan, with no configured-secret or credential-pattern
+  matches. Private environments, database files/passwords, SMTP/Gemini credentials,
+  private uploads, model caches, encrypted repositories/backup credentials,
+  dependencies, builds and logs remain excluded. Matching remote/local tree hashes
+  verifies the uploaded tree is the reviewed tree. This bounded review is not proof
+  of arbitrary secret/PII absence.
+
+### Vercel safety and observed preview behavior
+
+The initial scope-authorization blocker was resolved by the user. Read-only connector
+and dashboard checks confirmed Hobby, the existing GitHub integration, production
+branch `main`, Next.js, root `apps/web`, Node 24.x, `npm ci`, and `npm run demo:build`.
+Outside-root build files and paid on-demand concurrent builds are disabled. Automatic
+build behavior and skipping unaffected root-directory changes are enabled. Only this
+project was returned for the repository filter. Environment metadata contains the
+three intended nonsecret demo variables, including `NEXT_PUBLIC_APP_MODE=demo` and
+`DEMO_LIVE_AI_ENABLED=false` for production/preview/development; no Gemini key is
+configured. The demo build script also enforces these mode/live-AI values.
+
+One automatic **Preview** record was created for the pushed checkpoint:
+[deployment inspection](https://vercel.com/abhishesh1/resolveflow-ai/4aEt2Be3zhgpeemFUcqkvpNuT78C),
+assigned URL `https://resolveflow-oxzunarhf-abhishesh1.vercel.app`.
+Its final observed status is **BLOCKED**, not a working preview. Vercel explicitly
+reports that the existing checkpoint's Mac-local author email is invalid for its
+GitHub account check. No build retry, author-history rewrite, configuration change,
+manual deployment or promotion was performed. Preview availability is not required
+for successful private source-code preservation.
+
+After the push, the public production alias still maps to
+`dpl_8FXUVgZtC3vVzUvkPHNsro8B9bNQ`, the same READY deployment inspected before
+pushing, from `main` at `759e5f87751cb49c1dd117755dcbdc08b14e31af`.
+The [public recruiter demo](https://resolveflow-ai-rosy.vercel.app/demo) was not
+replaced. No Gemini call, paid feature or service activation occurred.
+
+### Local record and remaining limits
+
+The Step 21 status update is retained in a separate **local documentation commit**
+after remote verification. It is intentionally not pushed, to avoid triggering a
+second automatic preview. The branch tracks `origin/hardening/step20`; a clean local
+working tree can therefore be one documentation commit ahead of the remote checkpoint.
+No application code changed and no regression suites were rerun for this Git-only step.
+Step 20's test evidence remains dated evidence, not a fresh Step 21 test run.
+
+The full application is locally implemented and tested; the public recruiter demo
+uses synthetic data. Commercial production still requires external SMTP,
+independent key custody and off-host disaster recovery, deferred backup scheduling,
+and the remaining privilege, monitoring, quota, retention, security and capacity
+controls in [PRODUCTION_READINESS_MATRIX.md](PRODUCTION_READINESS_MATRIX.md).
+Backup scheduling remains intentionally inactive and is **not** a blocker to this
+private source preservation. **Step 21 complete; no later feature or deployment is
+authorized.**
 
 ## Step 20 — local engineering hardening and portfolio checkpoint
 
