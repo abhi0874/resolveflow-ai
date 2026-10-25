@@ -74,10 +74,12 @@ browser-local edits and local analytics. It requires no FastAPI, PostgreSQL, wor
 model cache or Gemini key. The full backend remains local.
 
 Recorded Step 17B deployed revision: `759e5f87751cb49c1dd117755dcbdc08b14e31af`.
-Step 20 did not make a new deployment, change visibility, push or independently
-reverify current hosted availability. The [GitHub repository](https://github.com/abhi0874/resolveflow-ai)
-is private according to the prior verified state and user-provided scope; its access
-settings were not changed or freshly queried. A recruiter needs separately authorized
+Step 20 did not make a new deployment. Steps 21–22 subsequently verified private
+source preservation on `hardening/step20` and the unchanged production revision on
+`main`. Step 23 inspected the hosted overview, billing workflow, cited source, inbox,
+analytics and architecture pages without publishing changes. The
+[GitHub repository](https://github.com/abhi0874/resolveflow-ai) remains private.
+A recruiter needs separately authorized
 access to inspect private source and these documents.
 
 ## Reliability and security mechanisms
@@ -109,17 +111,16 @@ upstream patch or absence of all vulnerabilities. No comprehensive fresh Python
 vulnerability audit was performed. No adoption, revenue, uptime or real-user benefit
 has been measured.
 
-## Suggested resume bullets
+## Claim reuse and Step 23 presentation review
 
-- Built a multi-tenant support application with Next.js, FastAPI and PostgreSQL,
-  combining trained ticket classification, local semantic retrieval and reviewed RAG drafts.
-- Implemented a seven-stage LangGraph workflow with PostgreSQL checkpoints, exact-draft
-  human approval and RQ/Valkey background recovery using durable outbox and idempotency controls.
-- Validated the local stack with **317 backend and 29 full-application browser tests**,
-  plus **16 standalone demo tests**, using real local services and deterministic generation.
-- Designed tenant-scoped pgvector retrieval and provider-neutral structured generation,
-  with source quotation validation, bounded inference and explicit quality limitations.
+Use [RESUME_PROJECT_SUMMARY.md](RESUME_PROJECT_SUMMARY.md) for resume, LinkedIn and
+portfolio-card copy. Its claims map to the source and frozen reports above. Step 23
+inspected existing evaluation JSON; it did not retrain models or rerun the Step 20
+application suites. The counts above remain Step 20 evidence.
 
-Use “portfolio project” context; do not imply commercial operations or customer impact.
-For an ML-focused role, the synthetic macro F1 can be discussed with its dataset and
-coverage denominators rather than presented as an isolated accuracy headline.
+Steps 21–22 verified private source preservation on `hardening/step20`, production
+unchanged on `main`, and corrected future repository-local attribution. The branch
+preview was blocked by old commit metadata, not presented as a successful deployment.
+Step 23's presentation work is included in the Step 24A local documentation
+checkpoint; it has not been pushed. Commercial readiness and backup/email limits
+above are unchanged.

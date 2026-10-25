@@ -9,8 +9,27 @@ send customer messages or perform refunds/account actions.
 **[Explore the live recruiter demo](https://resolveflow-ai-rosy.vercel.app/demo)** ·
 [Architecture](docs/SYSTEM_ARCHITECTURE_OVERVIEW.md) ·
 [Engineering case study](docs/AI_ENGINEERING_CASE_STUDY.md) ·
-[3–5 minute walkthrough](docs/RECRUITER_WALKTHROUGH.md) ·
+[Three-minute walkthrough](docs/RECRUITER_WALKTHROUGH.md) ·
 [Verified evidence](docs/PORTFOLIO_EVIDENCE.md)
+
+## The project in 60 seconds
+
+A support response needs a category, relevant evidence and an accountable decision.
+ResolveFlow AI combines **trained ticket classification, semantic retrieval,
+Gemini-powered RAG and LangGraph orchestration** in a multi-tenant application.
+I built the ticket/document APIs, ML pipeline, retrieval and generation adapters,
+checkpointed review workflow, background recovery and frontend.
+
+The engineering challenge is preserving evidence and authorization when work is slow,
+retried or interrupted. PostgreSQL outboxes and checkpoints, stable draft identities
+and exact-draft human review address that challenge. Approval records an internal
+review outcome; it does not send a customer message.
+
+[Open the synthetic demo](https://resolveflow-ai-rosy.vercel.app/demo) →
+**Explore a workflow** → inspect its source → **Under the hood**.
+The local implementation runs real ML and retrieval; the public demo replays authored
+examples with live Gemini disabled. See the [three-minute script](docs/RECRUITER_WALKTHROUGH.md)
+and [resume / LinkedIn copy](docs/RESUME_PROJECT_SUMMARY.md).
 
 ## Two runtimes, clearly separated
 
@@ -23,7 +42,8 @@ send customer messages or perform refunds/account actions.
 | Purpose | Operator-controlled local development and engineering verification | Public, interactive portfolio demonstration |
 
 The public demo requires no API key, database or local services. Do not enter private
-information. Source remains private; these local Step 20 changes are not deployed.
+information. Source remains private; the full application is preserved on `hardening/step20`.
+The public production demo remains on `main`; Step 23 presentation edits are local only.
 Commercial production SaaS readiness remains incomplete. See the
 [mode-specific readiness matrix](docs/PRODUCTION_READINESS_MATRIX.md).
 
@@ -51,6 +71,31 @@ shadcn/ui and Vitest were in the original plan but are not installed implementat
 The [architecture overview](docs/SYSTEM_ARCHITECTURE_OVERVIEW.md) includes a Mermaid
 diagram and source map; [ARCHITECTURE.md](docs/ARCHITECTURE.md) retains detailed
 component and milestone notes.
+
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+  UI[Next.js / TypeScript] --> API[FastAPI: session, CSRF, tenant RBAC]
+  API --> DB[(PostgreSQL / pgvector)]
+  DB --> OUT[Outbox dispatcher]
+  OUT --> Q[Valkey / RQ]
+  Q --> G[LangGraph in Python worker]
+  G --> ML[scikit-learn classification]
+  G --> R[Sentence Transformers / retrieval]
+  R --> DB
+  G --> P[Bounded context / AIProvider]
+  P -. opt-in .-> AI[Gemini 3.6 Flash]
+  G <--> CP[(PostgreSQL checkpoints)]
+  G --> H[Exact-draft human review]
+  H --> DB
+```
+
+This is the **local full application**, with server-side authorization rechecked
+inside services and workers. Only generation can call Gemini; routine tests use a
+fixture provider. The separate public demo has no backend connection. See the
+[detailed diagram](docs/SYSTEM_ARCHITECTURE_OVERVIEW.md) for ingestion, private storage,
+review/resume and operational boundaries.
 
 ## Local setup
 

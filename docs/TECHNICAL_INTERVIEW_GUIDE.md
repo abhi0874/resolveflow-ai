@@ -32,6 +32,22 @@ Paths beginning with a module name are relative to `apps/api/src/resolveflow/`.
 | What does backup verification prove? | `backups/` captures a quiesced DB snapshot plus checksummed referenced files, encrypts with restic and validates isolated restores. Same-Mac backups do not protect against machine loss. Scheduling, independent key custody and off-host recovery remain deferred. |
 | Why is the hosted demo different? | Vercel runs standalone Next.js with synthetic fixtures, browser session storage, keyword search and authored workflow replay. No FastAPI, PostgreSQL, ML, queue or live Gemini runs there. It demonstrates interaction design while local tests establish backend behavior. |
 
+## Short answers for recruiter follow-ups
+
+- **Why traditional ML for classification?** A bounded seven-label problem supports
+  an inspectable TF-IDF/logistic-regression baseline with local inference, grouped
+  evaluation and no per-ticket generation call. Synthetic coverage is limited;
+  a more complex model would need a measured benefit on representative data.
+- **What does the orchestrator do?** It routes typed state through seven specialized
+  stages, terminates failed work, checkpoints progress and pauses for an authorized
+  review. RQ runs it outside the HTTP request. Nodes are not seven separate LLMs.
+- **How do you prevent hallucinations?** I reduce risk using bounded retrieved
+  evidence, structured output, quotation/source checks, abstention and human review.
+  I cannot guarantee prevention: citation validity is not semantic correctness.
+- **What happens when Gemini fails?** The adapter returns a typed failure; generation
+  records failure and the graph exits safely. There is no automatic paid fallback or
+  unbounded retry. An ambiguous interrupted reservation is not silently regenerated.
+
 ## Scenarios worth explaining at a whiteboard
 
 1. **A document changes during generation.** Trace reservation → unlocked provider

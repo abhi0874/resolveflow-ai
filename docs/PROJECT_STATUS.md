@@ -1,6 +1,122 @@
 # Project status
 
-Updated: **2026-10-25 (Asia/Kolkata), Step 21**.
+Updated: **2026-10-25 (Asia/Kolkata), Step 24A**.
+
+## Step 24A — reviewed local portfolio checkpoint
+
+Reviewed the complete eight-file documentation change, including the previously
+uncommitted Step 22 status entry. No application files or dependencies changed.
+Preserved `hardening/step20` and existing history, including local documentation
+commit `5c1d67c1b53b7c3dbbd949beda9c916dcd586a15`.
+
+- Confirmed repository-local author/committer identity uses the Step 22 verified
+  `abhi0874` no-reply address; no global settings or older authors were changed.
+- Reviewed stack, logical graph workers versus RQ execution, exact-draft approval,
+  tenant checks, synthetic evaluation numbers and commercial limitations against
+  existing source/evidence. Hosted examples remain explicitly precomputed with live
+  inference disabled. Diagrams were source-reviewed, not renderer-tested.
+- Fixed two minor presentation inconsistencies: README's old 3–5 minute link label
+  now matches the three-minute walkthrough; its duration is described as a target,
+  not a measured timing result. Updated the evidence document's checkpoint status.
+- Rechecked local documentation destinations, balanced fences and diff whitespace;
+  scanned intended files/history for configured secrets and credential patterns,
+  and verified existing ignore protections. Reviewed staged file paths and bytes
+  before committing. No secret exposure was found within this bounded scan.
+- The one authorized local commit uses the subject
+  `docs: finalize ResolveFlow AI portfolio showcase`. Its resulting hash is reported
+  after creation; it cannot embed its own hash. Only README and the seven portfolio/
+  status documents are included. Prior milestone entries below retain dated context.
+
+No push, merge, PR, deployment, remote setting change, live Gemini request, backup
+activation or paid operation is part of this step. Application tests and hosted
+checks were not rerun for this documentation-only commit. Step 23's navigation
+checks and Step 20's application tests remain historical evidence.
+The checkpoint is ready for a separately authorized GitHub push after rechecking
+remote/deployment conditions; this is not deployment approval. The existing blocked
+preview and commercial operating limitations remain unchanged. **Stop after Step 24A.**
+
+## Step 23 — recruiter presentation refined locally
+
+**Documentation-only work, ready for review; no commit, push or deployment.**
+The prior uncommitted Step 22 status entry and local documentation commit are preserved.
+
+- Improved existing materials rather than duplicating the case study: README now
+  includes a 60-second introduction and compact architecture diagram; the detailed
+  architecture and case study clarify the RQ-process versus logical LangGraph-node
+  boundary, persistence throughout execution, document-to-draft flow and hosting strategy.
+- Replaced the longer walkthrough with six timed segments totaling **3:00**, mapped
+  to actual demo controls; added a short spoken introduction. Added concise interview
+  answers on traditional ML, orchestration, hallucination risk and provider failures.
+- Created `RESUME_PROJECT_SUMMARY.md`: four ATS-friendly bullet options, stack,
+  LinkedIn description, portfolio card and evidence mapping. Consolidated duplicate
+  resume bullets into that document. No personal resume was edited.
+- Rechecked source in `workflows/graph.py`, `workers.py`, queue execution, retrieval,
+  classifier training, RAG and demo components. Existing frozen JSON supports the
+  quoted classifier macro F1 **0.784580** and retrieval Recall@5 **0.928571**;
+  both are explicitly synthetic. No new accuracy, latency or customer-impact claims.
+- Hosted read-only presentation checks visited overview, billing workflow, exact
+  cited refund passage, inbox, analytics and architecture. Advancing **Show all stages**
+  correctly enabled the review acknowledgment. No customer action, live inference,
+  account/configuration change or deployment occurred. This was a bounded manual
+  navigation check, not a new automated browser suite or accessibility certification.
+- Documentation validation checked local Markdown destinations and balanced code
+  fences; `git diff --check` passed. Secret-pattern/configured-secret and exclusion
+  review was repeated before completion. Existing README setup and dated evidence
+  remain available; no application files or dependencies changed.
+
+The existing frontend already makes its synthetic replay/no-live-AI boundary clear;
+no frontend edit, redesign or full build was justified. Step 20's **317 backend / 29
+full browser / 16 demo** counts remain historical evidence and were not rerun here.
+The walkthrough duration is an editorial timing budget, not a timed usability study.
+Mermaid diagrams were source-reviewed; no exported image or renderer test is claimed.
+
+All eight edited/new presentation files remain local for review. Branch remains
+`hardening/step20`, HEAD `5c1d67c1b53b7c3dbbd949beda9c916dcd586a15`, with the prior
+local documentation commit still unpushed. Repository-local no-reply attribution
+is preserved. The live production demo remains unchanged; the older blocked preview
+was not repaired. Private source access, representative ML evidence, external SMTP,
+off-host recovery, deferred backup scheduling and commercial controls remain limitations.
+**Stop after Step 23. A reviewed local commit requires later authorization.**
+
+## Step 22 — future Git attribution corrected locally
+
+**Complete. No commit, push, history rewrite or deployment performed.**
+
+- Authenticated GitHub API identity is `abhi0874` (ID `151711990`), with profile
+  name Abhishesh Ramadas Shet. GitHub's authenticated email settings displayed its
+  account-issued no-reply identity; it was read directly, not constructed or guessed.
+  The CLI email-list endpoint was unavailable with its existing authorization;
+  browser settings supplied the evidence without changing account settings.
+- Set only repository-local `user.name` to the profile name and `user.email` to
+  `151711990+abhi0874@users.noreply.github.com`. Git's effective author and committer
+  identities now resolve to those values from `.git/config`. Neither local nor global
+  author settings were configured before this change; global configuration was not
+  modified. Future ordinary commits use this identity unless explicitly overridden.
+- Branch remains `hardening/step20`. Local HEAD remains
+  `5c1d67c1b53b7c3dbbd949beda9c916dcd586a15`, preserving the unpushed Step 21
+  documentation commit. Remote hardening remains
+  `3ac6700f35ce8dc1978e34eaecae9cfdb8a79999`; remote `main` remains
+  `759e5f87751cb49c1dd117755dcbdc08b14e31af`. GitHub metadata still confirms
+  personal ownership by `abhi0874` and private repository visibility.
+- Vercel's authenticated personal account is `abhisheshshet-2808`. Its authentication
+  page explicitly shows connected GitHub login `abhi0874`; no reauthentication is
+  needed. The existing `abhishesh1` workspace is Hobby. The project dashboard
+  confirms production follows `main`; the public alias still points to READY
+  production deployment `dpl_8FXUVgZtC3vVzUvkPHNsro8B9bNQ` at the unchanged main
+  revision. No Vercel/GitHub settings or security protections were changed.
+- Existing blocked preview metadata is unchanged. Correcting future Git configuration
+  cannot repair the old checkpoint's author email. No new preview was created or
+  tested, so future Vercel build success is not claimed. Existing GitHub/Vercel
+  account association and future Git attribution are now verified as compatible.
+- Only this status document is left modified and uncommitted, as required by the
+  no-commit instruction. No application code, credentials, SMTP, backup activation,
+  live inference or paid service changed. No application tests were needed for the
+  repository-only configuration change.
+
+Recommended next step: keep the old preview blocked. At a separately authorized
+future release, review a meaningful new commit using the corrected identity before
+any branch-only push and verify that preview separately. Do not amend the existing
+checkpoint or deploy solely to test attribution. **Stop after Step 22.**
 
 ## Step 21 — full application preserved on a private GitHub branch
 

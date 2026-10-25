@@ -1,6 +1,6 @@
 # ResolveFlow AI system architecture
 
-Reviewed locally on 2026-10-25, Step 20. This describes implemented code, not a
+Source and presentation reviewed locally on 2026-10-25, Step 23. This describes implemented code, not a
 commercial deployment plan. The [public demo](https://resolveflow-ai-rosy.vercel.app/demo)
 is a separate synthetic runtime. See [portfolio evidence](PORTFOLIO_EVIDENCE.md)
 for verification scope and [readiness](PRODUCTION_READINESS_MATRIX.md) for gaps.
@@ -28,7 +28,7 @@ flowchart TB
     Search --> Embed
     Search --> PG
     Graph --> RAG[Bounded context and AIProvider]
-    RAG -. separately enabled only .-> Gemini[Gemini structured generation]
+    RAG -. separately enabled only .-> Gemini[Gemini 3.6 Flash structured generation]
     RAG --> Validate[Schema, quotes and source freshness checks]
     Validate --> PG
     Graph <--> Checkpoints[(PostgreSQL workflow_checkpoints)]
@@ -77,6 +77,14 @@ Paths below are under `apps/api/src/resolveflow/` unless stated otherwise.
 | Identity email | `services/identity.py`, `email_delivery.py`, `jobs/email.py` implement expiring hash-only tokens, session revocation and bounded local SMTP delivery |
 | Analytics | `analytics/` uses authorized SQL aggregates with explicit cohort dates, counts and unavailable values |
 | Recovery | `backups/` verifies database/file manifests, encrypts locally, checks integrity and restores into ownership-marked isolated databases |
+
+## Execution boundary: graph stages versus queue workers
+
+An RQ process executes the graph; each graph node delegates to a specialized service
+in `workflows/workers.py`. Nodes are logical workers, not separately deployed agents
+or separate queue messages. LangGraph coordinates their sequence and failure exits;
+RQ and the PostgreSQL outbox coordinate background delivery and recovery. Checkpoints
+persist during execution and at human interruption, not just at the final outcome.
 
 ## Seven graph stages
 

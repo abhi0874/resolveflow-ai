@@ -1,6 +1,6 @@
 # ResolveFlow AI: accountable support drafting
 
-Step 20 engineering case study, 2026-10-25. This is a portfolio implementation using
+Engineering case study, presentation reviewed in Step 23, 2026-10-25. This is a portfolio implementation using
 synthetic evaluation data, not a report of customer adoption or commercial impact.
 
 ## Problem and product objectives
@@ -58,6 +58,21 @@ abstain. These are tiny synthetic results, not real-world accuracy. Step 20 relo
 the existing baseline and reproduced its recorded evaluation without replacing or
 retraining it. See [ML evaluation](ML_EVALUATION.md) and its JSON provenance reports.
 
+## Document-to-draft path
+
+An authorized PDF/TXT/Markdown upload is stored privately, extracted with resource
+bounds and split into deterministic chunks with source provenance. Explicit indexing
+embeds those chunks locally and persists vectors in pgvector. A ticket query is embedded
+in the same model space; tenant-scoped search selects current passages. Context
+construction bounds and reloads the evidence before structured generation, citation
+validation and human review. Extraction/indexing are synchronous services, not a
+fictional asynchronous ingestion fleet.
+
+Insufficient evidence is a legitimate abstention outcome. The system should not
+manufacture a policy when retrieval cannot support a draft. Similarity measures
+retrieval ranking; a valid quotation checks provenance; neither proves that every
+claim is factually correct or that an answer is complete.
+
 ## Embeddings, retrieval and evidence
 
 The local pinned `all-MiniLM-L6-v2` adapter produces normalized 384-dimensional
@@ -113,6 +128,21 @@ source of truth for current document content and saved decisions. On resume, the
 worker validates the exact response hash/revision, source/ticket freshness and current
 permissions. A saved decision survives a failed resume request and can be resumed later.
 
+### What the orchestrator coordinates
+
+The HTTP request accepts durable work; an RQ process invokes the LangGraph
+orchestrator. Within that execution, specialized logical workers run in order:
+
+**Ticket → classification → priority → retrieval → context → generation →
+verification → human approval.** PostgreSQL checkpoints persist progress throughout,
+including the approval pause; persistence is not a final step after approval.
+
+Classification uses traditional ML. Retrieval uses local neural embeddings and SQL.
+Priority, context selection and validation use bounded rules/checks. Generation alone
+may invoke Gemini through `AIProvider`. LangGraph supplies explicit transitions,
+failure exits and durable interruption/resumption; RQ supplies background execution.
+These are complementary mechanisms, not one independently queued LLM per graph node.
+
 ## Background reliability and human control
 
 An accepted execution and its job commit together before broker publication. A
@@ -139,6 +169,15 @@ credential versions, revocation and a durable email outbox. Mailpit exercises re
 local SMTP delivery; external production delivery and production invitation transport
 remain unverified/unimplemented operational gates. Production rejects local proof.
 Private storage uses generated keys, bounded extraction and controlled filesystem access.
+
+## Deployment strategy
+
+The full application is implemented locally and preserved on a private development
+branch. The public Vercel Hobby deployment hosts only the synthetic Next.js recruiter
+demo. This keeps the portfolio explorable without hosting Python workers, databases,
+model weights or live inference. It is not evidence of commercial full-stack hosting.
+Step 23 reviews presentation only; it does not publish changes or repair the older
+blocked branch preview. The public production deployment remains unchanged.
 
 ## Testing, operations and lessons
 
