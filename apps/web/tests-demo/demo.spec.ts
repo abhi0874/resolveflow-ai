@@ -202,7 +202,7 @@ test("demo keyboard access, touch targets, table scrolling and contrast", async 
 test("critical demo screens pass automated WCAG accessibility checks", async ({ page }) => {
   for (const theme of ["light", "dark"] as const) {
     await page.emulateMedia({ colorScheme: theme });
-    for (const path of ["/", "/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics"]) {
+    for (const path of ["/", "/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics", "/demo/architecture"]) {
       await page.goto(path);
       if (path !== "/") await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
       await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
@@ -237,4 +237,26 @@ base("production CSP blocks external connections and inline event handlers", asy
   expect(outcome.violations).toContain("connect-src");
   expect(outcome.violations).toContain("script-src-attr");
   expect(escaped).toEqual([]);
+});
+
+
+test("engineering case study explains boundaries and supports keyboard navigation", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/demo");
+  await page.getByRole("navigation", { name: "Demo navigation" }).getByRole("link", { name: "Under the hood" }).click();
+  await expect(page.getByRole("heading", { name: "Under the hood", exact: true })).toBeVisible();
+  await expect(page.getByText("Live Gemini inference is disabled.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Background execution data flow" }).getByRole("listitem")).toHaveCount(5);
+  await expect(page.locator(".engineering-stages > li")).toHaveCount(7);
+  await expect(page.getByRole("heading", { name: "Recorded results, with their limits" })).toBeVisible();
+  await expect(page.getByText("0.784580 macro F1", { exact: true })).toBeVisible();
+  await expect(page.getByText("0.928571 Recall@5", { exact: true })).toBeVisible();
+  await expect(page.getByText(/The complete Python backend is not currently hosted on Vercel/)).toBeVisible();
+  const workflow = page.getByRole("link", { name: "Explore a workflow", exact: true });
+  await workflow.focus(); await expect(workflow).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/demo\/workflows\/billing$/);
+  await page.goBack();
+  await page.getByRole("link", { name: "Back to landing page", exact: true }).click();
+  await expect(page).toHaveURL("/");
 });

@@ -1,6 +1,57 @@
 # Project status
 
-Updated: 2026-10-23 (Asia/Kolkata).
+Updated: 2026-10-26 (Asia/Kolkata), Step 27A release candidate.
+
+## Step 27A — isolated public case-study release candidate
+
+Local release branch `release/public-case-study` starts from freshly fetched
+`origin/main` at `759e5f87751cb49c1dd117755dcbdc08b14e31af`, matching the current
+READY production deployment. Development branch `hardening/step20` and its
+`4930fb0f418d7e21c4468fad59374b5b074c274c` tip remain unchanged.
+
+Transferred only the reviewed Step 26 patch for:
+- `apps/web/src/components/demo/architecture.tsx`
+- `apps/web/src/app/globals.css` (23 scoped styling lines)
+- `apps/web/tests-demo/demo.spec.ts`
+
+These files match the verified development versions exactly; no conflict or additional
+frontend dependency was required. This short status record is the only additional
+file, required by AGENTS.md. No backend/authentication/migration/infrastructure,
+package, lockfile, CSP or environment changes were integrated.
+
+Fresh isolated checks: unchanged-lockfile `npm ci`; Node 24.22.1 TypeScript, ESLint,
+demo production build and **17 demo tests passed in 14.8 seconds, zero retries**.
+Coverage includes architecture navigation/content, all demo journeys, keyboard,
+1440/768/390/320px layouts, light/dark axe and contrast, CSP enforcement, secret
+canary and denial of API/live-generation access. Browser fixtures reported no
+unexpected requests or console/hydration errors. No backend, database, broker,
+Python worker, local model or Gemini call was required. Desktop diagram/stage visual
+inspection passed; its browser console had no warnings/errors. Local server stopped.
+Existing lint peer-range and optional install-script warnings were nonfatal; no
+package upgrade was made. Git whitespace checks passed.
+
+Public claims retain dated synthetic evaluation evidence and distinguish the local
+full application from precomputed public workflows. Credentials/private data are
+excluded; the bounded pattern/configured-secret scan found no matches across 266
+candidate files and 379 reachable history blobs; all 11 ignore checks passed.
+No claim of exhaustive security certification, manual screen-reader verification,
+real-device performance or commercial readiness is made.
+
+Read-only Vercel verification: production branch main, existing Next.js project,
+apps/web root, Node 24.x,
+install npm ci, build npm run demo:build, outside-root files disabled, paid on-demand
+concurrency disabled. Only three nonsecret variables were returned; demo mode and
+live AI false apply to production/preview/development (telemetry disabled).
+Production alias still resolves to READY deployment `dpl_8FXUVgZtC3vVzUvkPHNsro8B9bNQ`
+at the base commit. No platform setting was changed.
+
+The local commit is `feat: publish recruiter engineering case study`; its resulting
+hash is reported after creation. No branch push, main merge, preview, promotion,
+paid service or deployment occurs in Step 27A. This candidate is ready for separately
+authorized GitHub preview verification; hosted behavior of this new candidate remains
+unverified. Historical production-baseline notes below retain their milestone context.
+Stop after Step 27A. No automatic Step 27B.
+
 
 **Steps 1–17A are complete locally; the reviewed release is not pushed or deployed.** The standalone synthetic recruiter
 demo is deployed on Vercel Hobby. GitHub remains private; the full backend and

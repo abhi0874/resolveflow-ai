@@ -2060,3 +2060,26 @@ button:disabled {
   min-height: 44px;
   min-width: 44px;
 }
+
+/* Static engineering case study: semantic flows, no diagram runtime or animation. */
+.engineering-study { min-width: 0; }
+.engineering-diagram { margin: 24px 0; }
+.engineering-diagram figcaption { font-weight: 600; margin-bottom: 20px; }
+.engineering-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; list-style: none; padding: 0; }
+.engineering-flow li { border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-wrap: anywhere; background: var(--background); }
+.engineering-flow li + li::before { content: "→"; display: block; color: var(--muted); margin-bottom: 8px; }
+.engineering-flow span { display: block; font-size: .84rem; line-height: 1.6; margin-top: 10px; color: var(--muted); }
+.engineering-storage { border-left: 3px solid var(--foreground); padding: 14px 20px; margin-top: 20px; background: var(--background); }
+.engineering-storage p { margin-bottom: 0; }
+.engineering-stages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 0; list-style: none; }
+.engineering-stages li { border-top: 1px solid var(--border); padding-top: 20px; }
+.engineering-stages h3 { margin: 12px 0; font-size: 1.15rem; }
+.engineering-ingestion { padding-left: 22px; line-height: 1.7; }
+.engineering-ingestion li { padding: 4px 0; }
+.engineering-evidence { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.engineering-evidence > div { border-top: 1px solid var(--border); padding-top: 20px; }
+.engineering-evidence dt { color: var(--muted); font-size: .84rem; line-height: 1.6; margin-bottom: 12px; }
+.engineering-evidence dd { margin: 0; }
+.engineering-evidence dd > strong { display: block; font-size: 1.3rem; line-height: 1.4; }
+@media (max-width: 1200px) { .engineering-flow { grid-template-columns: minmax(0, 1fr); } .engineering-flow li + li::before { content: "↓"; } }
+@media (max-width: 700px) { .engineering-stages, .engineering-evidence { grid-template-columns: minmax(0, 1fr); } }
