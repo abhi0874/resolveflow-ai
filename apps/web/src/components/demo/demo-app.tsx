@@ -1,10 +1,12 @@
 "use client";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { createDemoSource } from "@/lib/demo/store";
 import type { Action } from "@/lib/demo/types";
 import { demoAnalytics } from "@/lib/demo/analytics";
 import { AnalyticsDashboard } from "@/components/analytics/dashboard";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DemoTickets } from "./tickets";
 import { DemoKnowledge } from "./knowledge";
 import { DemoWorkflows } from "./workflows";
@@ -39,8 +41,9 @@ function DemoWorkspace({ section, selected }: { section: string; selected?: stri
       <div className="workspace-account"><span className="eyebrow">YOUR PRIVATE SANDBOX</span><p>No account. No external actions.<br />Changes stay in this browser tab.</p><button className="subtle-button" onClick={() => setResetting(true)} disabled={!source}>Reset demo</button></div>
     </aside>
     <section className="workspace-content ticket-content" id="demo-content" tabIndex={-1}>
+      <header className="demo-toolbar"><ThemeSwitcher /></header>
       <div className="demo-notice"><span className="role-badge">SYNTHETIC DEMO</span><p>Explore freely. Workflow examples are precomputed, not live AI. Please enter synthetic information only.</p><Link href="/demo/architecture">How it works ↗</Link></div>
-      {resetting && <section className="workspace-card" aria-label="Reset confirmation"><h2>Start fresh?</h2><p>This removes only this tab’s demo edits and decisions.</p><div className="ticket-actions"><button className="action-button" onClick={() => { if (source) setData(source.reset()); setResetting(false); setMessage("Demo reset. Original synthetic examples restored."); }}>Confirm reset</button><button className="subtle-button" onClick={() => setResetting(false)}>Keep exploring</button></div></section>}
+      {resetting && <ConfirmDialog title="Start fresh?" description="This removes only this tab’s demo edits and decisions." confirmLabel="Confirm reset" onCancel={() => setResetting(false)} onConfirm={() => { if (source) setData(source.reset()); setResetting(false); setMessage("Demo reset. Original synthetic examples restored."); }} />}
       {message && <p role="status" className="demo-feedback">{message}</p>}
       {!source ? <div className="analytics-loading" role="status"><p>Preparing your synthetic workspace…</p><div className="analytics-skeleton" /></div> : <>
         {section === "overview" && <><header className="demo-heading"><span className="eyebrow">A CALMER WAY TO SUPPORT</span><h1>Every request.<br /><em>A considered response.</em></h1><p>Explore ticket triage, citation-backed drafts and human review in a synthetic support workspace. Start with a workflow, then inspect the architecture behind the full application.</p><div className="ticket-actions"><Link className="action-button" href="/demo/workflows/billing">Explore a workflow ↗</Link><Link className="subtle-button" href="/demo/tickets">Browse the inbox</Link></div></header>

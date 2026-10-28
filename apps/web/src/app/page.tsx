@@ -18,28 +18,25 @@ export default function Home() {
         <section className="hero container" aria-labelledby="hero-title">
           <div className="hero-copy">
             <span className="release-badge">
-              <span className="small-dot" /> THE FOUNDATION FOR BETTER SUPPORT
+              <span className="small-dot" /> CONTEXT. CLARITY. HUMAN JUDGMENT.
             </span>
             <h1 id="hero-title">
-              Intelligent Customer Support,
+              Support with clarity.
               <br />
-              <span>Powered by AI.</span>
+              <span>Resolved with care.</span>
             </h1>
             <p className="hero-description">
-              An AI-powered customer support operations platform combining
-              machine learning, knowledge retrieval, and intelligent workflow
-              orchestration.
+              Bring every request into focus. Explore how classification,
+              grounded knowledge and human review turn a busy queue into
+              thoughtful support.
             </p>
             <div className="hero-actions">
               <Link href="/demo" className="primary-link">
                 Explore Live Demo <Icon name="arrow" width="19" height="19" />
               </Link>
-              <span className="development-note">
-                In development
-                <br />
-                <strong>Interactive synthetic workspace.</strong>
-              </span>
+              <Link href="/demo/architecture" className="hero-secondary">Explore the engineering <span aria-hidden="true">↗</span></Link>
             </div>
+            <p className="hero-footnote">An interactive, synthetic workspace. No account or live AI required.</p>
           </div>
           <WorkflowOverview />
         </section>
@@ -73,7 +70,7 @@ export default function Home() {
           <p>
             We’re building for support teams who value both speed and care.
             Grounded knowledge, transparent workflows, and human verification
-            are at the heart of the plan.
+            are at the heart of the application.
           </p>
         </section>
         <section
@@ -83,12 +80,12 @@ export default function Home() {
         >
           <div>
             <span className="eyebrow">WHERE WE ARE TODAY</span>
-            <h2 id="foundation-title">A foundation. A clear direction.</h2>
+            <h2 id="foundation-title">Explore the product. Understand the engineering.</h2>
             <p>
               Ticket management, durable AI workflows, human review and workspace analytics are implemented. Explore their behavior in a self-contained synthetic demo; the full backend runs separately.
             </p>
           </div>
-          <span className="foundation-version">13 / INTERACTIVE DEMO</span>
+          <Link className="primary-link" href="/demo/architecture">Under the hood <Icon name="arrow" width="18" height="18" /></Link>
           {process.env.NODE_ENV === "development" && appMode() === "full" ? <ApiStatus /> : null}
         </section>
       </main>

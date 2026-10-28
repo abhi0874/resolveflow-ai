@@ -122,3 +122,25 @@ Step 16 enlarges interactive link targets, labels the horizontally scrollable ti
 region, adds a keyboard scrolling hint and column scopes, preserves visible focus,
 and stacks tablet charts for readability. These changes are not yet on Vercel.
 Reset affects only this tab's demo journal; no customer data or message is changed.
+
+## Steps 28A–28C local UI verification
+
+The black-and-red redesign (superseding the Step 28A warm palette) is local on `codex/step28a-warm-ui`, based on
+production commit `8bb8ffd`. Public hosting remains unchanged. See
+[UI_DESIGN_SYSTEM.md](UI_DESIGN_SYSTEM.md) for palette, typography, responsive rules,
+motion and accessibility decisions.
+
+Use the existing demo build/test/typecheck/lint commands above. The suite retains
+all 17 previous checks and adds four scenarios, covering reset-dialog keyboard containment,
+Escape and trigger-focus restoration; and reduced-motion navigation/workflow controls; and theme persistence, cross-tab,
+pre-paint and blocked-storage behavior.
+Original network isolation, CSP, storage validation, approval and console assertions
+remain strict. The initial failures in transient fade contrast and modal focus were
+fixed in the UI, not suppressed in the tests. Final outcomes are in PROJECT_STATUS.
+
+Screenshots cover landing, overview, tickets, knowledge, workflows, analytics and
+architecture, including dark and mobile views. The optional local review server
+uses port 3210 to avoid disturbing any existing service; the standard automated
+harness still uses 3200. Neither requires a backend. Dark is the default; explicit Light/Dark controls persist a validated browser
+preference across routes, reloads and tabs. Native dropdowns remain native and no new
+remote font, analytics or motion library is required.

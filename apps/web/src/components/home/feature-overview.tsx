@@ -9,7 +9,7 @@ const features: {
   {
     title: "Intelligent Ticket Classification",
     description:
-      "Bring clarity to the queue with machine learning that identifies intent, category, and priority.",
+      "Bring clarity to the queue with ML category suggestions and bounded rules for priority.",
     icon: "classify",
     tag: "UNDERSTAND",
   },
@@ -21,7 +21,7 @@ const features: {
     tag: "DISCOVER",
   },
   {
-    title: "Multi-Agent Workflow Orchestration",
+    title: "Durable Workflow Orchestration",
     description:
       "Coordinate specialized AI steps through LangGraph, from first context to a considered draft.",
     icon: "workflow",
@@ -54,8 +54,8 @@ export function FeatureOverview() {
         </div>
         <p>
           From understanding a request to verifying a response.
-          <br className="desktop-break" /> These are the capabilities we’re
-          building toward.
+          <br className="desktop-break" /> Explore the capabilities of the full application
+          through clearly labeled examples.
         </p>
       </div>
       <div className="feature-grid">
@@ -68,7 +68,7 @@ export function FeatureOverview() {
             <span className="feature-tag">{feature.tag}</span>
             <h3>{feature.title}</h3>
             <p>{feature.description}</p>
-            <span className="planned-label">Planned capability</span>
+            <span className="planned-label">Implemented locally</span>
           </article>
         ))}
       </div>

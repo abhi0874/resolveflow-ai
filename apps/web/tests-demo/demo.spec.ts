@@ -175,7 +175,7 @@ test("demo keyboard access, touch targets, table scrolling and contrast", async 
   await expect.poll(() => table.evaluate(el => el.scrollLeft)).toBeGreaterThan(0);
   await expect(page.locator("th[scope=col]")).toHaveCount(4);
   for (const theme of ["light", "dark"] as const) {
-    await page.emulateMedia({ colorScheme: theme });
+    await page.evaluate(value => { localStorage.setItem("resolveflow-theme", value); document.documentElement.dataset.theme = value; window.dispatchEvent(new Event("resolveflow-theme")); }, theme);
     const contrast = await page.evaluate(() => {
       const css = getComputedStyle(document.documentElement);
       function luminance(hex: string) { const raw = hex.trim().replace("#", ""); const normalized = raw.length === 3 ? raw.split("").map(c => c + c).join("") : raw; const c = normalized.match(/../g)!.map(v => parseInt(v, 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return c[0] * .2126 + c[1] * .7152 + c[2] * .0722; }
@@ -200,8 +200,9 @@ test("demo keyboard access, touch targets, table scrolling and contrast", async 
 
 
 test("critical demo screens pass automated WCAG accessibility checks", async ({ page }) => {
+  await page.goto("/");
   for (const theme of ["light", "dark"] as const) {
-    await page.emulateMedia({ colorScheme: theme });
+    await page.evaluate(value => { localStorage.setItem("resolveflow-theme", value); document.documentElement.dataset.theme = value; window.dispatchEvent(new Event("resolveflow-theme")); }, theme);
     for (const path of ["/", "/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics", "/demo/architecture"]) {
       await page.goto(path);
       if (path !== "/") await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
@@ -259,4 +260,79 @@ test("engineering case study explains boundaries and supports keyboard navigatio
   await page.goBack();
   await page.getByRole("link", { name: "Back to landing page", exact: true }).click();
   await expect(page).toHaveURL("/");
+});
+
+test("reset dialog contains keyboard focus, cancels with Escape and restores its trigger", async ({ page }) => {
+  await page.goto("/demo");
+  const trigger = page.getByRole("button", { name: "Reset demo", exact: true });
+  await trigger.click();
+  const dialog = page.getByRole("dialog", { name: "Start fresh?" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Keep exploring" })).toBeFocused();
+  for (let i = 0; i < 5; i++) {
+    await page.keyboard.press("Tab");
+    expect(await dialog.evaluate(el => el.contains(document.activeElement))).toBe(true);
+  }
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await page.getByRole("button", { name: "Keep exploring" }).click();
+  await expect(trigger).toBeFocused();
+  await expect(page.getByRole("article", { name: "Support tickets" }).locator("strong")).toHaveText("8");
+});
+
+test("reduced motion removes UI animation without disabling workflow controls", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: "Explore Live Demo" })).toBeVisible();
+  expect(await page.locator(".hero-copy").evaluate(el => getComputedStyle(el).animationName)).toBe("none");
+  await page.getByRole("link", { name: "Explore the engineering" }).click();
+  await expect(page.getByRole("heading", { name: "Under the hood", exact: true })).toBeVisible();
+  expect(await page.locator(".demo-heading").evaluate(el => getComputedStyle(el).animationName)).toBe("none");
+  await page.getByRole("link", { name: "Explore a workflow", exact: true }).click();
+  await page.getByRole("button", { name: "Next stage" }).click();
+  await expect(page.getByText("Example stage 2 of 7 · Priority", { exact: true })).toBeVisible();
+  const current = page.locator('.workflow-stages li[data-state="current"]');
+  expect(await current.evaluate(el => getComputedStyle(el).transitionDuration)).toBe("0s");
+  await page.getByRole("button", { name: "Show all stages" }).click();
+  await expect(page.getByText("Replay ready for human review", { exact: true })).toBeVisible();
+});
+
+
+test("theme defaults dark and persists keyboard selections across routes, reloads and new tabs", async ({ page, context }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.getByRole("button", { name: "Dark theme" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Light theme" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByRole("link", { name: "Explore Live Demo" }).click();
+  await expect(page.getByRole("button", { name: "Light theme" })).toHaveAttribute("aria-pressed", "true");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  const other = await context.newPage();
+  await other.goto("/demo/architecture");
+  await expect(other.getByRole("button", { name: "Light theme" })).toHaveAttribute("aria-pressed", "true");
+  await other.getByRole("button", { name: "Dark theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.setViewportSize({ width: 320, height: 844 });
+  await expect(page.getByRole("group", { name: "Color theme" })).toBeVisible();
+  await page.getByRole("button", { name: "Light theme" }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+});
+
+test("saved theme applies before body parsing and blocked storage remains usable", async ({ page, context }) => {
+  await context.addInitScript(() => {
+    try { localStorage.setItem("resolveflow-theme", "light"); } catch {}
+    new MutationObserver(() => { if (document.body && !document.body.dataset.initialTheme) document.body.dataset.initialTheme = document.documentElement.dataset.theme; }).observe(document, { childList: true, subtree: true });
+  });
+  await page.goto("/");
+  await expect(page.locator("body")).toHaveAttribute("data-initial-theme", "light");
+  await page.addInitScript(() => { Object.defineProperty(window, "localStorage", { get() { throw new DOMException("Blocked", "SecurityError"); } }); });
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("button", { name: "Light theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });

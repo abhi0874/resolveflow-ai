@@ -30,7 +30,7 @@ export function WorkflowOverview() {
       <div className="orbit orbit-two" aria-hidden="true" />
       <div className="workflow-card">
         <div className="workflow-heading">
-          <span className="eyebrow">THE RESOLUTION PATH</span>
+          <span className="eyebrow">A REQUEST, CONSIDERED</span>
           <Icon name="spark" width="18" height="18" />
         </div>
         <ol className="workflow-steps">
@@ -50,8 +50,7 @@ export function WorkflowOverview() {
           ))}
         </ol>
         <div className="workflow-caption">
-          <span className="small-dot" /> Planned workflow · not a live
-          demonstration
+          <span className="small-dot" /> Illustrated workflow · no live inference
         </div>
       </div>
       <div className="human-note">

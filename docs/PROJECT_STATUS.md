@@ -1,6 +1,217 @@
 # Project status
 
-Updated: 2026-10-26 (Asia/Kolkata), Step 27A release candidate.
+Updated: 2026-10-29 (Asia/Kolkata), Step 28C final local UI QA and release preparation.
+
+## Step 28C — final visual QA and local release commit
+
+Reviewed the combined 17-file Step 28A/28B change on `codex/step28a-warm-ui`
+against production base `8bb8ffd09bda8ea3a1b5543b0d05a78f69188e4b`. This step
+prepares one local commit, `feat: redesign ResolveFlow AI with premium black and red themes`.
+Its resulting hash is reported in the completion message; no self-referential commit
+hash is embedded here. No push, merge, deployment or external configuration change.
+
+### Visual and interaction review
+
+- Visually inspected all 30 Step 28B screenshots: landing, overview, tickets,
+  knowledge, workflow/human review, analytics and technical case study at desktop
+  and mobile sizes in both themes, plus architecture diagram and reset dialog.
+- Retained the approved pitch-black/charcoal/red palette and matching soft-white
+  light theme. Reduced repetitive red strips on knowledge/example cards by using
+  neutral top borders. Reset confirmation now uses a danger outline and tinted
+  surface, visually distinct from ordinary filled-red primary actions.
+- Captured 30 fresh screenshots after refinement and inspected affected cards and
+  the reset dialog in both themes. Added two final dialog captures and accessibility
+  checks. No further spacing, hierarchy or responsive defect was identified.
+- Actual browser animation inspection confirmed 160/220ms theme/control transitions,
+  a finite 220ms dialog entrance translating 8px to zero, and 220ms workflow state
+  transitions. Button hover feedback remains visible. Charts keep their data static;
+  native dropdowns retain platform behavior. Reduced-motion regression checks pass.
+- Corrected stale recruiter-demo instructions about the former warm palette and
+  OS-controlled theme selection. Default dark and explicit persistent theme selection
+  are now documented consistently.
+
+### Fresh verification
+
+- Demo production build: passed (Node 24.22.1 / Next.js 16.4.2).
+- TypeScript: passed. ESLint: passed with zero warnings/errors.
+- Browser suite: **21 passed, 0 failed, zero retries (17.7 seconds)**.
+- Coverage includes ticket search/filter/detail/edit/create/reset, knowledge and
+  citations, workflow replay and human approval, analytics, case-study navigation,
+  theme persistence across refresh/routes/tabs, pre-paint initialization, blocked
+  storage, keyboard focus, reduced motion and 1440/768/390/320px layouts.
+- Existing contrast and axe WCAG 2.0/2.1 A/AA checks pass in both themes. Additional
+  open-reset-dialog axe checks pass in both themes with no violations.
+- Fresh screenshot run: **28 page/theme/viewport samples**, zero console/page errors,
+  unexpected network requests or page overflow. Additional motion/dialog run also
+  reported zero console/page errors or unexpected requests. Strict browser assertions
+  remain intact, including CSP enforcement, secret canary and disabled live generation.
+- Reviewed complete source/documentation diff and staged scope. Pattern-based scan
+  of all 17 intended files found no exposed credentials; the sole assignment-pattern
+  match was the existing explicitly synthetic test canary. Environment files,
+  screenshots/logs, caches, dependencies, builds, uploads and backups remain ignored.
+- Backend, domain libraries, authentication logic, Gemini configuration, CSP,
+  infrastructure, package manifest and lockfile remain unchanged. No real AI calls.
+- Repository-local author remains the verified `abhi0874` GitHub noreply identity.
+  Existing commits and other branches/worktrees are preserved.
+
+Artifacts remain local and ignored under `.cache/verification/step28c/` (build,
+typecheck, lint, browser results, screenshot measurements and interaction results).
+The local review server uses http://127.0.0.1:3210/ while running. Changed files
+are the 17 combined UI/component/test/documentation files listed in the Step 28A/28B
+records below; no generated artifact is included.
+
+### Remaining limitations and release gate
+
+Ready for a separately authorized controlled Vercel Preview; hosted verification
+of this redesign has not occurred. Physical devices, Safari/Firefox, manual screen
+reader testing, field performance and full authenticated-backend journeys remain
+unverified. Automated checks do not establish complete WCAG certification. Shared
+styles affect full-mode presentation, but no backend behavior changed. Public demo
+workflows remain synthetic/precomputed, live inference disabled. Production is not
+changed by this local work. Stop after Step 28C.
+
+
+## Step 28B — black/red refinement complete locally; not published
+
+Completed 2026-10-29 (Asia/Kolkata) on `codex/step28a-warm-ui`, preserving prior
+uncommitted Step 28A work. HEAD remains `8bb8ffd09bda8ea3a1b5543b0d05a78f69188e4b`.
+No commit, push, merge, Vercel settings change or deployment occurred.
+
+- Replaced the warm palette with pitch black, elevated charcoal, blood red and soft
+  white. Coordinated soft-white light mode uses the same brand. Sharper sans-serif
+  hierarchy covers landing, workspace, tickets, knowledge, workflows/human review,
+  analytics, case study and shared controls. Semantically distinct status colors remain.
+- Added visible keyboard-accessible Light/Dark controls to the landing header and
+  workspace toolbar on every demo route, including mobile and case study.
+- Dark is the default; a validated localStorage preference survives navigation,
+  refresh and same-browser visits. Cross-tab synchronization and blocked-storage
+  fallback are implemented. Same-origin pre-paint initialization avoids saved-theme
+  flash without modifying CSP; no competing theme provider or dependency added.
+- Motion uses 160/220/280ms bounded transitions and entrances, honors reduced motion,
+  and does not alter workflow timing or chart data behavior.
+- Fresh demo production build, TypeScript and ESLint passed. **21 browser tests passed, 0 failed,
+  zero retries (18.5 seconds)** in the final run. Existing assertions remain strict;
+  theme-dependent tests now explicitly select the saved theme rather than emulating
+  OS preference, since the requested default deliberately ignores OS preference.
+- Added persistence/keyboard/cross-tab/mobile and pre-paint/blocked-storage tests.
+- Captured 30 local screenshots: seven screens × two themes × desktop/mobile plus
+  diagram and dialog. Final capture: zero console/page errors, unexpected network
+  requests or overflow in all 28 page/theme/viewport samples. Both themes passed
+  automated contrast and axe checks; 1440/768/390/320px regression layouts passed.
+  Saved-theme pre-paint, keyboard, cross-tab, reload and blocked-storage checks passed.
+  `git diff --check` passed. Combined Step 28A/28B state: 17 intended changed/new
+  files, all uncommitted.
+- Visual inspection found legacy button CSS overriding the brand fill; corrected
+  selector priority rather than accepting the inconsistent result.
+- Backend, domain libraries, CSP/next.config, package and lockfile remain unchanged.
+  No Gemini requests, external services, credential changes or paid features.
+
+### Step 28B files
+
+Changed existing `apps/web/src/app/globals.css`, `design-system.css`, `layout.tsx`,
+`components/layout/site-header.tsx`, `components/demo/demo-app.tsx`,
+`tests-demo/demo.spec.ts`, `docs/UI_DESIGN_SYSTEM.md` and this status record.
+New `apps/web/public/theme-init.js` and
+`apps/web/src/components/ui/theme-switcher.tsx`. Earlier Step 28A files remain local.
+
+Local review: http://127.0.0.1:3210/ while the server runs. Logs and screenshots:
+`.cache/verification/step28b/` (ignored). Physical-device, Safari/Firefox, manual
+screen-reader and authenticated backend journeys remain unverified. Ready for local
+visual review only; publication requires separate authorization. Stop after 28B.
+
+## Step 28A — warm UI redesign complete locally; not published
+
+Production remains the Step 27C release at `8bb8ffd09bda8ea3a1b5543b0d05a78f69188e4b`.
+Created local branch `codex/step28a-warm-ui` from that main commit in the existing
+clean `production-case-study` worktree. No commit, push, deployment, Vercel setting
+change or paid activation. The separate release worktree's uncommitted Step 27B–27C
+records were preserved. Full development worktree remains clean on hardening/step20
+at `4930fb0f418d7e21c4468fad59374b5b074c274c`.
+
+### Implemented presentation
+
+Brown-and-cream semantic palette with light and espresso dark themes, device-local
+sans-serif interface and editorial serif headings, a composed marketing hero and
+case-study entry points, refined workspace navigation, summary ledger, ticket
+filters/status badges/timeline, knowledge cards and citation highlights, connected
+workflow stage cards, analytics controls/charts and case-study diagrams/evidence.
+Controls share focus/hover/disabled treatment, radii, surfaces and bounded motion.
+Native reset confirmation now traps keyboard focus, supports Escape and restores
+the opener. Existing reset/store/approval behavior is unchanged. Native dropdowns
+remain native; system color-scheme preference retains existing theme behavior.
+
+Animations use 160/220/380ms timings and small transforms; text is legible from the
+first frame. Reduced motion disables animation, transitions and smooth scrolling.
+No motion, font or UI dependency was added. The [design system](UI_DESIGN_SYSTEM.md)
+details tokens, responsive rules and accessibility choices.
+
+### Fresh final verification
+
+- `npm run demo:build`: passed, Node 24.22.1 / Next.js 16.4.2 webpack production build.
+- `npm run typecheck`: passed.
+- `npm run lint`: passed with zero warnings/errors.
+- `npm run test:demo`: **19 passed, 0 failed, zero retries (17.1 seconds)**.
+  All 17 existing assertions/scenarios were retained; two new scenarios verify
+  reset-dialog focus/Escape/restoration and reduced-motion workflow/navigation.
+- Existing coverage passes ticket search/filter/create/edit/persistence/reset,
+  knowledge/citations, replay and exact human review, analytics and empty states,
+  link crawl, full-API/live-generation rejection, secret canary, storage validation,
+  CSP enforcement and strict console/network isolation.
+- Both themes pass existing axe WCAG 2.0/2.1 A/AA checks. Keyboard/touch-target/contrast
+  checks and 1440/768/390/320px demo layouts pass without page overflow.
+- Initial checks found fade-induced transient low contrast and modal focus escape;
+  both were fixed in implementation, with no weakened assertions or suppressed errors.
+- Captured **16 screenshots** across 14 page/theme/viewport samples plus the diagram
+  and dialog. Visual review covered landing, overview, tickets, knowledge, workflow,
+  analytics, case-study hierarchy, dark workflow and mobile navigation/layout.
+  Final capture reported zero console/page errors, forbidden requests or overflow.
+- Local unthrottled Chromium samples: observed LCP **52–488ms**, CLS **0** across the
+  14 samples. These are short localhost observations, not field performance, an INP
+  measurement, Lighthouse score, or real-device certification.
+- Built asset comparison against the existing production-baseline checkout:
+  JS gzip total 449,171 → 449,610 bytes; CSS gzip total 9,904 → 13,911 bytes.
+  Increase: 4,446 bytes (about 4.4KB) across all generated JS/CSS, not per-page transfer.
+  JS chunk count remains 36. No new runtime dependencies or font/image downloads.
+- Locked `npm ci` completed; existing ESLint peer-range/optional install-hook warnings
+  were nonfatal. No package/lockfile modification or install-hook approval was made.
+- `git diff --check`: passed. Backend, domain libraries, package/lockfile and
+  `next.config.ts` have no changes. No Gemini calls, private-data changes or local
+  infrastructure dependencies were introduced. Tests use unreachable API origins.
+
+Results/build logs, screenshot script and images remain ignored under
+`.cache/verification/step28a/`. The local production preview is available at
+http://127.0.0.1:3210 while the review server is running; automated tests use 3200.
+The standard demo startup command remains `npm --prefix apps/web run demo:start`.
+
+### Changed files
+
+- `apps/web/src/app/globals.css` — base light/dark colors.
+- `apps/web/src/app/design-system.css` — new shared presentation and motion system.
+- `apps/web/src/app/layout.tsx` — load the design stylesheet.
+- `apps/web/src/app/page.tsx` — landing hierarchy, copy and engineering links.
+- `apps/web/src/components/home/feature-overview.tsx` — accurate capability copy.
+- `apps/web/src/components/home/workflow-overview.tsx` — workflow illustration labels.
+- `apps/web/src/components/layout/site-header.tsx` — engineering navigation.
+- `apps/web/src/components/layout/site-footer.tsx` — demo context.
+- `apps/web/src/components/demo/demo-app.tsx` — use the reset dialog.
+- `apps/web/src/components/demo/tickets.tsx` — semantic status badge classes.
+- `apps/web/src/components/ui/confirm-dialog.tsx` — new accessible native dialog.
+- `apps/web/tests-demo/demo.spec.ts` — two focused UI regression scenarios.
+- `docs/UI_DESIGN_SYSTEM.md` — new design documentation.
+- `docs/RECRUITER_DEMO.md` — local UI test/review instructions.
+- `docs/PROJECT_STATUS.md` — this evidence record.
+
+### Remaining limitations and release gate
+
+The UI passes local recruiter-demo release checks and is ready for visual/code review
+before a separately authorized commit/push/deployment. Changes remain uncommitted.
+Full authenticated-backend browser flows were not rerun; shared palette/control styles
+apply there but this step verifies the isolated demo. Physical devices, Safari/Firefox,
+manual screen-reader testing and field performance remain unverified. Fonts depend on
+the device. Automated checks do not establish complete WCAG 2.2 AA compliance.
+Existing CSP inline hydration/style allowances are unchanged. Public workflows remain
+precomputed, all data synthetic and live inference disabled. Commercial operational
+gates remain separate. Stop after Step 28A.
 
 ## Step 27A — isolated public case-study release candidate
 

@@ -5,7 +5,7 @@ export function SiteFooter() {
     <footer className="site-footer container">
       <Brand />
       <p>Built with intention. Designed around people.</p>
-      <span className="footer-label">Foundation release · v0.1.0</span>
+      <span className="footer-label">Synthetic demo · Human-centered engineering</span>
     </footer>
   );
 }

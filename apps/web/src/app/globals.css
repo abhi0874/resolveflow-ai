@@ -1,19 +1,6 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: light;
-  --background: #f8f9f5;
-  --surface: #ffffff;
-  --foreground: #1d342d;
-  --muted: #5e6c65;
-  --border: #dce3d9;
-  --accent: #2d614b;
-  --accent-soft: #eaf0e3;
-  --accent-bright: #d5ed98;
-  --panel: #213e32;
-  --panel-text: #f5f8ef;
-  --radius-surface: 1.25rem;
-}
+:root { --radius-surface: 1.25rem; }
 
 @theme inline {
   --color-background: var(--background);
@@ -26,21 +13,6 @@
   --radius-card: var(--radius-surface);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --background: #14241e;
-    --surface: #1d3027;
-    --foreground: #eef3e9;
-    --muted: #b0bfb4;
-    --border: #354b3e;
-    --accent: #b8d994;
-    --accent-soft: #263d2f;
-    --accent-bright: #d5ed98;
-    --panel: #233e30;
-    --panel-text: #f5f8ef;
-  }
-}
 
 * {
   box-sizing: border-box;
@@ -75,7 +47,7 @@ button:focus-visible {
 }
 ::selection {
   background: var(--accent-bright);
-  color: #213e32;
+  color: #171719;
 }
 .container {
   width: min(1184px, calc(100% - 80px));
@@ -256,7 +228,7 @@ h1 span {
   border: 1px solid var(--border);
   border-radius: 15px;
   padding: 25px 27px 0;
-  box-shadow: 0 20px 55px #1d342d0a;
+  box-shadow: 0 20px 55px #1717190a;
   transform: rotate(-2deg);
 }
 .workflow-heading {
@@ -302,7 +274,7 @@ h1 span {
 .step-icon-final {
   background: var(--accent-bright);
   border-color: var(--accent-bright);
-  color: #294b35;
+  color: #171719;
 }
 .workflow-steps h3 {
   font-size: 13px;
@@ -339,11 +311,11 @@ h1 span {
   align-items: center;
   gap: 9px;
   background: var(--accent-bright);
-  color: #294b35;
+  color: #171719;
   font-size: 11px;
   padding: 14px 18px;
   border-radius: 7px;
-  box-shadow: 0 6px 18px #1d342d0a;
+  box-shadow: 0 6px 18px #1717190a;
 }
 .principles-strip {
   border-block: 1px solid var(--border);
@@ -458,12 +430,12 @@ h2 {
   place-items: center;
   width: 80px;
   height: 100px;
-  border: 1px solid #87a88955;
+  border: 1px solid #C91F3255;
   border-radius: 50px;
   color: var(--accent-bright);
 }
 .approach .eyebrow {
-  color: #c2d7af;
+  color: #EF6979;
   font-size: 8px;
 }
 .approach h2 {
@@ -473,7 +445,7 @@ h2 {
 .approach p {
   font-size: 12px;
   line-height: 1.9;
-  color: #c5d3c8;
+  color: #F5F3F3;
   margin: 0;
 }
 .foundation {
@@ -806,14 +778,14 @@ select:focus-visible {
   position: absolute;
   width: 440px;
   height: 440px;
-  border: 1px solid #b8d99425;
+  border: 1px solid #EF697925;
   border-radius: 50%;
   right: -230px;
   bottom: -150px;
   pointer-events: none;
 }
 .auth-story .eyebrow {
-  color: #c2d7af;
+  color: #EF6979;
 }
 .auth-story h1 {
   font-size: clamp(40px, 4.6vw, 68px);
@@ -823,10 +795,10 @@ select:focus-visible {
 .auth-story h1 em {
   font-family: Georgia, serif;
   font-weight: 400;
-  color: #d5ed98;
+  color: #C91F32;
 }
 .auth-story p {
-  color: #c5d3c8;
+  color: #F5F3F3;
   max-width: 325px;
   font-size: 15px;
   line-height: 1.9;
@@ -836,7 +808,7 @@ select:focus-visible {
   display: flex;
   gap: 10px;
   align-items: center;
-  color: #c5d3c8;
+  color: #F5F3F3;
 }
 .auth-entry {
   padding: 48px 64px 24px;
@@ -1115,13 +1087,13 @@ button:disabled {
   line-height: 1.3;
 }
 .workspace-welcome p {
-  color: #c5d3c8;
+  color: #F5F3F3;
   font-size: 13px;
   line-height: 1.8;
   max-width: 530px;
 }
 .workspace-welcome .eyebrow {
-  color: #c2d7af;
+  color: #EF6979;
 }
 .workspace-stats {
   display: flex;
@@ -1130,7 +1102,7 @@ button:disabled {
 }
 .workspace-stats span {
   font-size: 10px;
-  color: #c5d3c8;
+  color: #F5F3F3;
 }
 .workspace-stats strong {
   display: block;
@@ -1477,8 +1449,8 @@ button:disabled {
   border-color: #eecac6;
 }
 .ticket-badge-resolved {
-  color: #2d614b;
-  background: #eaf0e3;
+  color: #841521;
+  background: #F5F3F3;
   border-color: #cbdabc;
 }
 .ticket-badge-closed,
@@ -1611,7 +1583,7 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
   .ticket-badge-in_progress,
   .ticket-badge-high {
     color: #ead59c;
@@ -1838,7 +1810,7 @@ button:disabled {
   margin-top: 28px;
   padding-top: 20px;
 }
-@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) {
   .document-badge-failed,
   .document-badge-deleting {
     color: #f6b9af;
