@@ -336,3 +336,76 @@ test("saved theme applies before body parsing and blocked storage remains usable
   await page.getByRole("button", { name: "Light theme" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
+
+test("single-red capsules preserve exact theme styles, contrast and responsive navigation", async ({ page }) => {
+  await page.goto("/");
+  for (const theme of ["dark", "light"] as const) {
+    await page.getByRole("button", { name: `${theme === "dark" ? "Dark" : "Light"} theme`, exact: true }).click();
+    for (const width of [1440, 1024, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      const capsules = await page.locator(".section-capsule").evaluateAll(elements => elements.map(el => {
+        const s = getComputedStyle(el), r = el.getBoundingClientRect();
+        return { tag: el.tagName, role: el.getAttribute("role"), text: el.textContent, weight: s.fontWeight, color: s.color, border: s.borderTopColor, borderStyle: s.borderTopStyle, radius: s.borderTopLeftRadius, background: s.backgroundColor, transform: s.textTransform, clipped: el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight, left: r.left, right: r.right };
+      }));
+      expect(capsules.length).toBeGreaterThanOrEqual(7);
+      for (const capsule of capsules) {
+        expect(capsule.weight).toBe("700");
+        expect(capsule.color).toBe("rgb(229, 24, 56)");
+        expect(capsule.border).toBe("rgb(229, 24, 56)");
+        expect(capsule.borderStyle).toBe("solid");
+        expect(capsule.radius).toBe("9999px");
+        expect(capsule.background).toBe(theme === "dark" ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)");
+        expect(capsule.transform).toBe("uppercase");
+        expect(capsule.clipped, capsule.text ?? "capsule").toBe(false);
+        expect(capsule.left).toBeGreaterThanOrEqual(0);
+        expect(capsule.right).toBeLessThanOrEqual(width);
+        if (capsule.tag === "SPAN") expect(capsule.role).toBeNull();
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+    }
+    const capability = page.getByRole("link", { name: "Capabilities", exact: true });
+    await capability.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(capability).toBeFocused();
+    expect(await capability.evaluate(el => getComputedStyle(el).outlineStyle)).toBe("solid");
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/#capabilities$/);
+    await capability.hover();
+    await expect(capability).toHaveCSS("color", "rgb(229, 24, 56)");
+    const cta = page.getByRole("link", { name: "Explore Live Demo", exact: true });
+    await cta.hover();
+    await expect(cta).toHaveCSS("background-color", "rgb(229, 24, 56)");
+    await expect(cta).toHaveCSS("color", "rgb(255, 255, 255)");
+    const contrasts = await page.evaluate(() => {
+      const luminance = (rgb: number[]) => rgb.map(c => c / 255).map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4).reduce((sum, c, i) => sum + c * [.2126, .7152, .0722][i], 0);
+      const red = luminance([229, 24, 56]);
+      return { onBlack: (red + .05) / .05, onWhite: 1.05 / (red + .05) };
+    });
+    expect(contrasts.onBlack).toBeGreaterThanOrEqual(4.5);
+    expect(contrasts.onWhite).toBeGreaterThanOrEqual(4.5);
+    await page.goto("/demo/workflows/billing");
+    const disabledApproval = page.getByRole("button", { name: "Approve example", exact: true });
+    await expect(disabledApproval).toBeDisabled();
+    await expect(disabledApproval).toHaveCSS("opacity", "1");
+    expect(await disabledApproval.evaluate(el => getComputedStyle(el).backgroundColor)).not.toBe("rgb(229, 24, 56)");
+    await page.goto("/");
+  }
+});
+
+test("frontend palette declares one brand red without alternate red literals or mixes", async () => {
+  const { readFileSync, readdirSync } = await import("node:fs");
+  const { join } = await import("node:path");
+  const files: string[] = [];
+  function walk(path: string) { for (const entry of readdirSync(path, { withFileTypes: true })) { const file = join(path, entry.name); if (entry.isDirectory()) walk(file); else if (/\.(css|tsx?|js)$/.test(file)) files.push(file); } }
+  walk("src");
+  const source = files.map(file => readFileSync(file, "utf8")).join("\n");
+  expect(source.match(/--brand-red:\s*#E51838/g)).toHaveLength(1);
+  expect(source).toMatch(/border: 1\.5px solid var\(--brand-red\)/);
+  expect(source).not.toMatch(/color-mix\([^;]*(?:--accent|--brand-red|--primary)/);
+  const redLiterals = [...source.matchAll(/#([a-f\d]{6})(?:[a-f\d]{2})?\b/gi)].filter(([, hex]) => {
+    const [r, g, b] = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16));
+    return r > g * 1.3 && r > b * 1.3 && g < b; // red/pink family, excluding semantic amber
+  }).map(([, hex]) => hex.toUpperCase());
+  expect([...new Set(redLiterals)]).toEqual(["E51838"]);
+});

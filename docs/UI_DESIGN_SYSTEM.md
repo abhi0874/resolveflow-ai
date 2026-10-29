@@ -1,6 +1,6 @@
 # ResolveFlow AI UI design system
 
-Step 28C — final local visual QA, 2026-10-29. Not deployed.
+Step 28C.1 — single-red palette and bold capsules, 2026-10-29. Not deployed.
 Supersedes Step 28A's warm palette while preserving its layouts and interactions.
 
 ## Tokens and visual direction
@@ -19,15 +19,42 @@ predominantly neutral. No glow, remote fonts or new dependencies.
 | Secondary text | `#ABABAB` | `#606064` |
 | Border | `#333336` | `#D5D2D7` |
 | Control boundary | `#747478` | `#858189` |
-| Primary / hover | `#C91F32` / `#DF3046` | same |
-| Deep crimson | `#841521` | same |
-| Small accent text / focus | `#EF6979` | `#AF192B` |
+| Only brand red / primary / hover / focus | `#E51838` | `#E51838` |
+| Capsule surface | `#000000` | `#FFFFFF` |
 
-White primary-button text maintains contrast on both red shades. Accent text uses
-contrast-adjusted shades rather than small dark-red text on black. Green success,
-amber warning and violet review states remain distinct and include text labels.
+`--brand-red` is declared once; legacy accent/primary token names reference it.
+There is no alternate red, red color mix, red gradient or tinted red surface.
+Small text on charcoal and soft-white surfaces uses neutral foreground colors.
+Green success, amber warning and violet review states remain distinct and labeled.
+Error/urgent/destructive states combine explicit labels with the single red border
+or marker and readable neutral text. Reset remains outlined rather than filled;
+disabled primary actions use neutral surfaces, not opacity-dimmed red.
 `design-system.css` owns theme tokens; `globals.css` retains component geometry.
-Legacy dark status selectors follow the explicit theme, not the OS preference.
+
+## Reusable section capsules
+
+`.section-capsule` styles Capabilities, Our approach and Engineering navigation,
+plus the existing hero, workflow-illustration, capabilities, approach and foundation
+section labels. Navigation remains real links; static labels remain semantic spans.
+
+- Background: exactly black (`#000000`) in Dark Mode, white (`#FFFFFF`) in Light Mode.
+- Text and border: exactly `#E51838` in both themes, including hover.
+- Border: `1.5px solid`; fully rounded `9999px` radius. Browser rasterization may
+  quantize a fractional CSS border to device pixels.
+- Typography: **700 bold**, uppercase, `.65rem`, `1.5` line height and `.08em`
+  tracking. Compact mobile navigation uses `.6rem` / `.04em`, retaining weight 700.
+- Balanced `7px 13px` padding; navigation links retain at least 44px height.
+  Labels wrap within their available width; static labels do not gain button roles.
+- Hover uses a small translation and neutral shadow, never a different red shade.
+  No color transition is applied to capsule foreground/background, preserving their
+  contrast during theme switches. Reduced motion removes translation and transition.
+
+Calculated WCAG contrast: red on black **4.519:1**, red on white (and white labels
+on red buttons) **4.647:1**, above the normal-text AA threshold. The same red on
+`#171719` is only **3.853:1**, so small text there is neutral; red remains suitable
+for non-text borders/graphics (3:1 threshold). The pure capsule surfaces are
+intentional accessibility constraints. These checks do not establish complete
+WCAG 2.2 AA compliance or replace assistive-technology testing.
 
 ## Theme selection and persistence
 
@@ -56,8 +83,8 @@ Strong, compact sans-serif headings replace the editorial serif treatment. Exist
 The system covers landing, overview, tickets, knowledge passages, workflow replay,
 human approval, analytics, architecture, forms and dialogs. Existing reset dialog
 retains focus containment, Escape and opener restoration. Its destructive confirmation
-uses a danger-colored outline and tinted surface, distinct from filled primary brand
-actions. Knowledge/example cards use neutral top borders to avoid repeated red strips. Tables retain labeled
+uses the single-red outline and a neutral surface/text, distinct from filled primary
+brand actions. Knowledge/example cards use neutral top borders to avoid repeated red strips. Tables retain labeled
 keyboard scrolling. Native dropdowns keep their platform behavior. Synthetic-data
 and precomputed-workflow labels remain visible; existing business rules are unchanged.
 
@@ -81,6 +108,15 @@ This is not a claim of complete WCAG certification or manual screen-reader testi
 See PROJECT_STATUS.md for final fresh counts. Local screenshots cover seven screens
 at 1440px and 390px in both themes, plus diagram and dialog captures, under ignored
 `.cache/verification/step28b/`; final captures and interaction measurements are in
-`.cache/verification/step28c/`. Regression checks also cover 768px and 320px.
+`.cache/verification/step28c/`. Step 28C.1 evidence is under
+`.cache/verification/step28c1/`, including capsule close-ups and final screenshots. Regression checks also cover 768px and 320px.
 No backend, CSP, API, dependency or deployment configuration changes. Physical-device,
 Safari/Firefox and authenticated full-backend journeys remain unverified in this step.
+
+Step 28C.1 final verification: 23 browser tests passed (20.3s), TypeScript, ESLint
+and demo production build passed. Capsule checks cover 1440/1024/768/390/320px,
+both themes, exact colors and weight, keyboard/hover and neutral disabled actions.
+44 screenshots were captured locally; required screens and close-ups were visually
+reviewed. No console/page errors or unexpected requests occurred in final captures.
+Existing axe checks and extra open-dialog checks passed in both themes. See the
+Step 28C.1 status record for full evidence and known testing limitations.

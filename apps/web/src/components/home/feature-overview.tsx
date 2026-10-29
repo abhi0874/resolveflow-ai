@@ -45,7 +45,7 @@ export function FeatureOverview() {
     >
       <div className="section-heading">
         <div>
-          <span className="eyebrow">A CONNECTED SUPPORT EXPERIENCE</span>
+          <span className="eyebrow section-capsule">A CONNECTED SUPPORT EXPERIENCE</span>
           <h2 id="capabilities-title">
             Four foundations.
             <br />

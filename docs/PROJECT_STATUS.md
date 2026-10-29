@@ -1,6 +1,86 @@
 # Project status
 
-Updated: 2026-10-29 (Asia/Kolkata), Step 28C final local UI QA and release preparation.
+Updated: 2026-10-29 (Asia/Kolkata), Step 28C.1 single-red UI refinement.
+
+## Step 28C.1 — single brand red and bold capsules; verified locally
+
+Completed on `codex/step28a-warm-ui`, preserving parent commit
+`410c548e3b674ee23531162f9dfed8c64f48d607`. This step creates one local commit,
+`style: unify blood red theme and bold capsule labels`; its resulting hash is in the
+completion report. No push, merge, deployment or production configuration change.
+
+### Final visual identity
+
+- One brand-red declaration, **`#E51838`**, shared by both themes. Removed former
+  brand-red shades, red surface tints and red color mixes. Existing primary/accent
+  names resolve to the same token. Hover retains this exact red, using neutral
+  shadow/elevation or small translations for feedback.
+- Dark surfaces remain `#080808`, `#111113` and `#171719`, with `#F5F3F3` primary
+  text and `#ABABAB` secondary text. Light surfaces remain soft white/neutral.
+- Shared `.section-capsule` styling covers Capabilities, Our approach, Engineering,
+  hero and related landing section/illustration labels. Capsules use exact red text
+  and a `1.5px solid` red border, `9999px` radius, **700 bold uppercase** type and
+  compact balanced padding. Background is pure black in dark mode and pure white
+  in light mode. Static labels remain spans; header navigation remains links.
+- Readable neutral text replaces low-contrast red text on charcoal/soft-white
+  surfaces. Success, warning and review states retain green, amber and violet.
+  Errors/urgent states use explicit labels and single-red markers/borders. Reset
+  confirmation remains outlined; disabled primary actions are neutral rather than
+  opacity-dimmed red. Ordinary cards remain neutral.
+- Default-dark behavior, saved theme, cross-tab updates, keyboard controls, icons,
+  pre-paint restoration and blocked-storage fallback are unchanged.
+
+### Fresh local evidence
+
+- Demo production build, TypeScript and ESLint all passed.
+- **23 browser tests passed, 0 failed, zero retries (20.3 seconds)** in the final
+  run. The original 21 tests remain; two new tests verify capsule computed styles,
+  single-red source invariants, keyboard navigation, hover, contrast and disabled
+  primary action appearance. No existing assertions were weakened.
+- Capsule layout checks passed at **1440, 1024, 768, 390 and 320px** in both themes,
+  with no clipping or page overflow. Existing demo/mobile, theme persistence,
+  reduced-motion, interaction, accessibility and strict console/network checks pass.
+- Capsule red/black contrast is **4.519:1**; red/white and white-on-red button text
+  are **4.647:1**. Both satisfy normal-text AA contrast. Red on elevated charcoal is
+  only 3.853:1, so small text uses neutral foreground there. Red non-text indicators
+  remain above 3:1 against the intended surfaces. This is not a complete WCAG claim.
+- Existing axe checks passed in both themes; separate final open-dialog checks
+  found zero WCAG 2.0/2.1 A/AA violations in either theme.
+- Captured **44 screenshots**: 28 major page/theme/viewport samples, six navigation
+  capsule close-ups, diagram/dialog captures, six ticket/document/human-review
+  detail views, and two final dialog views. Visually reviewed the required landing,
+  capsule, dashboard, mobile and architecture views plus tickets, knowledge,
+  workflows/human review, analytics, detail views and both reset-dialog themes.
+- Final visual capture: zero console/page errors, unexpected requests or overflow
+  in 28 measured page samples. Additional dialog/motion run: zero console/page
+  errors and unexpected requests; actual theme/control transitions stay at
+  160/220ms, dialog entrance at 220ms and workflow state transitions at 220ms.
+- New test development exposed mouse-versus-keyboard focus setup, corrected to
+  exercise real Tab navigation. Visual review exposed an inherited disabled-button
+  opacity selector; implementation specificity was fixed and the assertion retained.
+- Pattern-based credential review found no exposed secrets. Screenshots, logs,
+  caches and build output remain Git-ignored. No backend, domain logic, API, CSP,
+  dependency, provider configuration or infrastructure changes; no Gemini requests.
+
+Artifacts: `.cache/verification/step28c1/` (ignored). Local preview:
+http://127.0.0.1:3210/ while running. A temporary automatic-approval usage-limit
+interruption prevented one preview restart; after continuation the restart and
+final capture completed successfully.
+
+### Changed files and remaining limitations
+
+Nine files: `apps/web/src/app/design-system.css`, `apps/web/src/app/globals.css`,
+`apps/web/src/app/page.tsx`, `apps/web/src/components/home/feature-overview.tsx`,
+`apps/web/src/components/home/workflow-overview.tsx`,
+`apps/web/src/components/layout/site-header.tsx`, `apps/web/tests-demo/demo.spec.ts`,
+`docs/UI_DESIGN_SYSTEM.md` and this status document.
+
+Ready for a separately authorized controlled Vercel Preview. Physical devices,
+Safari/Firefox, manual screen-reader testing, field performance and full authenticated
+backend journeys remain unverified. Fractional CSS borders are rasterized to device
+pixels by the browser. The public recruiter demo remains unchanged; synthetic data,
+precomputed workflows and disabled live inference are preserved. Stop after 28C.1.
+
 
 ## Step 28C — final visual QA and local release commit
 

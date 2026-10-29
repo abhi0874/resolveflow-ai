@@ -1,16 +1,18 @@
-/* Step 28B: black surfaces, restrained crimson accents. Dark is the default. */
+/* Step 28C.1: one brand red, neutral surfaces. Dark is the default. */
 :root {
   color-scheme: dark;
   --background: #080808; --surface: #111113; --surface-raised: #171719;
   --surface-subtle: #171719; --hover-surface: #252527;
   --foreground: #F5F3F3; --muted: #ABABAB; --border: #333336;
-  --accent: #EF6979; --accent-soft: #30151B; --accent-bright: #C91F32;
-  --primary: #C91F32; --primary-hover: #DF3046; --on-primary: #FFFFFF;
-  --crimson: #841521; --panel: #111113; --panel-text: #F5F3F3;
+  --brand-red: #E51838;
+  --accent: var(--brand-red); --accent-soft: var(--surface-subtle); --accent-bright: var(--brand-red);
+  --primary: var(--brand-red); --on-primary: #FFFFFF;
+  --panel: #111113; --panel-text: #F5F3F3;
   --control-border: #747478;
   --success: #A5D4B5; --success-surface: #172B20;
   --warning: #E5C387; --warning-surface: #302719;
-  --danger: #F18B98; --danger-surface: #32171D;
+  --danger: var(--foreground); --danger-surface: var(--surface-subtle);
+  --capsule-background: #000000;
   --font-interface: "Avenir Next", Avenir, "Segoe UI", Arial, sans-serif;
   --radius-control: .65rem; --radius-card: 1rem; --space-unit: .25rem;
   --shadow-card: 0 3px 12px #00000018; --shadow-lift: 0 12px 30px #00000030;
@@ -22,11 +24,10 @@
   --background: #F6F5F6; --surface: #FCFBFC; --surface-raised: #FFFFFF;
   --surface-subtle: #EEECEF; --hover-surface: #E6E3E7;
   --foreground: #171719; --muted: #606064; --border: #D5D2D7;
-  --accent: #AF192B; --accent-soft: #F9E8EB; --accent-bright: #C91F32;
   --control-border: #858189; --panel: #111113; --panel-text: #F5F3F3;
   --success: #306044; --success-surface: #E7F0E9;
   --warning: #745014; --warning-surface: #F5ECD9;
-  --danger: #A01C30; --danger-surface: #FAE8EC;
+  --capsule-background: #FFFFFF;
   --shadow-card: 0 3px 12px #17171906; --shadow-lift: 0 12px 30px #17171912;
 }
 body { font-family: var(--font-interface); line-height: 1.55; }
@@ -50,6 +51,7 @@ button:disabled { cursor: not-allowed; }
 }
 :is(.primary-link, .action-button):hover:not(:disabled) { opacity: 1; transform: translateY(-2px); box-shadow: var(--shadow-lift); }
 :is(.primary-link, .action-button):active:not(:disabled) { transform: translateY(0); }
+button.action-button:disabled { background: var(--surface-subtle); color: var(--muted); border-color: var(--control-border); opacity: 1; box-shadow: none; transform: none; }
 .ticket-actions .subtle-button, .workspace-account .subtle-button {
   border: 1px solid var(--control-border); border-radius: var(--radius-control); padding: 10px 16px;
   text-align: center; justify-content: center; background: var(--surface); min-height: 46px;
@@ -75,7 +77,7 @@ input[type=checkbox] { accent-color: var(--primary); }
 .hero-description { font-size: 1rem; line-height: 1.8; max-width: 460px; }
 .hero-actions { flex-wrap: wrap; gap: 12px 24px; }
 .hero-secondary { display: inline-flex; gap: 12px; align-items: center; min-height: 48px; font-size: .82rem; border-bottom: 1px solid var(--control-border); }
-.hero-secondary:hover { color: var(--accent); border-color: var(--accent); }
+.hero-secondary:hover { color: var(--foreground); border-color: var(--brand-red); }
 .hero-footnote { font-size: .72rem; color: var(--muted); margin-top: 20px; max-width: 42ch; }
 .workflow-art { padding: 30px 0 32px; }
 .orbit { border-radius: 24px; inset: 8px 16px; transform: rotate(6deg); background: var(--accent-soft); border-color: var(--border); }
@@ -169,7 +171,7 @@ input[type=checkbox] { accent-color: var(--primary); }
 .demo-priority { font-size: .72rem; text-transform: capitalize; display: inline-flex; align-items: center; gap: 7px; }
 .demo-priority::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
 .demo-priority[data-priority=urgent] { color: var(--danger); }
-.demo-priority[data-priority=urgent]::before { background: var(--danger); }
+.demo-priority[data-priority=urgent]::before { background: var(--brand-red); }
 .demo-priority[data-priority=high] { color: var(--warning); }
 .demo-priority[data-priority=high]::before { background: var(--warning); }
 .demo-priority[data-priority=low]::before { background: var(--success); }
@@ -194,7 +196,7 @@ input[type=checkbox] { accent-color: var(--primary); }
 .workflow-stages { grid-template-columns: repeat(auto-fit, minmax(156px, 1fr)); gap: 12px; }
 .workflow-stages li { flex-direction: column; gap: 14px; padding: 18px; border-radius: 12px; background: var(--background); transition: background-color var(--motion-control), border-color var(--motion-control); }
 .workflow-stage-number { width: 28px; height: 28px; background: var(--surface-subtle); font-weight: 600; }
-.workflow-stages li[data-state=current] { background: var(--surface-subtle); border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
+.workflow-stages li[data-state=current] { background: var(--surface-subtle); border-color: var(--brand-red); box-shadow: inset 0 3px 0 var(--accent); }
 .workflow-stages li[data-state=current] .workflow-stage-number { background: var(--primary); color: var(--on-primary); }
 .workflow-stages li[data-state=complete] { background: var(--success-surface); border-color: var(--success); }
 .workflow-stages li[data-state=complete] .workflow-stage-number { background: var(--success); color: var(--success-surface); }
@@ -213,7 +215,7 @@ input[type=checkbox] { accent-color: var(--primary); }
 .engineering-diagram figcaption { font-size: .85rem; color: var(--muted); }
 .engineering-flow { gap: 12px; }
 .engineering-flow li { background: var(--surface); border-top: 3px solid var(--accent); border-radius: 10px; font-size: .85rem; padding: 18px; }
-.engineering-storage { border-color: var(--accent); background: var(--surface-subtle); border-radius: 0 10px 10px 0; }
+.engineering-storage { border-color: var(--brand-red); background: var(--surface-subtle); border-radius: 0 10px 10px 0; }
 .engineering-stages { gap: 28px; margin-top: 30px; }
 .engineering-stages li { border-color: var(--control-border); }
 .engineering-stages .eyebrow { color: var(--muted); }
@@ -230,8 +232,8 @@ input[type=checkbox] { accent-color: var(--primary); }
 .confirm-dialog h2 { font-family: var(--font-interface); font-size: 2.1rem; margin-block: 12px; }
 .confirm-dialog p { color: var(--muted); font-size: .9rem; margin-bottom: 28px; }
 .confirm-dialog .ticket-actions { justify-content: flex-end; }
-.confirm-dialog .action-button { background: var(--danger-surface); color: var(--danger); border: 1px solid var(--danger); box-shadow: none; }
-.confirm-dialog .action-button:hover:not(:disabled) { background: var(--danger-surface); color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+.confirm-dialog .action-button { background: var(--danger-surface); color: var(--danger); border: 1px solid var(--brand-red); box-shadow: none; }
+.confirm-dialog .action-button:hover:not(:disabled) { background: var(--danger-surface); color: var(--danger); box-shadow: 0 0 0 1px var(--brand-red); }
 
 /* Finite, nonblocking motion. Reduced motion removes all added animation. */
 @keyframes rf-enter { from { transform: translateY(8px); } to { transform: translateY(0); } }
@@ -349,16 +351,16 @@ input[type=checkbox] { accent-color: var(--primary); }
 .hero h1, .demo-heading h1, .engineering-study > .demo-heading h1 { font-weight: 650; }
 .hero h1 span, .demo-heading h1 em { font-style: normal; }
 .feature-card, .engineering-flow li { border-top-color: var(--border); }
-.feature-top svg, .workflow-heading > svg { color: var(--accent); }
+.feature-top svg, .workflow-heading > svg { color: var(--foreground); }
 .feature-card:hover { border-color: var(--control-border); background: var(--surface-raised); }
 .orbit { transform: rotate(3deg); background: var(--surface-subtle); }
-.primary-link:hover:not(:disabled), .action-button:hover:not(:disabled) { background: var(--primary-hover); color: var(--on-primary); border-color: var(--primary-hover); }
-.demo-page .ticket-nav a[aria-current=page] { background: var(--accent-soft); color: var(--foreground); border-color: var(--crimson); box-shadow: inset 3px 0 0 var(--primary); }
-.demo-page .ticket-nav a[aria-current=page] > span { color: var(--accent); }
+.primary-link:hover:not(:disabled), .action-button:hover:not(:disabled) { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+.demo-page .ticket-nav a[aria-current=page] { background: var(--accent-soft); color: var(--foreground); border-color: var(--brand-red); box-shadow: inset 3px 0 0 var(--primary); }
+.demo-page .ticket-nav a[aria-current=page] > span { color: var(--foreground); }
 .theme-switcher { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border: 1px solid var(--border); border-radius: 100px; background: var(--surface); width: max-content; }
 .theme-switcher button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-width: 76px; min-height: 44px; padding: 8px 12px; border: 1px solid transparent; border-radius: 100px; color: var(--muted); background: transparent; cursor: pointer; font-size: .75rem; font-weight: 600; }
 .theme-switcher button:hover { background: var(--hover-surface); color: var(--foreground); }
-:root[data-theme="light"] .theme-switcher [data-mode="light"], :root:not([data-theme="light"]) .theme-switcher [data-mode="dark"] { color: var(--foreground); background: var(--accent-soft); border-color: var(--accent); }
+:root[data-theme="light"] .theme-switcher [data-mode="light"], :root:not([data-theme="light"]) .theme-switcher [data-mode="dark"] { color: var(--foreground); background: var(--accent-soft); border-color: var(--brand-red); }
 .theme-switcher svg { width: 16px; height: 16px; flex-shrink: 0; }
 .demo-toolbar { display: flex; justify-content: flex-end; margin-bottom: 20px; }
 .site-header { gap: 18px; flex-wrap: wrap; }
@@ -367,4 +369,28 @@ input[type=checkbox] { accent-color: var(--primary); }
 @media (max-width: 480px) { .site-header .brand { width: 100%; } .site-header .theme-switcher { margin-left: 0; } .site-header .header-link { margin-left: auto; } .site-header .main-nav { gap: 16px; justify-content: space-between; } }
 @media (prefers-reduced-motion: no-preference) {
   body, .workspace-sidebar, .workspace-card, .analytics-metric, .workflow-card, .feature-card, .demo-notice, .theme-switcher { transition: background-color 220ms, color 220ms, border-color 220ms; }
+}
+
+/* Shared by real navigation links and semantic, noninteractive section labels.
+   Exact black/white surfaces keep the single red above 4.5:1 text contrast. */
+.section-capsule.section-capsule {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  max-width: 100%; padding: 7px 13px; border: 1.5px solid var(--brand-red);
+  border-radius: 9999px; background: var(--capsule-background); color: var(--brand-red);
+  font-family: var(--font-interface); font-size: .65rem; font-weight: 700;
+  line-height: 1.5; letter-spacing: .08em; text-transform: uppercase; text-align: center;
+  white-space: normal; overflow-wrap: anywhere;
+  transition: transform var(--motion-fast) var(--ease-calm), box-shadow var(--motion-control);
+}
+.main-nav { flex-wrap: wrap; gap: 10px; }
+.main-nav a.section-capsule { min-height: 44px; }
+.main-nav a.section-capsule:hover { color: var(--brand-red); box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+.main-nav a.section-capsule:active { transform: translateY(0); }
+.section-heading .section-capsule, .approach .section-capsule, .foundation .section-capsule { margin-bottom: 16px; }
+@media (max-width: 480px) {
+  .site-header .main-nav { gap: 8px; justify-content: flex-start; }
+  .main-nav a.section-capsule { padding-inline: 10px; font-size: .6rem; letter-spacing: .04em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-nav a.section-capsule:hover { transform: none; }
 }

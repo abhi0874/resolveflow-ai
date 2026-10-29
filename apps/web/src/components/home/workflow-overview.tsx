@@ -30,7 +30,7 @@ export function WorkflowOverview() {
       <div className="orbit orbit-two" aria-hidden="true" />
       <div className="workflow-card">
         <div className="workflow-heading">
-          <span className="eyebrow">A REQUEST, CONSIDERED</span>
+          <span className="eyebrow section-capsule">A REQUEST, CONSIDERED</span>
           <Icon name="spark" width="18" height="18" />
         </div>
         <ol className="workflow-steps">

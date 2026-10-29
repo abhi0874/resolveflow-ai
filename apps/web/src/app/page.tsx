@@ -17,7 +17,7 @@ export default function Home() {
       <main id="main-content">
         <section className="hero container" aria-labelledby="hero-title">
           <div className="hero-copy">
-            <span className="release-badge">
+            <span className="release-badge section-capsule">
               <span className="small-dot" /> CONTEXT. CLARITY. HUMAN JUDGMENT.
             </span>
             <h1 id="hero-title">
@@ -60,7 +60,7 @@ export default function Home() {
             <Icon name="review" width="52" height="52" />
           </div>
           <div>
-            <span className="eyebrow">AUTOMATION WITH ACCOUNTABILITY</span>
+            <span className="eyebrow section-capsule">AUTOMATION WITH ACCOUNTABILITY</span>
             <h2 id="approach-title">
               AI moves the work forward.
               <br />
@@ -79,7 +79,7 @@ export default function Home() {
           aria-labelledby="foundation-title"
         >
           <div>
-            <span className="eyebrow">WHERE WE ARE TODAY</span>
+            <span className="eyebrow section-capsule">WHERE WE ARE TODAY</span>
             <h2 id="foundation-title">Explore the product. Understand the engineering.</h2>
             <p>
               Ticket management, durable AI workflows, human review and workspace analytics are implemented. Explore their behavior in a self-contained synthetic demo; the full backend runs separately.
