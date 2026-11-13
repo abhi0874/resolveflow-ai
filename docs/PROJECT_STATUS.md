@@ -1,5 +1,91 @@
 # Project status
 
+## Authorized standalone showcase publication — 2026-11-13
+
+The user explicitly authorized pushing the reviewed redesign to a **new GitHub
+repository** and deploying it on Vercel. This supersedes the local-only approval
+boundary recorded below. The new repository is
+https://github.com/abhi0874/resolveflow-ai-showcase (**private**); the separate Vercel
+Hobby project is `resolveflow-ai-showcase`, with assigned production domain
+https://resolveflow-ai-showcase.vercel.app. Production branch for this new project
+is `main`. The original repository, public red/black deployment, research worktree,
+models, and historical evidence are preserved.
+
+Release inputs: the final structural redesign, 29/29 local demo checks, 54 visual
+samples, passing demo build/TypeScript/ESLint, and 21 matching accepted source/document
+hashes. Pre-publication scanning examined all 327 reachable historical file blobs
+across seven commits and the reviewed changes: no credential-pattern findings or
+sensitive tracked paths. Only the reviewed frontend, tests, and documentation are
+included; dependency symlinks, local credentials, caches and model artifacts are not.
+
+Verified Vercel configuration: Next.js, root `apps/web`, Node 24.x, `npm ci`,
+`npm run demo:build`; `NEXT_PUBLIC_APP_MODE=demo`, `DEMO_LIVE_AI_ENABLED=false`,
+`NEXT_TELEMETRY_DISABLED=1`. No AI key, database, SMTP, paid resource, or backend is
+configured. Preview authentication remains enabled, production aliases are public,
+and the feedback toolbar is off so the application's CSP remains unchanged.
+
+Publication verification results, exact pushed/deployed identifiers, and hosted
+acceptance evidence are recorded in `.cache/showcase-publication/`. Local acceptance
+above must not be mistaken for hosted acceptance; consult that release report for
+the completed deployment outcome. Commercial production readiness remains separate.
+
+## Final structural recruiter redesign — 2026-11-13, local acceptance complete
+
+The latest user instruction supersedes earlier publication plans: **local implementation
+and visual approval only; no public push or deployment.** Work remains uncommitted on
+`codex/recruiter-ui-redesign` in the isolated `.local/frontend-redesign` worktree.
+HEAD remains `f2f76fbc1bd37d4951a850fa72c882c3433dad90`; the previous redesign and
+approved public red/black release remain available in history.
+
+The composition is substantially replaced: centered editorial landing with an
+interactive wide product preview; navigation/central canvas/contextual rail overview;
+three-pane inbox with mobile list/detail navigation; search-first split source library;
+vertical pipeline beside evidence and exact-draft review; filtered analytics canvas;
+and chapter-based engineering case study. Dark charcoal/lime and ivory/lavender
+light modes use local licensed Space Grotesk/Manrope. Native dialogs, command search,
+chart series/date controls, source filters, and bounded replay are functional.
+
+Fresh acceptance: **29/29 demo checks passed, zero retries (29.0s)**; production demo
+build, TypeScript and ESLint passed. **54 page/theme/viewport samples** (nine views,
+desktop 1440px/tablet 834px/mobile 390px, both themes) passed automated accessibility,
+overflow, console and network checks. Existing checks also cover 320/768/1024px,
+keyboard, touch targets, reduced motion, storage/theme persistence, security headers,
+blocked external requests and disabled generation. Six additional tests cover the new
+interactions and modal accessibility. Screenshots were visually reviewed, including
+before/after layout comparisons; no remaining defect was found in this bounded QA.
+
+Existing synthetic fixtures, AI/ML disclosures, source links and exact-draft/abstention
+guards remain intact. No backend, research, model, security-header, dependency,
+provider or Vercel configuration changed. All **619 inventoried research-worktree
+source files** still match their pre-redesign SHA-256 hashes. No Git commit/push,
+training, AI call or deployment was performed. The live site is untouched by this work.
+
+Evidence: `.cache/structural-redesign/` (ignored), including `accepted/` full captures,
+`final/results.json`, `final/results.xml`, comparison sheets, validation logs and
+SHA-256 manifests. Local review server: http://127.0.0.1:3200/ while running.
+This is local Chromium acceptance, not physical-device/full assistive-technology
+certification or hosted-release verification. **Next: user visual approval.**
+Details: [FRONTEND_REDESIGN.md](FRONTEND_REDESIGN.md).
+
+## Recruiter UI redesign — release handoff, 2026-11-13
+
+The reviewed local release commit is **`f2f76fbc1bd37d4951a850fa72c882c3433dad90`**
+on `codex/recruiter-ui-redesign`, based on approved production `3717f6e...`.
+All 23 local demo checks and all 28 desktop/mobile theme samples passed; build,
+TypeScript and ESLint passed. No backend, models, fixtures or security settings changed.
+
+**Publication is blocked before the first push.** Automatic approval review rejected
+`git push --set-upstream origin codex/recruiter-ui-redesign` because the target
+repository is currently public and required explicit confirmation for external source
+publication and automatic Vercel preview. No push executed and no preview was created.
+Do not substitute a CLI/API deployment to bypass that rejection. Production remains
+on its existing release. User confirmation is the next release boundary.
+
+This closeout is local/uncommitted to avoid obscuring the reviewed release identity.
+Screenshots, logs, source hashes and preservation records are in `.cache/redesign/`.
+The fonts carry their OFL licenses; no remote runtime assets or paid dependencies.
+
+
 ## Recruiter UI redesign — 2026-11-13, local acceptance complete
 
 The user authorized redesign and staged publication. Isolated branch

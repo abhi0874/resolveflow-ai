@@ -25,14 +25,16 @@ const test = base.extend<{ isolation: void }>({
 test("public demo, local ticket edits, search, filters, creation, persistence and reset", async ({ page }) => {
   const apiRequests: string[] = []; page.on("request", request => { if (request.url().includes("/api/")) apiRequests.push(request.url()); });
   await page.goto("/"); await page.getByRole("link", { name: "Explore Live Demo" }).click();
-  await expect(page.getByRole("heading", { name: "Every request. A considered response." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your workspace. Understood." })).toBeVisible();
   await expect(page.getByRole("article", { name: "Support tickets" }).locator("strong")).toHaveText("8");
   await page.getByRole("navigation", { name: "Demo navigation" }).getByRole("link", { name: "Ticket inbox" }).click();
-  await page.getByLabel("Search tickets").fill("refund"); await expect(page.locator("tbody tr")).toHaveCount(1);
+  await page.getByLabel("Search tickets").fill("refund"); await expect(page.locator(".conversation-list > li")).toHaveCount(1);
   await page.getByLabel("Filter priority").selectOption("urgent"); await expect(page.getByRole("heading", { name: "No matching demo tickets" })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  await page.getByLabel("Filter status").selectOption("waiting_for_approval"); await expect(page.locator("tbody tr")).toHaveCount(2);
+  await page.getByLabel("Filter status").selectOption("waiting_for_approval"); await expect(page.locator(".conversation-list > li")).toHaveCount(2);
   await page.getByRole("link", { name: "Can I request a refund?", exact: true }).click();
+  await expect(page).toHaveURL(/\/demo\/tickets\/refund$/);
+  await expect(page.getByLabel("Assigned to", { exact: true })).toHaveValue("Maya Chen");
   await page.getByLabel("Status", { exact: true }).selectOption("resolved");
   await page.getByLabel("Assigned to", { exact: true }).selectOption("Alex Morgan");
   await page.getByLabel("Add a synthetic internal note").fill("<script>window.demoInjected=true</script>");
@@ -43,7 +45,7 @@ test("public demo, local ticket edits, search, filters, creation, persistence an
   expect(await page.evaluate(() => "demoInjected" in window)).toBe(false);
   await page.goto("/demo/tickets"); await page.getByRole("button", { name: "Create demo ticket", exact: true }).click();
   await page.getByLabel("Ticket title").fill("Synthetic temporary request"); await page.getByLabel("Customer request").fill("Example request for demo testing.");
-  await page.getByRole("button", { name: "Save demo ticket" }).click(); await expect(page.locator("tbody tr")).toHaveCount(9);
+  await page.getByRole("button", { name: "Save demo ticket" }).click(); await expect(page.locator(".conversation-list > li")).toHaveCount(9);
   await page.goto("/demo/analytics"); await expect(page.getByRole("article", { name: "Tickets created" }).locator("strong")).toHaveText("9");
   await page.getByRole("button", { name: "Reset demo", exact: true }).click(); await page.getByRole("button", { name: "Confirm reset" }).click();
   await expect(page.getByRole("article", { name: "Tickets created" }).locator("strong")).toHaveText("8");
@@ -80,15 +82,17 @@ test("analytics filters, navigation, responsive layout and theme", async ({ page
   await expect(page.locator(".recharts-surface").first()).toBeVisible();
   await page.getByLabel("From (UTC)").fill("2020-01-01"); await page.getByLabel("Through (UTC)").fill("2020-01-02"); await page.getByRole("button", { name: "Apply range" }).click();
   await expect(page.getByRole("heading", { name: "No activity in this range" })).toBeVisible();
-  await page.goto("/demo"); await page.screenshot({ path: "../../.cache/verification/demo-desktop.png", fullPage: true });
+  await page.goto("/demo"); await page.screenshot({ path: "../../.cache/structural-redesign/journey-desktop.png", fullPage: true });
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 }); await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
     for (const path of ["/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics", "/demo/knowledge", "/demo/architecture"]) {
-      await page.goto(path); await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      await page.goto(path); await page.getByRole("button", { name: "Open navigation" }).click();
+      await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      await page.getByRole("button", { name: "Close navigation" }).click();
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     }
   }
-  await page.goto("/demo"); await page.screenshot({ path: "../../.cache/verification/demo-mobile.png", fullPage: true });
+  await page.goto("/demo"); await page.screenshot({ path: "../../.cache/structural-redesign/journey-mobile.png", fullPage: true });
 });
 test("corrupt or blocked storage recovers and unknown records are safe", async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem("resolveflow-demo-v1", '{"private":"invalid"}'));
@@ -159,21 +163,24 @@ test("all reachable landing and demo links resolve within the demonstration", as
   expect(visited.size).toBeGreaterThan(20);
 });
 
-test("demo keyboard access, touch targets, table scrolling and contrast", async ({ page }) => {
+test("demo keyboard access, touch targets, inbox pane navigation and contrast", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/demo/tickets");
-  await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Open navigation" })).toBeVisible();
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to demo content" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.locator("#demo-content")).toBeFocused();
-  const table = page.getByRole("region", { name: "Support ticket table" });
-  await expect(table).toHaveAccessibleDescription(/Scroll horizontally/);
-  await table.focus();
-  expect(await table.evaluate(el => getComputedStyle(el).outlineStyle)).toBe("solid");
-  await page.keyboard.press("ArrowRight");
-  await expect.poll(() => table.evaluate(el => el.scrollLeft)).toBeGreaterThan(0);
-  await expect(page.locator("th[scope=col]")).toHaveCount(4);
+  const conversation = page.getByRole("link", { name: "Can I request a refund?", exact: true });
+  await conversation.focus();
+  expect(await conversation.evaluate(el => getComputedStyle(el).outlineStyle)).toBe("solid");
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("region", { name: "Selected conversation" })).toBeVisible();
+  await expect(page.getByRole("complementary", { name: "Ticket intelligence" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Ticket list" })).not.toBeVisible();
+  await page.getByRole("link", { name: "All conversations" }).click();
+  await expect(page.getByRole("region", { name: "Ticket list" })).toBeVisible();
+  await expect(page.locator(".conversation-list > li")).toHaveCount(8);
   for (const theme of ["light", "dark"] as const) {
     await page.evaluate(value => { localStorage.setItem("resolveflow-theme", value); document.documentElement.dataset.theme = value; window.dispatchEvent(new Event("resolveflow-theme")); }, theme);
     const contrast = await page.evaluate(() => {
@@ -189,7 +196,11 @@ test("demo keyboard access, touch targets, table scrolling and contrast", async 
     await page.setViewportSize({ width, height: 900 });
     for (const path of ["/demo", "/demo/tickets", "/demo/knowledge", "/demo/workflows/billing", "/demo/analytics", "/demo/architecture"]) {
       await page.goto(path);
-      await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      if (width <= 760) {
+        await page.getByRole("button", { name: "Open navigation" }).click();
+        await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+        await page.getByRole("button", { name: "Close navigation" }).click();
+      } else await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
       expect(await page.locator("h1").count()).toBe(1);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
       const small = await page.locator(".demo-page a:not(.skip-link), .demo-page button, .demo-page summary").evaluateAll(es => es.filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && (r.width < 43.9 || r.height < 43.9); }).map(el => el.textContent));
@@ -312,6 +323,8 @@ test("theme follows the system and persists keyboard selections across routes, r
   await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.getByRole("link", { name: "Explore Live Demo" }).click();
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { name: "Your workspace. Understood." })).toBeVisible();
   await expect(page.getByRole("button", { name: "Light theme" })).toHaveAttribute("aria-pressed", "true");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
@@ -321,6 +334,7 @@ test("theme follows the system and persists keyboard selections across routes, r
   await other.getByRole("button", { name: "Dark theme" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.setViewportSize({ width: 320, height: 844 });
+  await page.getByRole("button", { name: "Open navigation" }).click();
   await expect(page.getByRole("group", { name: "Color theme" })).toBeVisible();
   await page.getByRole("button", { name: "Light theme" }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
@@ -389,4 +403,115 @@ test("design fonts are local and licensed; themes use explicit semantic tokens",
   const css = readFileSync("src/app/design-system.css", "utf8");
   expect(css).toContain('--primary: #d9ed92'); expect(css).toContain('--background: #f5f4ee');
   expect(css).toContain('prefers-reduced-motion: reduce');
+});
+
+test("interactive product preview switches authored sources and destination", async ({ page }) => {
+  await page.goto("/");
+  const examples = page.getByRole("group", { name: "Product preview examples" });
+  await examples.getByRole("button", { name: /Password reset link expired/ }).click();
+  await expect(examples.getByRole("button", { name: /Password reset link expired/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".showcase-source")).toContainText("Account Recovery Guide");
+  await expect(page.locator(".showcase-source")).toContainText("Never share a password");
+  await page.getByRole("link", { name: "Inspect this workflow" }).click();
+  await expect(page).toHaveURL(/\/demo\/workflows\/account$/);
+  await expect(page.getByRole("button", { name: "Approve example" })).toBeDisabled();
+});
+
+test("command search supports keyboard selection, empty results and focus return", async ({ page }) => {
+  await page.goto("/demo");
+  const trigger = page.getByRole("button", { name: "Search workspace" });
+  await trigger.focus(); await page.keyboard.press("Control+k");
+  const dialog = page.getByRole("dialog", { name: "Where would you like to go?" });
+  await expect(dialog).toBeVisible();
+  const input = dialog.getByLabel("Search pages, tickets and sources");
+  await expect(input).toBeFocused(); await input.fill("no-match-xyz");
+  await expect(dialog.getByRole("status")).toContainText("No matches");
+  await input.fill("refund"); await page.keyboard.press("ArrowDown");
+  await expect(dialog.locator('[data-active=true]')).toContainText("Refund Policy");
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/demo\/knowledge\/refund$/);
+  await expect(dialog).toHaveCount(0);
+  await page.getByRole("button", { name: "Search workspace" }).click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Search workspace" })).toBeFocused();
+});
+
+test("overview chart series, date window and exact values match synthetic records", async ({ page }) => {
+  await page.goto("/demo");
+  const chart = page.getByRole("region", { name: "The rhythm of support" });
+  await expect(chart.locator(".chart-summary > strong")).toHaveText("8");
+  await chart.getByRole("button", { name: "Resolutions", exact: true }).click();
+  await expect(chart.getByRole("button", { name: "Resolutions", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await chart.getByText("View exact chart data", { exact: true }).click();
+  const sum = await chart.locator("tbody td").evaluateAll(cells => cells.reduce((n,c) => n + Number(c.textContent), 0));
+  expect(sum).toBe(3);
+  await expect(chart.locator(".chart-summary > strong")).toHaveText(String(sum));
+  await page.getByLabel("Overview period").selectOption("week");
+  await expect(chart.locator("tbody tr")).toHaveCount(7);
+  await chart.getByRole("button", { name: "Requests", exact: true }).click();
+  const requests = await chart.locator("tbody td").evaluateAll(cells => cells.reduce((n,c) => n + Number(c.textContent), 0));
+  await expect(chart.locator(".chart-summary > strong")).toHaveText(String(requests));
+  expect(requests).toBeLessThan(8);
+  await expect(page.getByRole("article", { name: "Support tickets" }).locator("strong")).toHaveText("8");
+});
+
+test("mobile drawer traps focus, searches and navigates without obscuring destinations", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/demo");
+  const trigger = page.getByRole("button", { name: "Open navigation" });
+  await trigger.click();
+  const drawer = page.getByRole("dialog", { name: "Your workspace" });
+  await expect(drawer).toBeVisible();
+  for (let i=0;i<18;i++) { await page.keyboard.press("Tab"); expect(await drawer.evaluate(el=>el.contains(document.activeElement))).toBe(true); }
+  await page.keyboard.press("Escape"); await expect(trigger).toBeFocused();
+  await trigger.click(); await drawer.getByRole("button", { name: "Search workspace" }).click();
+  const search = page.getByRole("dialog", { name: "Where would you like to go?" });
+  await search.getByLabel("Search pages, tickets and sources").fill("analytics");
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/demo\/analytics$/);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Support intelligence" })).toBeVisible();
+  await trigger.click(); await drawer.getByRole("link", { name: "Ticket inbox" }).click();
+  await expect(page.getByRole("region", { name: "Ticket list" })).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+test("source filters, citation expansion and no-results recovery remain truthful", async ({ page }) => {
+  await page.goto("/demo/knowledge");
+  await page.getByRole("button", { name: "Used in examples", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Source results" }).getByRole("listitem")).toHaveCount(4);
+  await page.getByText("Inspect this citation", { exact: true }).click();
+  await expect(page.getByText(/Exact passage identifier: refund-1/)).toBeVisible();
+  await page.getByLabel("Search documents").fill("nothing-matches-xyz");
+  await expect(page.getByRole("heading", { name: "No matching documents" })).toBeVisible();
+  await page.getByRole("button", { name: "Clear source filters" }).click();
+  await expect(page.getByRole("region", { name: "Source results" }).getByRole("listitem")).toHaveCount(5);
+});
+
+test("search, creation and navigation dialogs pass accessibility checks in both themes", async ({ page }) => {
+  for (const theme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme: theme });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/demo/tickets");
+    for (const opener of ["Search workspace", "Create demo ticket"]) {
+      await page.getByRole("button", { name: opener, exact: true }).click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+      await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
+      const violations = await page.evaluate(async () => {
+        const axe = (window as unknown as { axe: { run: (options: object) => Promise<{ violations: { id: string }[] }> } }).axe;
+        return (await axe.run({ runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } })).violations.map(v=>v.id);
+      });
+      expect(violations, `${theme} ${opener}`).toEqual([]);
+      await page.keyboard.press("Escape");
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole("button", { name: "Open navigation" }).click();
+    await expect(page.getByRole("dialog", { name: "Your workspace" })).toBeVisible();
+    const violations = await page.evaluate(async () => {
+      const axe = (window as unknown as { axe: { run: (options: object) => Promise<{ violations: { id: string }[] }> } }).axe;
+      return (await axe.run({ runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } })).violations.map(v=>v.id);
+    });
+    expect(violations, `${theme} drawer`).toEqual([]);
+    await page.keyboard.press("Escape");
+  }
 });

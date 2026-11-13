@@ -1,0 +1,15 @@
+"use client";
+import { useState } from "react";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import type { Point } from "@/lib/analytics";
+export function ActivityChart({ requests, resolutions, title = "The rhythm of support" }: { requests: Point[]; resolutions: Point[]; title?: string }) {
+  const [series, setSeries] = useState<"requests" | "resolutions">("requests");
+  const points = requests.map(p => ({ day: p.day, requests: p.count, resolutions: resolutions.find(r => r.day === p.day)?.count ?? 0 }));
+  const total = points.reduce((sum,p)=>sum+p[series],0);
+  return <section className="activity-canvas" aria-label={title}>
+    <header><div><span className="eyebrow">SYNTHETIC ACTIVITY · DAILY RECORDS</span><h2>{title}</h2></div><div className="segmented-control" role="group" aria-label="Chart series"><button aria-pressed={series==="requests"} onClick={()=>setSeries("requests")}>Requests</button><button aria-pressed={series==="resolutions"} onClick={()=>setSeries("resolutions")}>Resolutions</button></div></header>
+    <div className="chart-summary"><strong>{total}</strong><span>{series === "requests" ? "requests created" : "recorded resolutions"}<small>In the selected synthetic date range</small></span></div>
+    {total ? <div className="activity-plot" role="group" aria-label={`${total} ${series}. Exact values are available in the data table.`}><ResponsiveContainer width="100%" height="100%" minWidth={1}><AreaChart data={points} accessibilityLayer margin={{top:12,right:12,left:-25,bottom:0}}><defs><linearGradient id={`activity-fill-${series}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--accent)" stopOpacity={.3}/><stop offset="100%" stopColor="var(--accent)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 5"/><XAxis dataKey="day" tickFormatter={d=>d.slice(5)} minTickGap={35} axisLine={false} tickLine={false} stroke="var(--muted)" fontSize={11}/><YAxis allowDecimals={false} axisLine={false} tickLine={false} stroke="var(--muted)" fontSize={11}/><Tooltip contentStyle={{background:"var(--surface-raised)",borderColor:"var(--border)",borderRadius:12,color:"var(--foreground)"}}/><Area type="monotone" dataKey={series} name={series==="requests"?"Requests":"Resolutions"} stroke="var(--accent)" strokeWidth={2.5} fill={`url(#activity-fill-${series})`} isAnimationActive={false}/></AreaChart></ResponsiveContainer></div> : <div className="chart-empty"><span aria-hidden="true">∿</span><h3>No recorded activity</h3><p>Try the other series or expand your date range.</p></div>}
+    <details className="chart-data"><summary>View exact chart data</summary><div className="analytics-table-scroll"><table><caption>{title} · {series}</caption><thead><tr><th scope="col">UTC date</th><th scope="col">Count</th></tr></thead><tbody>{points.map(p=><tr key={p.day}><th scope="row">{p.day}</th><td>{p[series]}</td></tr>)}</tbody></table></div></details>
+  </section>;
+}

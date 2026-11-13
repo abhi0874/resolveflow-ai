@@ -1,91 +1,16 @@
 import Link from "next/link";
-import { appMode } from "@/lib/app-mode";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { WorkflowOverview } from "@/components/home/workflow-overview";
 import { FeatureOverview } from "@/components/home/feature-overview";
-import { ApiStatus } from "@/components/home/api-status";
 import { Icon } from "@/components/ui/icon";
-
 export default function Home() {
-  return (
-    <div id="top">
-      <a href="#main-content" className="skip-link">
-        Skip to content
-      </a>
-      <SiteHeader />
-      <main id="main-content">
-        <section className="hero container" aria-labelledby="hero-title">
-          <div className="hero-copy">
-            <span className="release-badge section-capsule">
-              <span className="small-dot" /> SUPPORT INTELLIGENCE, HUMAN PERSPECTIVE
-            </span>
-            <h1 id="hero-title">
-              A little intelligence.
-              <br />
-              <span>A lot more clarity.</span>
-            </h1>
-            <p className="hero-description">
-              From a crowded inbox to a considered response. Explore an AI/ML support workspace where every answer has context—and a person makes the final call.
-            </p>
-            <div className="hero-actions">
-              <Link href="/demo" className="primary-link">
-                Explore Live Demo <Icon name="arrow" width="19" height="19" />
-              </Link>
-              <Link href="/demo/architecture" className="hero-secondary">Explore the engineering <span aria-hidden="true">↗</span></Link>
-            </div>
-            <p className="hero-footnote">An interactive, synthetic workspace. No account or live AI required.</p>
-          </div>
-          <WorkflowOverview />
-        </section>
-        <div className="principles-strip">
-          <div className="container">
-            <span>BUILT WITH PURPOSE</span>
-            <p>Python & FastAPI</p>
-            <span aria-hidden="true">✳</span>
-            <p>MiniLM & pgvector</p>
-            <span aria-hidden="true">✳</span>
-            <p>Gemini & LangGraph</p>
-          </div>
-        </div>
-        <FeatureOverview />
-        <section
-          className="approach container"
-          id="approach"
-          aria-labelledby="approach-title"
-        >
-          <div className="approach-symbol" aria-hidden="true">
-            <Icon name="review" width="52" height="52" />
-          </div>
-          <div>
-            <span className="eyebrow section-capsule">AUTOMATION WITH ACCOUNTABILITY</span>
-            <h2 id="approach-title">
-              AI moves the work forward.
-              <br />
-              People make the final call.
-            </h2>
-          </div>
-          <p>
-            An answer is only useful when you can trust the process. Follow a source from retrieval to a draft, inspect its citation, and make an explicit review decision. Nothing is sent to a customer.
-          </p>
-        </section>
-        <section
-          id="foundation"
-          className="foundation container"
-          aria-labelledby="foundation-title"
-        >
-          <div>
-            <span className="eyebrow section-capsule">WHERE WE ARE TODAY</span>
-            <h2 id="foundation-title">Explore the product. Understand the engineering.</h2>
-            <p>
-              Ticket management, durable AI workflows, human review and workspace analytics are implemented. Explore their behavior in a self-contained synthetic demo; the full backend runs separately.
-            </p>
-          </div>
-          <Link className="primary-link" href="/demo/architecture">Under the hood <Icon name="arrow" width="18" height="18" /></Link>
-          {process.env.NODE_ENV === "development" && appMode() === "full" ? <ApiStatus /> : null}
-        </section>
-      </main>
-      <SiteFooter />
-    </div>
-  );
+  return <div id="top" className="editorial-home"><a href="#main-content" className="skip-link">Skip to content</a><SiteHeader/><main id="main-content">
+    <section className="editorial-hero" aria-labelledby="hero-title"><div className="hero-grid" aria-hidden="true"/><div className="hero-copy"><span className="release-badge"><span className="small-dot"/> AI/ML ENGINEERING, MADE EXPLORABLE</span><h1 id="hero-title">Less noise.<br/><span>More understanding.</span></h1><p className="hero-description">An intelligent support workspace that connects the request,<br className="desktop-break"/> the evidence, and the person behind every decision.</p><div className="hero-actions"><Link href="/demo" className="primary-link">Explore Live Demo <Icon name="arrow" width="18"/></Link><Link href="/demo/architecture" className="hero-secondary">Explore the engineering <span aria-hidden="true">↗</span></Link></div><p className="hero-footnote">No account. No live AI. A hands-on, synthetic demonstration.</p></div><div className="container"><WorkflowOverview/></div></section>
+    <section className="technology-ribbon container" aria-label="Locally implemented technology"><span>THE ENGINEERING BEHIND THE EXPERIENCE</span><div>{["Python","FastAPI","scikit-learn","MiniLM","pgvector","Gemini","LangGraph"].map(t=><span key={t}>{t}</span>)}</div></section>
+    <FeatureOverview/>
+    <section id="approach" className="human-story container" aria-labelledby="approach-title"><div className="human-story-copy"><span className="eyebrow">AUTOMATION WITH ACCOUNTABILITY</span><h2 id="approach-title">The most important<br/>step is still <em>human.</em></h2><p>AI can prepare a response. A person decides whether it deserves to leave the review desk. Inspect the evidence. Read the exact draft. Make a deliberate call.</p><Link href="/demo/workflows/billing" className="primary-link">Take the review seat <Icon name="arrow" width="18"/></Link></div><div className="human-story-visual"><div className="review-orbit" aria-hidden="true"><Icon name="review" width="56" height="56"/><span>YOU</span></div><div className="review-principles"><span>01 <strong>Evidence you can inspect</strong></span><span>02 <strong>A draft you can question</strong></span><span>03 <strong>A decision only you can make</strong></span></div><p>Approval is an internal record. No customer message is sent.</p></div></section>
+    <section id="foundation" className="engineering-invitation container"><div><span className="eyebrow">LOOK BEYOND THE INTERFACE</span><h2>A thoughtful experience.<br/>An inspectable system.</h2></div><div><p>The local application implements trained classification, semantic retrieval, Gemini RAG and durable LangGraph review. Explore the architecture, measured results and the limits that matter.</p><Link href="/demo/architecture" className="hero-secondary">Under the hood <span aria-hidden="true">↗</span></Link></div></section>
+    <section className="closing-invitation container"><span className="eyebrow">YOUR NEXT THREE MINUTES</span><h2>Follow a request.<br/>Find the perspective.</h2><Link href="/demo" className="primary-link">Step inside the workspace <Icon name="arrow" width="20"/></Link><p>Synthetic records. Real interaction. Honest engineering.</p></section>
+  </main><SiteFooter/></div>;
 }

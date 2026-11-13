@@ -1,77 +1,8 @@
+import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/icon";
-
-const features: {
-  title: string;
-  description: string;
-  icon: IconName;
-  tag: string;
-}[] = [
-  {
-    title: "Intelligent Ticket Classification",
-    description:
-      "Bring clarity to the queue with ML category suggestions and bounded rules for priority.",
-    icon: "classify",
-    tag: "UNDERSTAND",
-  },
-  {
-    title: "AI-Powered Knowledge Retrieval",
-    description:
-      "Connect each question to relevant knowledge, with source context behind every response.",
-    icon: "search",
-    tag: "DISCOVER",
-  },
-  {
-    title: "Durable Workflow Orchestration",
-    description:
-      "Coordinate specialized AI steps through LangGraph, from first context to a considered draft.",
-    icon: "workflow",
-    tag: "COORDINATE",
-  },
-  {
-    title: "Human-in-the-Loop Verification",
-    description:
-      "Give your team the final say. Review, refine, and approve responses before any action.",
-    icon: "review",
-    tag: "VERIFY",
-  },
+const chapters: {title:string;body:string;tag:string;icon:IconName;href:string;action:string}[]=[
+  {title:"Find the signal in every request.",body:"A support inbox is more than a list. Explore category suggestions, priority and the context your team needs to take the next step.",tag:"01 / UNDERSTAND",icon:"classify",href:"/demo/tickets",action:"Explore the inbox"},
+  {title:"Every useful answer starts with context.",body:"Follow an exact source passage into a response. The local system pairs MiniLM and pgvector retrieval with bounded Gemini generation; the demo makes that process visible.",tag:"02 / CONNECT",icon:"book",href:"/demo/knowledge",action:"Follow the evidence"},
+  {title:"A workflow you can actually follow.",body:"Walk through classification, retrieval, drafting and review. Replay the authored steps, explore an abstention, and see where a human decision changes the outcome.",tag:"03 / ORCHESTRATE",icon:"workflow",href:"/demo/workflows",action:"Replay a workflow"},
 ];
-
-export function FeatureOverview() {
-  return (
-    <section
-      id="capabilities"
-      className="capabilities container"
-      aria-labelledby="capabilities-title"
-    >
-      <div className="section-heading">
-        <div>
-          <span className="eyebrow section-capsule">A CONNECTED SUPPORT EXPERIENCE</span>
-          <h2 id="capabilities-title">
-            Four foundations.
-            <br />
-            One thoughtful workflow.
-          </h2>
-        </div>
-        <p>
-          From understanding a request to verifying a response.
-          <br className="desktop-break" /> Explore the capabilities of the full application
-          through clearly labeled examples.
-        </p>
-      </div>
-      <div className="feature-grid">
-        {features.map((feature, index) => (
-          <article className="feature-card" key={feature.title}>
-            <div className="feature-top">
-              <Icon name={feature.icon} width="28" height="28" />
-              <span>0{index + 1}</span>
-            </div>
-            <span className="feature-tag">{feature.tag}</span>
-            <h3>{feature.title}</h3>
-            <p>{feature.description}</p>
-            <span className="planned-label">Implemented locally</span>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
+export function FeatureOverview(){return <section id="capabilities" className="product-chapters container" aria-labelledby="capabilities-title"><header><span className="eyebrow">ONE REQUEST. A CONNECTED PERSPECTIVE.</span><h2 id="capabilities-title">Good support is<br/>a sequence of good decisions.</h2><p>Explore the journey, not just the feature list.</p></header><div>{chapters.map((c,i)=><article className="product-chapter" key={c.tag}><div className="chapter-art" aria-hidden="true"><span className="chapter-number">0{i+1}</span><Icon name={c.icon} width="52" height="52"/>{i===0?<div className="chapter-tags"><span>Account access</span><span>Billing</span><span>Technical support</span></div>:i===1?<div className="chapter-source-lines"><span/><span/><span/><small>[source-01] → draft</small></div>:<div className="chapter-nodes"><span>01</span><i/><span>02</span><i/><span>03</span><i/><span>✓</span></div>}</div><div className="chapter-copy"><span className="eyebrow">{c.tag}</span><h3>{c.title}</h3><p>{c.body}</p><Link href={c.href}>{c.action} <span aria-hidden="true">↗</span></Link></div></article>)}</div></section>}

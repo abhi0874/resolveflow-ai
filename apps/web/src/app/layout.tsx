@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import "./design-system.css";
+import "./structural.css";
 
 const heading = localFont({ src: "./fonts/SpaceGrotesk-Variable.ttf", variable: "--font-heading", display: "swap", weight: "300 700" });
 const body = localFont({ src: "./fonts/Manrope-Variable.ttf", variable: "--font-body", display: "swap", weight: "200 800" });

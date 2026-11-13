@@ -5,9 +5,9 @@ teams classify tickets, retrieve relevant knowledge, draft grounded responses,
 and review those responses before taking action. The long-term goal is a secure,
 maintainable, deployable product with a polished, responsive interface.
 
-**Current state: the standalone recruiter demo is live on Vercel Hobby and passed Step 15D hosted verification. Step 16 UI polish is local and not deployed.**
+**Current showcase:** the redesigned synthetic recruiter demo is published separately from the original red/black release. It includes a responsive ticket inbox, source library, workflow replay, human review, analytics, and an engineering case study. The final local release passed 29 demo checks plus build, TypeScript, and ESLint checks.
 
-[Explore the recruiter demo](https://resolveflow-ai-rosy.vercel.app/demo). Start with a citation-linked workflow, review the example draft, then open **Under the hood** for the implemented architecture. The public demo uses synthetic data and precomputed examples; it does not run live Gemini or the full backend.
+[Explore the recruiter demo](https://resolveflow-ai-showcase.vercel.app/demo). Start with a citation-linked workflow, review the example draft, then open **Under the hood** for the implemented architecture. The public demo uses synthetic data and precomputed examples; it does not run live Gemini or the full backend.
 The interactive recruiter demo runs alongside the complete local application and workspace analytics.
 Registration, login/logout, server-side sessions, workspace selection/settings,
 and role-controlled membership management now work with the local PostgreSQL API.

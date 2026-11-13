@@ -2008,7 +2008,7 @@ button:disabled {
   min-height: 44px;
   min-width: 44px;
 }
-.demo-page a:not(.skip-link):not(.demo-scenario) {
+:where(.demo-page a:not(.skip-link):not(.demo-scenario)) {
   display: inline-flex;
   align-items: center;
 }

@@ -1,6 +1,7 @@
+import Link from "next/link";
 export function Brand() {
   return (
-    <a href="/#top" className="brand" aria-label="ResolveFlow AI home">
+    <Link href="/#top" className="brand" aria-label="ResolveFlow AI home">
       <span className="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 32 32" fill="none">
           <path
@@ -15,6 +16,6 @@ export function Brand() {
       <span>
         ResolveFlow <span className="brand-ai">AI</span>
       </span>
-    </a>
+    </Link>
   );
 }
