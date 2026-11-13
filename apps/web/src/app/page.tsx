@@ -18,17 +18,15 @@ export default function Home() {
         <section className="hero container" aria-labelledby="hero-title">
           <div className="hero-copy">
             <span className="release-badge section-capsule">
-              <span className="small-dot" /> CONTEXT. CLARITY. HUMAN JUDGMENT.
+              <span className="small-dot" /> SUPPORT INTELLIGENCE, HUMAN PERSPECTIVE
             </span>
             <h1 id="hero-title">
-              Support with clarity.
+              A little intelligence.
               <br />
-              <span>Resolved with care.</span>
+              <span>A lot more clarity.</span>
             </h1>
             <p className="hero-description">
-              Bring every request into focus. Explore how classification,
-              grounded knowledge and human review turn a busy queue into
-              thoughtful support.
+              From a crowded inbox to a considered response. Explore an AI/ML support workspace where every answer has context—and a person makes the final call.
             </p>
             <div className="hero-actions">
               <Link href="/demo" className="primary-link">
@@ -42,12 +40,12 @@ export default function Home() {
         </section>
         <div className="principles-strip">
           <div className="container">
-            <span>CONSIDERED BY DESIGN</span>
-            <p>Context before answers.</p>
+            <span>BUILT WITH PURPOSE</span>
+            <p>Python & FastAPI</p>
             <span aria-hidden="true">✳</span>
-            <p>Clarity at every step.</p>
+            <p>MiniLM & pgvector</p>
             <span aria-hidden="true">✳</span>
-            <p>People at the center.</p>
+            <p>Gemini & LangGraph</p>
           </div>
         </div>
         <FeatureOverview />
@@ -68,9 +66,7 @@ export default function Home() {
             </h2>
           </div>
           <p>
-            We’re building for support teams who value both speed and care.
-            Grounded knowledge, transparent workflows, and human verification
-            are at the heart of the application.
+            An answer is only useful when you can trust the process. Follow a source from retrieval to a draft, inspect its citation, and make an explicit review decision. Nothing is sent to a customer.
           </p>
         </section>
         <section

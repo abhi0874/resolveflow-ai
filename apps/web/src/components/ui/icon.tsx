@@ -1,9 +1,13 @@
 import type { SVGProps } from "react";
 
 export type IconName =
-  "arrow" | "classify" | "search" | "workflow" | "review" | "spark";
+  "overview" | "inbox" | "book" | "chart" | "arrow" | "classify" | "search" | "workflow" | "review" | "spark";
 
 const paths: Record<IconName, React.ReactNode> = {
+  overview: <><rect x="3" y="3" width="7" height="7" rx="2" /><rect x="14" y="3" width="7" height="11" rx="2" /><rect x="3" y="14" width="7" height="7" rx="2" /><path d="M14 19h7" /></>,
+  inbox: <><path d="m3 13 3-9h12l3 9v7H3Z" /><path d="M3 13h5l2 3h4l2-3h5" /></>,
+  book: <><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z" /><path d="M12 5v15" /></>,
+  chart: <><path d="M4 3v18h18M8 16v-5m5 5V6m5 10v-8" /></>,
   arrow: (
     <>
       <path d="M5 12h14M13 6l6 6-6 6" />

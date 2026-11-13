@@ -1,6 +1,6 @@
 export function Brand() {
   return (
-    <a href="#top" className="brand" aria-label="ResolveFlow AI home">
+    <a href="/#top" className="brand" aria-label="ResolveFlow AI home">
       <span className="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 32 32" fill="none">
           <path

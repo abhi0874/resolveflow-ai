@@ -1,62 +1,14 @@
-import { Icon, type IconName } from "@/components/ui/icon";
-
-const steps: { title: string; detail: string; icon: IconName }[] = [
-  {
-    title: "Understand the request",
-    detail: "Classify intent & priority",
-    icon: "classify",
-  },
-  {
-    title: "Find the right context",
-    detail: "Retrieve relevant knowledge",
-    icon: "search",
-  },
-  {
-    title: "Bring it all together",
-    detail: "Orchestrate a grounded response",
-    icon: "workflow",
-  },
-  {
-    title: "Keep people in control",
-    detail: "Review, refine & approve",
-    icon: "review",
-  },
-];
-
+import Link from "next/link";
+import { Icon } from "@/components/ui/icon";
 export function WorkflowOverview() {
-  return (
-    <div className="workflow-art">
-      <div className="orbit orbit-one" aria-hidden="true" />
-      <div className="orbit orbit-two" aria-hidden="true" />
-      <div className="workflow-card">
-        <div className="workflow-heading">
-          <span className="eyebrow section-capsule">A REQUEST, CONSIDERED</span>
-          <Icon name="spark" width="18" height="18" />
-        </div>
-        <ol className="workflow-steps">
-          {steps.map((step, index) => (
-            <li key={step.title}>
-              <span
-                className={`step-icon ${index === 3 ? "step-icon-final" : ""}`}
-              >
-                <Icon name={step.icon} />
-              </span>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.detail}</p>
-              </div>
-              <span className="step-number">0{index + 1}</span>
-            </li>
-          ))}
-        </ol>
-        <div className="workflow-caption">
-          <span className="small-dot" /> Illustrated workflow · no live inference
-        </div>
-      </div>
-      <div className="human-note">
-        <Icon name="review" width="18" height="18" />
-        <span>Intelligence, with a human touch.</span>
-      </div>
-    </div>
-  );
+  return <div className="workflow-art" aria-label="Illustrated synthetic support workflow">
+    <div className="preview-window">
+      <div className="preview-bar"><span className="preview-brand"><Icon name="spark" width="17" height="17" /> ResolveFlow</span><span className="preview-status"><i /> EXAMPLE WORKSPACE</span></div>
+      <div className="preview-request"><div className="preview-avatar">JM</div><div><span className="eyebrow">INCOMING REQUEST · DEMO-001</span><h3>Can I request a refund?</h3><p>“I upgraded last week. What are my options?”</p></div><span aria-hidden="true">↗</span></div>
+      <div className="preview-pipeline"><div><Icon name="classify" /><span>Classify</span></div><span aria-hidden="true">→</span><div><Icon name="search" /><span>Retrieve</span></div><span aria-hidden="true">→</span><div><Icon name="workflow" /><span>Draft</span></div><span aria-hidden="true">→</span><div className="preview-active"><Icon name="review" /><span>Review</span></div></div>
+      <div className="preview-evidence"><span className="eyebrow">01 / RELEVANT KNOWLEDGE</span><div><strong>Refund Policy</strong><span className="preview-tag">Source matched</span></div><p>Refunds may be requested within 14 days of purchase.</p></div>
+      <div className="preview-answer"><div className="card-heading"><span className="eyebrow">02 / GROUNDED DRAFT</span><Icon name="spark" width="18" /></div><p>Happy to help. Your request falls within the policy’s 14-day window. Let’s review the purchase details.</p><span className="preview-citation">[refund-1] · Authored illustration</span></div>
+      <div className="preview-review"><span><span className="small-dot" /> Waiting for a human decision</span><Link href="/demo/workflows/billing" aria-label="Inspect the illustrated workflow">Inspect <span aria-hidden="true">↗</span></Link></div>
+    </div><div className="preview-caption"><span>01 — FROM REQUEST TO REVIEW</span><span>Illustrated workflow · no live inference</span></div>
+  </div>;
 }

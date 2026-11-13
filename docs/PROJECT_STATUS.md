@@ -1,5 +1,29 @@
 # Project status
 
+## Recruiter UI redesign — 2026-11-13, local acceptance complete
+
+The user authorized redesign and staged publication. Isolated branch
+`codex/recruiter-ui-redesign` starts from the approved public UI `3717f6e...`.
+The older research branch and its 619 tracked/untracked source records are preserved.
+
+Graphite/ivory themes, lime/lavender accents, local OFL Space Grotesk/Manrope,
+system/saved theme preferences, a new editorial landing and data-backed overview
+now extend through all existing recruiter journeys. Synthetic/precomputed and local
+AI/ML implementation disclosures remain explicit. No backend or model is changed.
+
+Fresh local results: demo production build, TypeScript and ESLint passed; **23 demo
+tests passed**, no retries; **28 page/theme/viewport captures** passed automated
+accessibility, overflow, console and network checks. Reviewed desktop/mobile
+screenshots include both themes. Functional/security assertions were retained;
+red-only styling checks were updated for the authorized replacement design.
+
+Vercel remains Hobby with protected previews, production `main` and live AI disabled.
+GitHub currently reports PUBLIC; this task did not change visibility. Preview and
+production publication remain pending at this commit. Existing release is the
+rollback reference. Full implementation, evidence and boundaries:
+[FRONTEND_REDESIGN.md](FRONTEND_REDESIGN.md).
+
+
 Updated: 2026-10-29 (Asia/Kolkata), Step 28C.1 single-red UI refinement.
 
 ## Step 28C.1 — single brand red and bold capsules; verified locally

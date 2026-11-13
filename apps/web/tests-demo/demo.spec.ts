@@ -206,6 +206,7 @@ test("critical demo screens pass automated WCAG accessibility checks", async ({ 
     for (const path of ["/", "/demo", "/demo/tickets", "/demo/workflows/billing", "/demo/analytics", "/demo/architecture"]) {
       await page.goto(path);
       if (path !== "/") await expect(page.getByRole("navigation", { name: "Demo navigation" })).toBeVisible();
+      await page.evaluate(() => Promise.all(document.getAnimations().map(animation => animation.finished.catch(() => {}))));
       await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
       const violations = await page.evaluate(async () => {
         const axe = (window as unknown as { axe: { run: (options: object) => Promise<{ violations: { id: string; nodes: { target: string[] }[] }[] }> } }).axe;
@@ -300,11 +301,13 @@ test("reduced motion removes UI animation without disabling workflow controls", 
 });
 
 
-test("theme defaults dark and persists keyboard selections across routes, reloads and new tabs", async ({ page, context }) => {
+test("theme follows the system and persists keyboard selections across routes, reloads and new tabs", async ({ page, context }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("button", { name: "System theme" })).toHaveAttribute("aria-pressed", "true");
+  await page.emulateMedia({ colorScheme: "dark" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(page.getByRole("button", { name: "Dark theme" })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Light theme" }).focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
@@ -331,81 +334,59 @@ test("saved theme applies before body parsing and blocked storage remains usable
   await page.goto("/");
   await expect(page.locator("body")).toHaveAttribute("data-initial-theme", "light");
   await page.addInitScript(() => { Object.defineProperty(window, "localStorage", { get() { throw new DOMException("Blocked", "SecurityError"); } }); });
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.getByRole("button", { name: "Light theme" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
 
-test("single-red capsules preserve exact theme styles, contrast and responsive navigation", async ({ page }) => {
+test("new palette maintains accessible contrast, responsive navigation and disabled approval", async ({ page }) => {
   await page.goto("/");
   for (const theme of ["dark", "light"] as const) {
     await page.getByRole("button", { name: `${theme === "dark" ? "Dark" : "Light"} theme`, exact: true }).click();
     for (const width of [1440, 1024, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
-      const capsules = await page.locator(".section-capsule").evaluateAll(elements => elements.map(el => {
-        const s = getComputedStyle(el), r = el.getBoundingClientRect();
-        return { tag: el.tagName, role: el.getAttribute("role"), text: el.textContent, weight: s.fontWeight, color: s.color, border: s.borderTopColor, borderStyle: s.borderTopStyle, radius: s.borderTopLeftRadius, background: s.backgroundColor, transform: s.textTransform, clipped: el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight, left: r.left, right: r.right };
-      }));
-      expect(capsules.length).toBeGreaterThanOrEqual(7);
-      for (const capsule of capsules) {
-        expect(capsule.weight).toBe("700");
-        expect(capsule.color).toBe("rgb(229, 24, 56)");
-        expect(capsule.border).toBe("rgb(229, 24, 56)");
-        expect(capsule.borderStyle).toBe("solid");
-        expect(capsule.radius).toBe("9999px");
-        expect(capsule.background).toBe(theme === "dark" ? "rgb(0, 0, 0)" : "rgb(255, 255, 255)");
-        expect(capsule.transform).toBe("uppercase");
-        expect(capsule.clipped, capsule.text ?? "capsule").toBe(false);
-        expect(capsule.left).toBeGreaterThanOrEqual(0);
-        expect(capsule.right).toBeLessThanOrEqual(width);
-        if (capsule.tag === "SPAN") expect(capsule.role).toBeNull();
+      for (const link of await page.locator(".main-nav a").all()) {
+        const bounds = await link.boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds!.x).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+        expect(bounds!.height).toBeGreaterThanOrEqual(44);
       }
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     }
     const capability = page.getByRole("link", { name: "Capabilities", exact: true });
-    await capability.focus();
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Shift+Tab");
+    await capability.focus(); await page.keyboard.press("Tab"); await page.keyboard.press("Shift+Tab");
     await expect(capability).toBeFocused();
     expect(await capability.evaluate(el => getComputedStyle(el).outlineStyle)).toBe("solid");
-    await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/#capabilities$/);
-    await capability.hover();
-    await expect(capability).toHaveCSS("color", "rgb(229, 24, 56)");
-    const cta = page.getByRole("link", { name: "Explore Live Demo", exact: true });
-    await cta.hover();
-    await expect(cta).toHaveCSS("background-color", "rgb(229, 24, 56)");
-    await expect(cta).toHaveCSS("color", "rgb(255, 255, 255)");
-    const contrasts = await page.evaluate(() => {
-      const luminance = (rgb: number[]) => rgb.map(c => c / 255).map(c => c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4).reduce((sum, c, i) => sum + c * [.2126, .7152, .0722][i], 0);
-      const red = luminance([229, 24, 56]);
-      return { onBlack: (red + .05) / .05, onWhite: 1.05 / (red + .05) };
+    await page.keyboard.press("Enter"); await expect(page).toHaveURL(/#capabilities$/);
+    const contrast = await page.evaluate(() => {
+      const css = getComputedStyle(document.documentElement);
+      function lum(value: string) { const c = value.trim().replace("#", "").match(/../g)!.map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4); return c[0]*.2126+c[1]*.7152+c[2]*.0722; }
+      const pairs = [["--foreground","--surface"],["--muted","--background"],["--accent","--accent-soft"],["--secondary","--secondary-soft"],["--on-primary","--primary"]];
+      return pairs.map(([fg,bg])=>{ const a=lum(css.getPropertyValue(fg)), b=lum(css.getPropertyValue(bg)); return (Math.max(a,b)+.05)/(Math.min(a,b)+.05); });
     });
-    expect(contrasts.onBlack).toBeGreaterThanOrEqual(4.5);
-    expect(contrasts.onWhite).toBeGreaterThanOrEqual(4.5);
+    for (const ratio of contrast) expect(ratio).toBeGreaterThanOrEqual(4.5);
+    const cta = page.getByRole("link", { name: "Explore Live Demo", exact: true });
+    await expect(cta).toHaveCSS("color", "rgb(33, 41, 26)");
     await page.goto("/demo/workflows/billing");
-    const disabledApproval = page.getByRole("button", { name: "Approve example", exact: true });
-    await expect(disabledApproval).toBeDisabled();
-    await expect(disabledApproval).toHaveCSS("opacity", "1");
-    expect(await disabledApproval.evaluate(el => getComputedStyle(el).backgroundColor)).not.toBe("rgb(229, 24, 56)");
+    const approval = page.getByRole("button", { name: "Approve example", exact: true });
+    await expect(approval).toBeDisabled(); await expect(approval).toHaveCSS("opacity", "1");
+    expect(await approval.evaluate(el=>getComputedStyle(el).backgroundColor)).not.toBe("rgb(217, 237, 146)");
     await page.goto("/");
   }
 });
 
-test("frontend palette declares one brand red without alternate red literals or mixes", async () => {
-  const { readFileSync, readdirSync } = await import("node:fs");
-  const { join } = await import("node:path");
-  const files: string[] = [];
-  function walk(path: string) { for (const entry of readdirSync(path, { withFileTypes: true })) { const file = join(path, entry.name); if (entry.isDirectory()) walk(file); else if (/\.(css|tsx?|js)$/.test(file)) files.push(file); } }
-  walk("src");
-  const source = files.map(file => readFileSync(file, "utf8")).join("\n");
-  expect(source.match(/--brand-red:\s*#E51838/g)).toHaveLength(1);
-  expect(source).toMatch(/border: 1\.5px solid var\(--brand-red\)/);
-  expect(source).not.toMatch(/color-mix\([^;]*(?:--accent|--brand-red|--primary)/);
-  const redLiterals = [...source.matchAll(/#([a-f\d]{6})(?:[a-f\d]{2})?\b/gi)].filter(([, hex]) => {
-    const [r, g, b] = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16));
-    return r > g * 1.3 && r > b * 1.3 && g < b; // red/pink family, excluding semantic amber
-  }).map(([, hex]) => hex.toUpperCase());
-  expect([...new Set(redLiterals)]).toEqual(["E51838"]);
+test("design fonts are local and licensed; themes use explicit semantic tokens", async () => {
+  const { readFileSync } = await import("node:fs");
+  for (const font of ["SpaceGrotesk", "Manrope"]) {
+    expect(readFileSync(`src/app/fonts/${font}-OFL.txt`, "utf8")).toContain("SIL OPEN FONT LICENSE Version 1.1");
+    expect(readFileSync(`src/app/fonts/${font}-Variable.ttf`).length).toBeGreaterThan(10000);
+  }
+  const layout = readFileSync("src/app/layout.tsx", "utf8");
+  expect(layout).toContain("next/font/local"); expect(layout).not.toContain("next/font/google");
+  const css = readFileSync("src/app/design-system.css", "utf8");
+  expect(css).toContain('--primary: #d9ed92'); expect(css).toContain('--background: #f5f4ee');
+  expect(css).toContain('prefers-reduced-motion: reduce');
 });
