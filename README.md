@@ -1,5 +1,7 @@
 # ResolveFlow AI
 
+[Local account application and universal handoff](docs/AI_MASTER_HANDOFF.md) · [Setup and verification](docs/AI_QUICK_START.md)
+
 ResolveFlow AI is a planned customer-support SaaS platform that helps support
 teams classify tickets, retrieve relevant knowledge, draft grounded responses,
 and review those responses before taking action. The long-term goal is a secure,
@@ -191,7 +193,7 @@ cp -n apps/web/.env.example apps/web/.env.local
 ## Train the local classifier
 
 A fresh checkout needs an explicit training run; application startup never trains.
-This checkout already contains the ignored, trained `baseline-v1` artifact.
+The trained `baseline-v1` artifact is private to the development installation and is excluded from Git.
 From the repository root:
 
 ```bash

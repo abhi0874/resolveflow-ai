@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { appMode } from "@/lib/app-mode";
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -5,6 +7,7 @@ import { WorkflowOverview } from "@/components/home/workflow-overview";
 import { FeatureOverview } from "@/components/home/feature-overview";
 import { Icon } from "@/components/ui/icon";
 export default function Home() {
+  if (appMode() === "full") redirect("/app");
   return <div id="top" className="editorial-home"><a href="#main-content" className="skip-link">Skip to content</a><SiteHeader/><main id="main-content">
     <section className="editorial-hero" aria-labelledby="hero-title"><div className="hero-grid" aria-hidden="true"/><div className="hero-copy"><span className="release-badge"><span className="small-dot"/> AI/ML ENGINEERING, MADE EXPLORABLE</span><h1 id="hero-title">Less noise.<br/><span>More understanding.</span></h1><p className="hero-description">An intelligent support workspace that connects the request,<br className="desktop-break"/> the evidence, and the person behind every decision.</p><div className="hero-actions"><Link href="/demo" className="primary-link">Explore Live Demo <Icon name="arrow" width="18"/></Link><Link href="/demo/architecture" className="hero-secondary">Explore the engineering <span aria-hidden="true">↗</span></Link></div><p className="hero-footnote">No account. No live AI. A hands-on, synthetic demonstration.</p></div><div className="container"><WorkflowOverview/></div></section>
     <section className="technology-ribbon container" aria-label="Locally implemented technology"><span>THE ENGINEERING BEHIND THE EXPERIENCE</span><div>{["Python","FastAPI","scikit-learn","MiniLM","pgvector","Gemini","LangGraph"].map(t=><span key={t}>{t}</span>)}</div></section>

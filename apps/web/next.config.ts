@@ -16,6 +16,7 @@ const demoCsp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  ...(!demo && { logging: { incomingRequests: { ignore: [/\/auth\/google\/callback(?:[/?]|$)/] } } }),
   async headers() {
     return [{ source: "/:path*", headers: [
       ...(demo && process.env.NODE_ENV === "production" ? [{ key: "Content-Security-Policy", value: demoCsp }] : []),

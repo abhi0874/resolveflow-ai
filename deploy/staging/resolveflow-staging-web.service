@@ -1,0 +1,19 @@
+[Unit]
+Description=ResolveFlow staging Next.js
+PartOf=resolveflow-staging.target
+After=resolveflow-staging-api.service
+
+[Service]
+User=resolveflow-staging-web
+Group=resolveflow-staging-web
+WorkingDirectory=/opt/resolveflow-staging/apps/web
+EnvironmentFile=/etc/resolveflow-staging/web.env
+Environment=PATH=/opt/node/bin:/usr/bin:/bin
+ExecStart=/opt/node/bin/node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3000
+Restart=on-failure
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/opt/resolveflow-staging/apps/web/.next/cache

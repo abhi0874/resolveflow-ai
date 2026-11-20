@@ -17,8 +17,9 @@ class Storage(Protocol):
 
 
 class LocalFileStorage:
-    def __init__(self, root: Path):
+    def __init__(self, root: Path, *, require_owner: bool = False):
         self.root = root
+        self.require_owner = require_owner
 
     @contextmanager
     def directory(self, workspace_id: uuid.UUID, key: str):
@@ -27,7 +28,10 @@ class LocalFileStorage:
         self.root.mkdir(mode=0o700, parents=True, exist_ok=True)
         root_fd = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:
-            if os.fstat(root_fd).st_mode & 0o077:
+            root_info = os.fstat(root_fd)
+            if root_info.st_mode & 0o077 or (
+                self.require_owner and root_info.st_uid != os.getuid()
+            ):
                 raise OSError("Storage directory must be private")
             name = workspace_id.hex
             try:
@@ -36,7 +40,10 @@ class LocalFileStorage:
                 pass
             folder_fd = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=root_fd)
             try:
-                if os.fstat(folder_fd).st_mode & 0o077:
+                folder_info = os.fstat(folder_fd)
+                if folder_info.st_mode & 0o077 or (
+                    self.require_owner and folder_info.st_uid != os.getuid()
+                ):
                     raise OSError("Workspace storage must be private")
                 yield folder_fd
             finally:
@@ -44,8 +51,15 @@ class LocalFileStorage:
         finally:
             os.close(root_fd)
 
-    def save(self, workspace_id: uuid.UUID, key: str, content: bytes) -> None:
+    def save(
+        self, workspace_id: uuid.UUID, key: str, content: bytes, create_only: bool = False
+    ) -> None:
         with self.directory(workspace_id, key) as folder:
+            if create_only:
+                from resolveflow.services.invitation_files import publish_new
+
+                publish_new(folder, key, content)
+                return
             # A deterministic partial object stays associated with its DB journal on a crash.
             fd = os.open(
                 key + ".part",

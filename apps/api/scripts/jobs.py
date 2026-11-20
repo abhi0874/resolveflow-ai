@@ -20,6 +20,7 @@ from sqlalchemy import func, select, text
 from resolveflow.core.config import Settings
 from resolveflow.db.session import Database
 from resolveflow.jobs.dispatch import reconcile
+from resolveflow.jobs.email import publish as publish_email
 from resolveflow.jobs.models import WorkflowJob
 from resolveflow.jobs.transport import IdentifierJob, WorkflowWorker, connection, log_event, queue
 from resolveflow.workflows.models import WorkflowExecution
@@ -63,6 +64,7 @@ def main():
             while not stopping:
                 try:
                     count = reconcile(database, settings)
+                    publish_email(database, settings)
                     with connection(settings) as heartbeat:
                         heartbeat.set(
                             "resolveflow:dispatcher:" + settings.job_queue,

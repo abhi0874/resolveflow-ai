@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { serverGet } from "@/lib/server-api";
-import type { User, Workspace, Member } from "@/lib/session-api";
+import { readPrivate, workspaceAccess } from "@/lib/workspace-access";
+import type { Member } from "@/lib/session-api";
 import { WorkspacePanel } from "@/components/workspaces/workspace-panel";
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -9,36 +8,22 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-async function read(path: string): Promise<Response | null> {
-  try {
-    return await serverGet(path);
-  } catch {
-    return null;
-  }
-}
-
 export default async function AppPage({
   searchParams,
 }: {
   searchParams: Promise<{ workspace?: string }>;
 }) {
-  const identity = await read("/auth/me");
-  if (identity?.status === 401) redirect("/login");
-  if (!identity?.ok) return <Unavailable />;
-  const user: User = await identity.json();
-  const response = await read("/workspaces");
-  if (response?.status === 401) redirect("/login");
-  if (!response?.ok) return <Unavailable />;
-  const workspaces: Workspace[] = await response.json();
+  const access = await workspaceAccess();
+  if (!access) return <Unavailable />;
+  const { user, workspaces } = access;
   const query = await searchParams;
   const selected = query.workspace
     ? workspaces.find((item) => item.id === query.workspace)
     : workspaces[0];
   let members: Member[] = [];
   if (selected) {
-    const response = await read(`/workspaces/${selected.id}/members`);
-    if (response?.status === 401) redirect("/login");
-    if (!response?.ok) return <Unavailable />;
+    const response = await readPrivate(`/workspaces/${selected.id}/members`);
+    if (!response) return <Unavailable />;
     members = await response.json();
   }
   return (
@@ -61,9 +46,6 @@ function Unavailable() {
       </p>
       <Link href="/app" className="primary-link">
         Try again
-      </Link>
-      <Link href="/" className="back-link">
-        Back to home
       </Link>
     </main>
   );

@@ -4,6 +4,7 @@ from datetime import datetime
 
 from sqlalchemy import (
     JSON,
+    Boolean,
     CheckConstraint,
     DateTime,
     Enum,
@@ -11,6 +12,7 @@ from sqlalchemy import (
     ForeignKeyConstraint,
     Index,
     Integer,
+    LargeBinary,
     String,
     Text,
     UniqueConstraint,
@@ -76,7 +78,18 @@ class User(IdentityMixin, TimestampMixin, Base):
     )
 
     email: Mapped[str] = mapped_column(String(320))
-    password_hash: Mapped[str] = mapped_column(String(512))
+    display_name: Mapped[str | None] = mapped_column(String(80))
+    avatar_png: Mapped[bytes | None] = mapped_column(LargeBinary)
+    password_hash: Mapped[str | None] = mapped_column(String(512))
+    email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    verified_email: Mapped[str | None] = mapped_column(String(320))
+    email_verification_source: Mapped[str | None] = mapped_column(String(16))
+    credential_version: Mapped[int] = mapped_column(Integer, default=1, server_default="1")
+
+    @property
+    def email_verified(self) -> bool:
+        return self.email_verified_at is not None and self.verified_email == self.email
+
     account_status: Mapped[AccountStatus] = mapped_column(
         enum_column(AccountStatus, "account_status"),
         default=AccountStatus.ACTIVE,
@@ -85,7 +98,94 @@ class User(IdentityMixin, TimestampMixin, Base):
 
     @validates("email")
     def normalize_email(self, _key: str, value: str) -> str:
-        return value.strip().lower()
+        normalized = value.strip().lower()
+        if self.email is not None and self.email != normalized:
+            self.email_verified_at = None
+            self.verified_email = None
+            self.email_verification_source = None
+        return normalized
+
+
+class ProviderIdentity(Base):
+    __tablename__ = "provider_identities"
+    __table_args__ = (UniqueConstraint("user_id", "provider"),)
+
+    provider: Mapped[str] = mapped_column(String(16), primary_key=True)
+    subject: Mapped[str] = mapped_column(String(255), primary_key=True)
+    original_email: Mapped[str | None] = mapped_column(String(320))
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+
+
+class ErasureJournalBinding(Base):
+    __tablename__ = "erasure_journal_binding"
+    __table_args__ = (CheckConstraint("singleton", name="one_binding"),)
+    singleton: Mapped[bool] = mapped_column(Boolean, primary_key=True)
+    epoch: Mapped[uuid.UUID] = mapped_column()
+    head: Mapped[str] = mapped_column(String(64))
+
+
+class AccountErasure(Base):
+    __tablename__ = "account_erasures"
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    subject_digest: Mapped[str | None] = mapped_column(String(64), index=True)
+    files: Mapped[list[dict]] = mapped_column(JSON)
+    review_required: Mapped[bool] = mapped_column(Boolean)
+
+
+class GoogleFlow(Base):
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deletion_version: Mapped[int | None] = mapped_column(Integer)
+    __tablename__ = "google_flows"
+
+    state_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    session_hash: Mapped[str] = mapped_column(
+        ForeignKey("auth_sessions.token_hash", ondelete="CASCADE"), unique=True
+    )
+    nonce_hash: Mapped[str] = mapped_column(String(64))
+    verifier: Mapped[str] = mapped_column(String(86))
+    destination: Mapped[str] = mapped_column(String(2048))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class IdentityEmail(IdentityMixin, CreatedMixin, Base):
+    """Durable delivery intent and single-use hashed token; no plaintext secret payload."""
+
+    __tablename__ = "identity_emails"
+    __table_args__ = (
+        CheckConstraint(
+            "purpose IN ('verify', 'reset', 'email_approve', 'email_change', 'email_notice')",
+            name="purpose",
+        ),
+        CheckConstraint(
+            "status IN ('pending','sending','sent','failed','cancelled')", name="status"
+        ),
+        CheckConstraint("attempts BETWEEN 0 AND 3", name="attempts"),
+        UniqueConstraint("token_hash"),
+        Index("ix_identity_emails_due", "status", "available_at"),
+        Index("ix_identity_emails_user", "user_id", "purpose"),
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    email: Mapped[str] = mapped_column(String(320))
+    purpose: Mapped[str] = mapped_column(String(16))
+    session_hash: Mapped[str | None] = mapped_column(String(64))
+    credential_version: Mapped[int] = mapped_column(Integer)
+    token_hash: Mapped[str] = mapped_column(String(64))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    invalidated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    status: Mapped[str] = mapped_column(String(16), default="pending", server_default="pending")
+    attempts: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    available_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    last_enqueued_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    error_code: Mapped[str | None] = mapped_column(String(32))
+    delivery_source: Mapped[str | None] = mapped_column(String(16))
+
+
+class IdentityAudit(IdentityMixin, CreatedMixin, Base):
+    __tablename__ = "identity_audit"
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    event: Mapped[str] = mapped_column(String(40))
 
 
 class Workspace(IdentityMixin, TimestampMixin, Base):
@@ -116,6 +216,49 @@ class WorkspaceMembership(IdentityMixin, CreatedMixin, Base):
         default=MembershipRole.VIEWER,
         server_default="viewer",
     )
+
+
+class InvitationDelivery(Base):
+    """A record belongs to the workspace. Recipient and issuer are distinct principals."""
+
+    __tablename__ = "invitation_deliveries"
+    __table_args__ = (
+        CheckConstraint("status IN ('pending','delivered','cancelled','held')", name="status"),
+        CheckConstraint("(issuer_id IS NULL) <> (retired_issuer_id IS NULL)", name="one_issuer"),
+        Index("ix_invitation_deliveries_pending", "workspace_id", "status", "recipient_id"),
+    )
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    workspace_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("workspaces.id", ondelete="RESTRICT")
+    )
+    recipient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
+    retired_issuer_id: Mapped[uuid.UUID | None] = mapped_column()
+    issuer_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
+    email: Mapped[str] = mapped_column(String(320))
+    role: Mapped[str] = mapped_column(String(32))
+    credential_version: Mapped[int] = mapped_column(Integer)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    mailbox_hash: Mapped[str] = mapped_column(String(64))
+    attempts: Mapped[list[str]] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(16))
+
+
+class WorkspaceInvitation(IdentityMixin, CreatedMixin, Base):
+    __tablename__ = "workspace_invitations"
+    __table_args__ = (
+        UniqueConstraint("token_hash"),
+        CheckConstraint("expires_at > created_at", name="expiry"),
+        Index("ix_workspace_invitations_pending", "workspace_id", "expires_at"),
+    )
+    workspace_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("workspaces.id", ondelete="CASCADE"))
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    issued_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
+    email: Mapped[str] = mapped_column(String(320))
+    role: Mapped[MembershipRole] = mapped_column(enum_column(MembershipRole, "invitation_role"))
+    token_hash: Mapped[str] = mapped_column(String(64))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Ticket(IdentityMixin, TimestampMixin, Base):
@@ -197,6 +340,9 @@ class TicketActivity(IdentityMixin, CreatedMixin, Base):
 
 
 class AuthSession(CreatedMixin, Base):
+    deletion_digest: Mapped[str | None] = mapped_column(String(64))
+    deletion_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deletion_version: Mapped[int | None] = mapped_column(Integer)
     __tablename__ = "auth_sessions"
     __table_args__ = (
         CheckConstraint("expires_at > created_at", name="expiry"),

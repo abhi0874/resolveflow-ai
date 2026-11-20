@@ -1,0 +1,23 @@
+{$STAGING_HOST:staging.invalid} {
+	@tester remote_ip {$STAGING_TESTER_CIDRS:192.0.2.0/32}
+
+	handle @tester {
+		@health {
+			method GET
+			path /api/v1/health
+		}
+		handle @health {
+			reverse_proxy 127.0.0.1:8000 {
+				header_up -Cookie
+				header_up -Authorization
+			}
+		}
+		handle {
+			reverse_proxy 127.0.0.1:3000
+		}
+	}
+
+	handle {
+		respond 403
+	}
+}

@@ -1,3 +1,4 @@
+import { inviteMember } from "./invitation-helper";
 import {
   test,
   expect,
@@ -238,7 +239,7 @@ test("document role controls, tenant isolation and paginated library", async ({
     ).toBeVisible();
     expect(
       (
-        await write(page.request, `/workspaces/${workspace.id}/members`, {
+        await inviteMember(page.request, other.request, `/workspaces/${workspace.id}/members`, {
           email: user.email,
           role: "viewer",
         })
@@ -365,5 +366,6 @@ test("processing failure, retry, request errors and expired document session", a
   await page.getByRole("button", { name: "Apply filters" }).click();
   await expect(page).toHaveURL(/\/login\?expired=1$/);
   await page.goto(`/app/knowledge-base?workspace=${workspace.id}`);
-  await expect(page).toHaveURL(/\/login$/);
+  await expect(page).toHaveURL((url) => url.pathname === "/login" &&
+    url.searchParams.get("next") === `/app/knowledge-base?workspace=${workspace.id}`);
 });

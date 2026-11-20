@@ -106,3 +106,4 @@ def isolate_model_configuration(tmp_path, monkeypatch):
     monkeypatch.setenv("RESOLVEFLOW_CLASSIFIER_ARTIFACT_ROOT", str(tmp_path / "models"))
 
     monkeypatch.setenv("RESOLVEFLOW_EMBEDDING_MODEL_ROOT", str(tmp_path / "embeddings"))
+    monkeypatch.setenv("RESOLVEFLOW_INVITATION_DELIVERY_ROOT", str(tmp_path / "mailbox"))

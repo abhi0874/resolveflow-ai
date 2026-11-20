@@ -1,3 +1,4 @@
+import json
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
@@ -63,6 +64,22 @@ def workspace(client, slug=None):
     )
     assert response.status_code == 201, response.text
     return response.json()
+
+
+def invite_member(client, recipient, path, body):
+    """Exercise the real invitation/acceptance flow using a private test mailbox."""
+    for current in (client, recipient):
+        assert current.app.app.state.settings.environment == "test"
+        current.app.app.state.settings.invitation_delivery = "local"
+    response = mutate(client, path.removesuffix("/members") + "/invitations", body)
+    assert response.status_code == 202, response.text
+    invitation = response.json()
+    assert "token" not in invitation
+    root = client.app.app.state.settings.invitation_delivery_root
+    token = json.loads(
+        (root / uuid.UUID(path.split("/")[2]).hex / uuid.UUID(invitation["id"]).hex).read_text()
+    )["token"]
+    return mutate(recipient, "/auth/invitations/accept", {"token": token})
 
 
 def test_registration_hash_cookie_rotation_me_logout(auth_env):
@@ -145,6 +162,48 @@ def test_expired_and_anonymous_sessions(auth_env):
         db.commit()
     assert client.get("/api/v1/auth/me").status_code == 401
     assert mutate(client, "/workspaces", {"name": "Blocked", "slug": "blocked"}).status_code == 401
+
+
+def test_private_endpoints_reject_missing_invalid_and_anonymous_sessions(auth_env):
+    _, _, client = auth_env
+    space = f"/workspaces/{uuid.uuid4()}"
+    ticket = f"{space}/tickets/{uuid.uuid4()}"
+    doc = f"{space}/documents/{uuid.uuid4()}"
+    execution = f"{space}/workflows/{uuid.uuid4()}"
+    endpoints = [
+        ("GET", "/auth/me"),
+        ("GET", "/workspaces"),
+        ("POST", "/workspaces"),
+        ("GET", space),
+        ("PATCH", space),
+        ("GET", f"{space}/members"),
+        ("GET", f"{space}/tickets"),
+        ("GET", ticket),
+        ("POST", f"{ticket}/classify"),
+        ("GET", f"{space}/documents"),
+        ("GET", f"{doc}/download"),
+        ("DELETE", doc),
+        ("POST", f"{space}/knowledge-base/search"),
+        ("GET", f"{ticket}/drafts/{uuid.uuid4()}"),
+        ("POST", f"{ticket}/drafts/{uuid.uuid4()}/review"),
+        ("GET", execution),
+        ("POST", f"{execution}/resume"),
+        ("GET", f"{space}/analytics/overview"),
+    ]
+
+    def assert_denied():
+        for method, path in endpoints:
+            response = client.request(method, "/api/v1" + path)
+            assert response.status_code == 401, (method, path)
+            assert response.json() == {"error": {"code": "http_error", "message": "Unauthorized"}}
+            assert "no-store" in response.headers["cache-control"]
+
+    assert_denied()
+    client.cookies.set("resolveflow_session", "a" * 43)
+    assert_denied()
+    client.cookies.clear()
+    assert client.get("/api/v1/auth/csrf").status_code == 200
+    assert_denied()
 
 
 def test_csrf_origin_token_and_content_type(auth_env):
@@ -275,8 +334,8 @@ def test_roles_membership_uniqueness_and_owner_invariants(auth_env):
     with TestClient(create_asgi_app(app.app.state.settings)) as teammate:
         user = register(teammate)
         assert (
-            mutate(
-                client, base + "/members", {"email": user["email"], "role": "viewer"}
+            invite_member(
+                client, teammate, base + "/members", {"email": user["email"], "role": "viewer"}
             ).status_code
             == 201
         )
@@ -334,7 +393,12 @@ def test_concurrent_owner_removal_preserves_one_owner(auth_env):
     base = f"/workspaces/{space['id']}/members"
     with TestClient(create_asgi_app(app.app.state.settings)) as second:
         other = register(second)
-        assert mutate(first, base, {"email": other["email"], "role": "owner"}).status_code == 201
+        assert (
+            invite_member(
+                first, second, base, {"email": other["email"], "role": "owner"}
+            ).status_code
+            == 201
+        )
         with ThreadPoolExecutor(max_workers=2) as executor:
             a = executor.submit(mutate, first, base + "/" + owner["id"], None, "DELETE")
             b = executor.submit(mutate, second, base + "/" + other["id"], None, "DELETE")
@@ -380,14 +444,20 @@ def test_admin_can_manage_lower_roles_but_not_other_tenant_members(auth_env):
         admin = register(admin_client)
         agent = register(agent_client)
         assert (
-            mutate(
-                owner_client, base + "/members", {"email": admin["email"], "role": "admin"}
+            invite_member(
+                owner_client,
+                admin_client,
+                base + "/members",
+                {"email": admin["email"], "role": "admin"},
             ).status_code
             == 201
         )
         assert (
-            mutate(
-                admin_client, base + "/members", {"email": agent["email"], "role": "support_agent"}
+            invite_member(
+                admin_client,
+                agent_client,
+                base + "/members",
+                {"email": agent["email"], "role": "support_agent"},
             ).status_code
             == 201
         )

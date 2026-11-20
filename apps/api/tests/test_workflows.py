@@ -7,7 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
-from test_auth_workspaces import mutate, register, workspace
+from test_auth_workspaces import invite_member, mutate, register, workspace
 from test_documents import env as document_env
 from test_ml import trained_model as trained_fixture
 from test_rag import POLICY, setup
@@ -208,8 +208,9 @@ def test_tenant_roles_state_tampering_and_csrf(workflow_env):
         assert other.get("/api/v1" + foreign_location).status_code == 404
         assert mutate(other, path + "/workflows", body).status_code == 404
         assert (
-            mutate(
+            invite_member(
                 client,
+                other,
                 f"/workspaces/{env[4]['id']}/members",
                 {"email": member["email"], "role": "viewer"},
             ).status_code

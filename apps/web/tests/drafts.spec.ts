@@ -1,3 +1,4 @@
+import { inviteMember } from "./invitation-helper";
 import { test, expect, type APIRequestContext, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 
@@ -111,7 +112,7 @@ test("viewer cannot read document-derived drafts or review them", async ({ page,
   try {
     const viewer = await other.newPage();
     const user = await account(viewer);
-    expect((await write(page.request, `/workspaces/${space.id}/members`, { email: user.email, role: "viewer" })).status()).toBe(201);
+    expect((await inviteMember(page.request, viewer.request, `/workspaces/${space.id}/members`, { email: user.email, role: "viewer" })).status()).toBe(201);
     await viewer.goto(`/app/tickets/${ticket.id}?workspace=${space.id}`);
     await expect(viewer.getByRole("heading", { name: ticket.title, exact: true })).toBeVisible();
     await expect(viewer.getByRole("region", { name: "Response assistant" })).toHaveCount(0);

@@ -1,11 +1,12 @@
 from collections.abc import Iterator
 
 from fastapi import Request
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import Session, sessionmaker
 
 from resolveflow.core.config import Settings
+from resolveflow.services.erasure_journal import QUARANTINED
 
 
 class DatabaseUnavailableError(Exception):
@@ -29,6 +30,17 @@ class Database:
                 "options": f"-c statement_timeout={settings.db_statement_timeout_ms}",
             },
         )
+
+        @event.listens_for(self.engine, "checkout")
+        def guard_restore(connection, _record, _proxy):
+            with connection.cursor() as cursor:
+                cursor.execute(QUARANTINED)
+                quarantine = cursor.fetchone()[0]
+            connection.rollback()
+            if quarantine:
+                connection.close()
+                raise DatabaseUnavailableError
+
         self.sessions = sessionmaker(self.engine, expire_on_commit=False, autoflush=False)
 
     def dispose(self) -> None:

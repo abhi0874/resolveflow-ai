@@ -1,0 +1,7 @@
+[Unit]
+Description=ResolveFlow full-account staging
+Wants=resolveflow-staging-api.service resolveflow-staging-web.service resolveflow-staging-jobs@worker.service resolveflow-staging-jobs@dispatch.service
+After=network-online.target postgresql.service valkey-server.service
+
+[Install]
+WantedBy=multi-user.target
