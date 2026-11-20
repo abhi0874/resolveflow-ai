@@ -37,6 +37,8 @@ export async function api<T>(
 
 export function errorMessage(error: unknown, auth = false): string {
   if (error instanceof ApiError) {
+    if (error.code === "email_verification_required")
+      return "Verify your email before signing in. Use the Verify email link below to request another message.";
     if (error.status === 401) {
       if (!auth) window.location.replace("/login?expired=1");
       return auth
@@ -59,7 +61,7 @@ export function errorMessage(error: unknown, auth = false): string {
   return "We couldn’t reach the service. Check your connection and try again.";
 }
 
-export type User = { id: string; email: string; email_verified: false };
+export type User = { id: string; email: string; email_verified: boolean };
 export type Role = "owner" | "admin" | "support_agent" | "viewer";
 export type Workspace = {
   id: string;

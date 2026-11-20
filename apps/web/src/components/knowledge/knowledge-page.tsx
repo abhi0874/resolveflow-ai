@@ -1,18 +1,9 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { serverGet } from "@/lib/server-api";
-import type { User, Workspace } from "@/lib/session-api";
+import { readPrivate, workspaceAccess } from "@/lib/workspace-access";
 import type { UploadConfig } from "@/lib/documents";
 import { AppShell } from "@/components/workspaces/app-shell";
 import { KnowledgeList } from "./knowledge-list";
 import { DocumentDetail } from "./document-detail";
-async function read(path: string) {
-  try {
-    return await serverGet(path);
-  } catch {
-    return null;
-  }
-}
 export async function KnowledgePage({
   workspaceId,
   documentId,
@@ -20,23 +11,17 @@ export async function KnowledgePage({
   workspaceId?: string;
   documentId?: string;
 }) {
-  const identity = await read("/auth/me");
-  if (identity?.status === 401) redirect("/login");
-  if (!identity?.ok) return <Unavailable />;
-  const user: User = await identity.json();
-  const response = await read("/workspaces");
-  if (response?.status === 401) redirect("/login");
-  if (!response?.ok) return <Unavailable />;
-  const workspaces: Workspace[] = await response.json();
+  const access = await workspaceAccess();
+  if (!access) return <Unavailable />;
+  const { user, workspaces } = access;
   const selected = workspaceId
     ? workspaces.find((w) => w.id === workspaceId)
     : workspaces[0];
   if (!selected) return <Unavailable missing />;
-  const configResponse = await read(
+  const configResponse = await readPrivate(
     `/workspaces/${selected.id}/documents/config`,
   );
-  if (configResponse?.status === 401) redirect("/login");
-  if (!configResponse?.ok) return <Unavailable />;
+  if (!configResponse) return <Unavailable />;
   const config: UploadConfig = await configResponse.json();
   return (
     <AppShell

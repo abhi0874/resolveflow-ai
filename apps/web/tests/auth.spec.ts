@@ -1,3 +1,4 @@
+import { invitationCode } from "./invitation-helper";
 import { test, expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 const password = "browser test passphrase 123!";
@@ -14,6 +15,87 @@ async function register(page: Page) {
   await expect(page).toHaveURL(/\/app$/);
   return email;
 }
+
+test("signed-out HTML and RSC requests cannot reach private routes", async ({ page, request }) => {
+  const id = randomUUID();
+  const routes = [
+    "/app",
+    `/app?workspace=${id}`,
+    `/app/tickets?workspace=${id}`,
+    `/app/tickets/${id}?workspace=${id}`,
+    `/app/knowledge-base?workspace=${id}`,
+    `/app/knowledge-base/${id}?workspace=${id}`,
+    `/app/analytics?workspace=${id}`,
+    "/app/settings",
+    "/app/workflows",
+  ];
+  for (const path of routes) {
+    for (const headers of [undefined, { RSC: "1", "Next-Router-Prefetch": "1" }]) {
+      const response = await request.get(path, { maxRedirects: 0, headers });
+      expect(response.status(), path).toBe(307);
+      const location = new URL(response.headers().location, response.url());
+      expect(location.pathname).toBe("/login");
+      expect(location.searchParams.get("next")).toBe(path === "/app" ? null : path);
+      expect(response.headers()["cache-control"]).toContain("no-store");
+      expect(await response.text()).not.toContain("SIGNED IN AS");
+    }
+  }
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/login$/);
+  for (const path of ["/register", "/verify-email", "/verification-required", "/forgot-password", "/reset-password"]) {
+    expect((await request.get(path, { maxRedirects: 0 })).status(), path).toBe(200);
+  }
+  expect((await request.get("/demo")).status()).toBe(404);
+  expect((await request.post("/api/demo/generate")).status()).toBe(404);
+  expect((await request.post("/api/v1/workspaces", { data: { name: "Denied", slug: "denied" } })).status()).toBe(401);
+});
+
+test("login resumes a safe workspace deep link and rejects untrusted destinations", async ({ page, context }) => {
+  const email = await register(page);
+  const name = "Private deep link " + randomUUID();
+  await page.getByLabel("Workspace name").fill(name);
+  await page.getByLabel("Workspace slug").fill(`care-${randomUUID()}`);
+  await page.getByRole("button", { name: "Create workspace", exact: true }).click();
+  await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  const origin = new URL(page.url()).origin;
+  const workspace = new URL(page.url()).searchParams.get("workspace");
+  const destination = `/app/tickets?workspace=${workspace}`;
+  const cookie = (await context.cookies()).find((item) => item.name === "resolveflow_session")!;
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(page).toHaveURL(/\/login$/);
+  // A well-formed revoked cookie must pass neither the FastAPI check nor SSR.
+  await context.addCookies([cookie]);
+  const signedOutResponse = await page.goto(destination);
+  expect(signedOutResponse?.headers()["cache-control"]).toContain("no-store");
+  await expect(page).toHaveURL((url) => url.pathname === "/login" && url.searchParams.get("next") === destination);
+  expect(await page.content()).not.toContain(name);
+  expect(await page.content()).not.toContain(email);
+  expect((await page.request.get("/api/v1/workspaces")).status()).toBe(401);
+  await expect(page.getByRole("link", { name: "Create an account" })).toHaveAttribute(
+    "href", `/register?${new URLSearchParams({ next: destination })}`,
+  );
+  async function login() {
+    await page.getByLabel("Email address").fill(email);
+    await page.getByLabel("Password", { exact: true }).fill(password);
+    await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  }
+  await login();
+  await expect(page).toHaveURL(origin + destination);
+  await expect(page.getByRole("navigation", { name: "Workspaces" }).getByRole("link", { name: new RegExp(name) })).toBeVisible();
+  const privatePage = await page.request.get(destination);
+  expect(privatePage.headers()["cache-control"]).toContain("no-store");
+  expect(await privatePage.text()).toContain(name);
+
+  for (const unsafe of [
+    "https://example.invalid/", "//example.invalid/", "/app/../login",
+    "/app/%2f%2fexample.invalid", "/app\\..\\login", "/login?next=/app",
+  ]) {
+    await page.goto(`/login?${new URLSearchParams({ next: unsafe })}`);
+    await expect(page.getByRole("link", { name: "Create an account" })).toHaveAttribute("href", "/register");
+  }
+  await login();
+  await expect(page).toHaveURL(origin + "/app");
+});
 
 test("protected rendering, validation, and real login error", async ({
   page,
@@ -136,9 +218,13 @@ test("registration, workspace navigation, settings, session persistence and logo
   await expect(
     page.getByRole("navigation", { name: "Workspaces" }).getByRole("link"),
   ).toHaveCount(2);
+  await page.goto(firstUrl);
+  await expect(page).toHaveURL(firstUrl);
   await context.clearCookies();
   await page.reload();
-  await expect(page).toHaveURL(/\/login$/);
+  const lastDestination = new URL(firstUrl);
+  await expect(page).toHaveURL((url) => url.pathname === "/login" &&
+    url.searchParams.get("next") === lastDestination.pathname + lastDestination.search);
 });
 
 test("real membership UI and viewer protection", async ({ page, browser }) => {
@@ -155,9 +241,19 @@ test("real membership UI and viewer protection", async ({ page, browser }) => {
     page.getByRole("heading", { name: "Shared team" }),
   ).toBeVisible();
   const workspaceUrl = page.url();
-  await page.getByLabel("Add a registered teammate").fill(memberEmail);
-  await page.getByRole("button", { name: "Add member", exact: true }).click();
-  await expect(page.getByRole("status")).toHaveText("Team member added.");
+  await page.getByLabel("Invite a registered teammate").fill(memberEmail);
+  await page.getByRole("button", { name: "Send invitation", exact: true }).click();
+  await expect(page.getByRole("status")).toHaveText("Invitation created. Access begins only after the recipient accepts.");
+  const workspaceId = new URL(workspaceUrl).searchParams.get("workspace")!;
+  const invitations = await page.request.get(`/api/v1/workspaces/${workspaceId}/invitations`);
+  expect(invitations.status()).toBe(200);
+  const invitation = (await invitations.json())[0];
+  expect((await memberPage.request.get(`/api/v1/workspaces/${workspaceId}`)).status()).toBe(404);
+  await memberPage.getByLabel("Invitation code").fill(await invitationCode(workspaceId, invitation.id));
+  await memberPage.getByRole("button", { name: "Accept invitation", exact: true }).click();
+  await expect(memberPage).toHaveURL(workspaceUrl);
+  expect((await memberPage.request.get("/api/v1/auth/me")).status()).toBe(200);
+  await page.reload();
   await memberPage.goto(workspaceUrl);
   await expect(
     memberPage.getByRole("heading", { name: "Shared team" }),
@@ -166,7 +262,7 @@ test("real membership UI and viewer protection", async ({ page, browser }) => {
     memberPage.getByRole("button", { name: "Save changes" }),
   ).toHaveCount(0);
   await expect(
-    memberPage.getByRole("button", { name: "Add member", exact: true }),
+    memberPage.getByRole("button", { name: "Send invitation", exact: true }),
   ).toHaveCount(0);
   await page
     .getByLabel(`Role for ${memberEmail}`)

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 export function AuthLayout({
@@ -11,9 +10,9 @@ export function AuthLayout({
   return (
     <main className="auth-page" id="main-content">
       <section className="auth-story">
-        <Link href="/" className="brand">
+        <span className="brand">
           ResolveFlow <span className="brand-ai">AI</span>
-        </Link>
+        </span>
         <div>
           <span className="eyebrow">YOUR TEAM. ONE SHARED SPACE.</span>
           <h1>
@@ -33,9 +32,6 @@ export function AuthLayout({
         </div>
       </section>
       <section className="auth-entry">
-        <Link href="/" className="back-link">
-          ← Back to ResolveFlow
-        </Link>
         <div className="auth-card">
           <span className="eyebrow">
             {register ? "A FRESH START" : "WELCOME BACK"}

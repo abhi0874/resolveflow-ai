@@ -1,9 +1,11 @@
 from fastapi import APIRouter
 
+from resolveflow.api.v1.account import router as account_router
 from resolveflow.api.v1.analytics import router as analytics_router
 from resolveflow.api.v1.auth import router as auth_router
 from resolveflow.api.v1.documents import router as document_router
 from resolveflow.api.v1.drafts import router as draft_router
+from resolveflow.api.v1.google import router as google_router
 from resolveflow.api.v1.retrieval import router as retrieval_router
 from resolveflow.api.v1.system import router as system_router
 from resolveflow.api.v1.tickets import router as ticket_router
@@ -22,6 +24,8 @@ api_router.include_router(system_router)
 
 
 api_router.include_router(auth_router)
+api_router.include_router(account_router)
+api_router.include_router(google_router)
 api_router.include_router(workspace_router)
 
 api_router.include_router(ticket_router)

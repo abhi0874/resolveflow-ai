@@ -1,5 +1,9 @@
 # ResolveFlow AI | Context for Claude
 
+## Account expansion and release state
+
+The separate local application requires sign-in, supports password and Google OIDC sessions, profile settings, verified credential changes and permanent account deletion. Live Google consent, external SMTP and off-host restore remain unverified. The public showcase stays guest-accessible with synthetic browser-local examples. Read the [universal handoff](AI_MASTER_HANDOFF.md) and [current status](PROJECT_STATUS.md) before making deployment or account claims. Earlier deployment IDs below describe historical releases.
+
 Use this memory when helping the developer describe ResolveFlow AI in resumes, README copy, LinkedIn posts or interviews. The project is a personal AI/ML engineering portfolio. Its purpose is to help a support agent decide what a ticket needs, find the policy that supports a response, and review an exact draft before recording a decision.
 
 ## Where the project lives

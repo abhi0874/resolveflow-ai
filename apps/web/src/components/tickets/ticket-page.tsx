@@ -1,18 +1,10 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { serverGet } from "@/lib/server-api";
-import type { User, Workspace, Member } from "@/lib/session-api";
+import { readPrivate, workspaceAccess } from "@/lib/workspace-access";
+import type { Member } from "@/lib/session-api";
 import { AppShell } from "@/components/workspaces/app-shell";
 import { TicketInbox } from "./ticket-inbox";
 import { TicketDetail } from "./ticket-detail";
 
-async function read(path: string) {
-  try {
-    return await serverGet(path);
-  } catch {
-    return null;
-  }
-}
 export async function TicketPage({
   workspaceId,
   ticketId,
@@ -20,23 +12,17 @@ export async function TicketPage({
   workspaceId?: string;
   ticketId?: string;
 }) {
-  const identity = await read("/auth/me");
-  if (identity?.status === 401) redirect("/login");
-  if (!identity?.ok) return <Unavailable />;
-  const user: User = await identity.json();
-  const response = await read("/workspaces");
-  if (response?.status === 401) redirect("/login");
-  if (!response?.ok) return <Unavailable />;
-  const workspaces: Workspace[] = await response.json();
+  const access = await workspaceAccess();
+  if (!access) return <Unavailable />;
+  const { user, workspaces } = access;
   const selected = workspaceId
     ? workspaces.find((w) => w.id === workspaceId)
     : workspaces[0];
   if (!selected) return <Unavailable missing />;
-  const membersResponse = await read(
+  const membersResponse = await readPrivate(
     `/workspaces/${selected.id}/tickets/assignees`,
   );
-  if (membersResponse?.status === 401) redirect("/login");
-  if (!membersResponse?.ok) return <Unavailable />;
+  if (!membersResponse) return <Unavailable />;
   const members: Member[] = await membersResponse.json();
   return (
     <AppShell user={user} workspaces={workspaces} selected={selected}>

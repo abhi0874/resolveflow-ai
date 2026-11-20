@@ -7,7 +7,7 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from test_auth_workspaces import auth_env as auth_fixture
-from test_auth_workspaces import mutate, register, workspace
+from test_auth_workspaces import invite_member, mutate, register, workspace
 from test_database import migrate
 
 from resolveflow.db.models import AccountStatus, Ticket, TicketActivity, TicketNote, User
@@ -171,7 +171,10 @@ def test_viewer_agent_admin_policy_and_assignment(auth_env):
         agent = register(teammate)
         assert patch(client, base, ticket, assigned_user_id=agent["id"]).status_code == 422
         assert (
-            mutate(client, members, {"email": agent["email"], "role": "viewer"}).status_code == 201
+            invite_member(
+                client, teammate, members, {"email": agent["email"], "role": "viewer"}
+            ).status_code
+            == 201
         )
         assert patch(client, base, ticket, assigned_user_id=agent["id"]).status_code == 422
         assert teammate.get("/api/v1" + base).status_code == 200

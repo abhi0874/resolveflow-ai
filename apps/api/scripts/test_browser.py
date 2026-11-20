@@ -16,9 +16,11 @@ from alembic import command
 from alembic.config import Config
 from broker_fixture import isolated_broker
 from local_db import API, ROOT, admin_connect, load_state, url
+from mailpit_fixture import isolated_mailpit
 from psycopg import sql
 from sqlalchemy import create_engine
 from sqlalchemy.engine import make_url
+from sqlalchemy.orm import Session
 
 
 def main() -> int:
@@ -30,6 +32,10 @@ def main() -> int:
                 probe.bind(("127.0.0.1", port))
             except OSError:
                 raise RuntimeError(f"Test port {port} is occupied; no tests were run") from None
+    google = "--google-oidc" in sys.argv[1:]
+    specs = [arg for arg in sys.argv[1:] if arg != "--google-oidc"]
+    if google and not specs:
+        specs = ["google-auth.spec.ts"]
     state = load_state()
     name = f"resolveflow_test_{uuid.uuid4().hex}"
     marker = f"resolveflow-browser-{uuid.uuid4().hex}"
@@ -54,7 +60,23 @@ def main() -> int:
         from resolveflow.core.config import Settings
         from resolveflow.ml.artifact import TrainingConfig
         from resolveflow.ml.training import train
+        from resolveflow.services import erasure_journal
         from resolveflow.workflows.storage import checkpoint_store
+
+        journal = Path(storage.name) / "journal"
+        witness = Path(storage.name) / "witness"
+        journal.mkdir(mode=0o700)
+        witness.mkdir(mode=0o700)
+        with Session(engine) as db:
+            erasure_journal.initialize(
+                db,
+                Settings(
+                    _env_file=None,
+                    environment="test",
+                    erasure_journal_root=journal,
+                    erasure_witness_root=witness,
+                ),
+            )
 
         with checkpoint_store(
             Settings(_env_file=None, database_url=engine.url.render_as_string(hide_password=False)),
@@ -63,15 +85,20 @@ def main() -> int:
             pass
 
         model_root = Path(storage.name) / "models"
-        train(model_root, "browser-v1", TrainingConfig())
+        if not google:
+            train(model_root, "browser-v1", TrainingConfig())
         broker_url, _ = resources.enter_context(isolated_broker())
+        smtp_port, inbox_url = resources.enter_context(isolated_mailpit())
         env = {
+            **os.environ,
+            # Owned test services must override inherited development connections.
             "RESOLVEFLOW_REDIS_URL": broker_url,
             "RESOLVEFLOW_JOB_QUEUE": "browser-" + uuid.uuid4().hex,
             "RESOLVEFLOW_JOB_RECONCILE_SECONDS": "1",
-            **os.environ,
             "DATABASE_URL": engine.url.render_as_string(hide_password=False),
             "RESOLVEFLOW_ENVIRONMENT": "test",
+            "RESOLVEFLOW_ERASURE_JOURNAL_ROOT": str(journal),
+            "RESOLVEFLOW_ERASURE_WITNESS_ROOT": str(witness),
             "RESOLVEFLOW_AI_PROVIDER": "fixture",
             "RESOLVEFLOW_AI_LIVE_ENABLED": "false",
             "RESOLVEFLOW_AI_FREE_TIER_VERIFIED": "false",
@@ -80,12 +107,22 @@ def main() -> int:
             "RESOLVEFLOW_AI_DAILY_WORKSPACE": "30",
             "RESOLVEFLOW_AI_DAILY_USER": "25",
             "RESOLVEFLOW_DOCUMENT_STORAGE_ROOT": str(Path(storage.name) / "documents"),
+            "RESOLVEFLOW_INVITATION_DELIVERY": "local",
+            "RESOLVEFLOW_EMAIL_DELIVERY": "local",
+            "RESOLVEFLOW_SMTP_HOST": "127.0.0.1",
+            "RESOLVEFLOW_SMTP_PORT": str(smtp_port),
+            "RESOLVEFLOW_SMTP_TLS": "none",
+            "RESOLVEFLOW_EMAIL_PUBLIC_ORIGIN": "http://127.0.0.1:3100",
+            "RESOLVEFLOW_TEST_INBOX_URL": inbox_url,
+            "RESOLVEFLOW_INVITATION_DELIVERY_ROOT": str(Path(storage.name) / "mailbox"),
             "RESOLVEFLOW_CLASSIFIER_ARTIFACT_ROOT": str(model_root),
             "RESOLVEFLOW_CLASSIFIER_MODEL_VERSION": "browser-v1",
             "RESOLVEFLOW_CLASSIFIER_THRESHOLD": "0.45",
             "RESOLVEFLOW_TRUSTED_ORIGINS": '["http://127.0.0.1:3100"]',
             "API_INTERNAL_URL": "http://127.0.0.1:8100",
             "RESOLVEFLOW_E2E_ISOLATED": "1",
+            "RESOLVEFLOW_TEST_GOOGLE": "1" if google else "0",
+            "PYTHONPATH": str(API / "src"),
             "NEXT_TELEMETRY_DISABLED": "1",
         }
         output = ROOT / ".cache/e2e"
@@ -109,9 +146,9 @@ def main() -> int:
                     sys.executable,
                     "-m",
                     "uvicorn",
-                    "resolveflow.main:app",
+                    "google_browser_fixture:app" if google else "resolveflow.main:app",
                     "--app-dir",
-                    "src",
+                    "tests" if google else "src",
                     "--host",
                     "127.0.0.1",
                     "--port",
@@ -150,7 +187,7 @@ def main() -> int:
                 raise RuntimeError("Test server startup timed out")
         print("Running browser tests against an isolated database on ports 3100/8100.", flush=True)
         return subprocess.run(
-            ["npm", "run", "test:e2e", "--", *sys.argv[1:]], cwd=ROOT / "apps/web", env=env
+            ["npm", "run", "test:e2e", "--", *specs], cwd=ROOT / "apps/web", env=env
         ).returncode
     finally:
         for process in reversed(children):

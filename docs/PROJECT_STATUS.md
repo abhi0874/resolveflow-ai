@@ -1,10 +1,19 @@
 # Project status
 
-Updated **2026-11-20 (Asia/Kolkata)** for the public portfolio evidence package.
+## Account expansion release verification
 
-## Current portfolio status
+Prepared on 2026-11-21 from public main `3dbeabab98c55b34e29310a5a58c29b670fca1f9` on `codex/account-expansion-release`. Account features belong to the local full application. The free Vercel showcase uses synthetic data and precomputed workflows. See the [master handoff](AI_MASTER_HANDOFF.md), [quick start](AI_QUICK_START.md) and [starter prompt](NEW_ACCOUNT_STARTER_PROMPT.md).
 
-The Vercel showcase serves deployment `dpl_9KYcC35tjqZibiTftkVruTxCjaCd` from source
+The integrated checkout passed 151 backend cases covering authentication, authorization, signed offline Google tokens, profile and credential updates, account erasure, invitation ownership, encrypted backup and deletion-aware restore. A fresh isolated PostgreSQL cluster applied the migration chain through 0017. Fourteen account browser cases and 29 local showcase checks passed. The repo browser runner now initializes disposable deletion records; both password and Google deletion passed again via that runner. Full and demo production builds, TypeScript and ESLint passed. The exact OpenAPI route inventory initially omitted the new account and Google endpoints; it was updated to enumerate them while retaining exact equality. All 14 system checks then passed. Ruff checked all 173 Python files for formatting and lint passed; the dependency lock verified offline. No final failures or skips occurred in the selected suites. The historical full-system Linux results below were not rerun for this release.
+
+## Account expansion Step 6C retry — isolated Linux acceptance
+
+In the preceding Linux ARM64 rehearsal, each of two dependency variants passed 115 backend cases and one Chromium smoke. A queued email, a session and a private file survived service restarts. An encrypted snapshot restored under quarantine and reconciled a later deletion. The standard variant used 1.95 GiB peak memory in the integrated journey with a 3.09-core peak. The experimental CPU-only package set occupied 1.11 GiB for Python and passed the same fixture checks. The repository dependency lock remains the standard variant. These are synthetic local measurements. Live Google and SMTP, independent key custody and an off-host restore remain unverified. [Hosting assessment](ZERO_COST_HOSTING.md)
+
+
+## Previously published portfolio snapshot
+
+At that snapshot the Vercel showcase served deployment `dpl_9KYcC35tjqZibiTftkVruTxCjaCd` from source
 revision [`d2af3ec`](https://github.com/abhi0874/resolveflow-ai/commit/d2af3ec4ab99cba381ef30e91c2274284733f8ab),
 which was also GitHub `main` before [PR #1](https://github.com/abhi0874/resolveflow-ai/pull/1).
 That documentation PR merged at `e7f5439228990db7508d8cd6c7e6d91c1777cc18`

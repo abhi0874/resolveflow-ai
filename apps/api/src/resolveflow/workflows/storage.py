@@ -11,6 +11,7 @@ from psycopg.rows import dict_row
 from sqlalchemy.engine import make_url
 
 from resolveflow.db.session import DatabaseUnavailableError
+from resolveflow.services.erasure_journal import QUARANTINED
 
 SCHEMA = "workflow_checkpoints"
 
@@ -39,6 +40,8 @@ def checkpoint_store(settings, *, setup=False):
                 f"-c search_path={SCHEMA} -c statement_timeout={settings.db_statement_timeout_ms}"
             ),
         ) as conn:
+            if conn.execute(QUARANTINED).fetchone()["exists"]:
+                raise DatabaseUnavailableError
             # Only primitive application state and LangGraph's built-in safe types are decoded.
             saver = PostgresSaver(
                 conn, serde=JsonPlusSerializer(pickle_fallback=False, allowed_msgpack_modules=[])

@@ -1,6 +1,7 @@
 import "server-only";
 import { appMode } from "./app-mode";
 import { cookies } from "next/headers";
+import { isSessionToken, sessionCookieNames } from "./account-cookie";
 
 export function backendOrigin(): string {
   const value =
@@ -23,10 +24,10 @@ export function backendOrigin(): string {
 
 export async function sessionCookies(): Promise<string> {
   const jar = await cookies();
-  return ["resolveflow_session", "__Host-resolveflow_session"]
+  return sessionCookieNames
     .flatMap((name) => {
       const value = jar.get(name)?.value;
-      return value && /^[A-Za-z0-9_-]{43}$/.test(value)
+      return isSessionToken(value)
         ? [`${name}=${value}`]
         : [];
     })

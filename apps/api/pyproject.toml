@@ -8,6 +8,8 @@ dependencies = [
     "argon2-cffi==25.1.0",
     "email-validator==2.3.0",
     "fastapi==0.143.3",
+    "google-auth==2.62.0",
+    "httpx==0.28.1",
     "google-genai==2.31.0",
     "langgraph==1.2.16",
     "langgraph-checkpoint-postgres==3.2.0",

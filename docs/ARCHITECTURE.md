@@ -1,5 +1,11 @@
 # Application architecture
 
+## Account and showcase request paths
+
+The public Next.js build serves authored tickets and browser-local demo decisions. In full mode, private pages use server-side identity and workspace checks; the same-origin API proxy forwards session cookies to FastAPI. PostgreSQL owns sessions, permissions, linked provider subjects, invitations, pending email and account state. RQ workers deliver mail from the durable outbox. Profile images are stored as bounded PNG data in the account row.
+
+Deletion requires a fresh session-bound proof and typed confirmation. Workspace ownership checks run under lock. A separate deletion journal and witness are reconciled against a trusted seal before an operator can consider a quarantined restore. Shared history is retained with a neutral actor. Google sign-in, mail delivery and deletion run only in the configured account application. See [identity](GOOGLE_SIGN_IN.md), [file ownership](INVITATION_MAILBOX.md) and [recovery](BACKUP_OPERATIONS.md#account-deletion-recovery).
+
 Updated 2026-10-21 (Asia/Kolkata). Steps 2–10 implement the foundation described
 below. The subsequent target architecture remains planned unless explicitly
 listed as implemented.

@@ -14,7 +14,10 @@ from resolveflow.workflows.storage import lock_key
 class IdentifierJob(Job):
     def perform(self):
         # Redis is private infrastructure, but a message still cannot choose arbitrary functions.
-        if self.func_name != "resolveflow.jobs.worker.execute":
+        if self.func_name not in {
+            "resolveflow.jobs.worker.execute",
+            "resolveflow.jobs.email.execute",
+        }:
             raise ValueError("Unrecognized workflow task")
         return super().perform()
 

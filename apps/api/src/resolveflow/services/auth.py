@@ -70,6 +70,21 @@ def current_session(request: Request, db: Session) -> AuthSession | None:
     )
 
 
+def active_session(db, token_hash, user_id):
+    session = db.scalar(
+        select(AuthSession)
+        .where(
+            AuthSession.token_hash == token_hash,
+            AuthSession.user_id == user_id,
+            AuthSession.expires_at > datetime.now(UTC),
+        )
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+    if session is None:
+        raise HTTPException(401)
+
+
 def require_csrf(request: Request, db: DB) -> AuthSession:
     config = request.app.state.settings
     origin = request.headers.get("origin")
@@ -103,10 +118,23 @@ def authenticated(request: Request, db: DB) -> User:
     user = db.get(User, session.user_id) if session and session.user_id else None
     if user is None or user.account_status != AccountStatus.ACTIVE:
         raise HTTPException(401)
+    config = request.app.state.settings
+    if not request.url.path.startswith("/api/v1/auth/") and not verification_allows(config, user):
+        raise HTTPException(403, detail="email_verification_required")
     return user
 
 
 CurrentUser = Annotated[User, Depends(authenticated)]
+
+
+def verification_allows(settings, user: User) -> bool:
+    return not settings.email_verification_required or email_proven(settings, user)
+
+
+def email_proven(settings, user: User) -> bool:
+    return user.email_verified and (
+        settings.environment != "production" or user.email_verification_source == "smtp"
+    )
 
 
 def issue_session(
@@ -136,6 +164,17 @@ def issue_session(
         path="/",
     )
     return session
+
+
+def clear_cookie(request: Request, response: Response) -> None:
+    config = request.app.state.settings
+    response.delete_cookie(
+        config.cookie_name,
+        httponly=True,
+        secure=config.environment == "production",
+        samesite="lax",
+        path="/",
+    )
 
 
 def valid_password(encoded: str, password: str) -> bool:

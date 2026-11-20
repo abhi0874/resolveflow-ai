@@ -1,0 +1,20 @@
+[Unit]
+Description=ResolveFlow staging FastAPI
+PartOf=resolveflow-staging.target
+After=network-online.target postgresql.service valkey-server.service
+RequiresMountsFor=/srv/resolveflow-staging-witness
+
+[Service]
+User=resolveflow-staging
+Group=resolveflow-staging
+WorkingDirectory=/opt/resolveflow-staging/apps/api
+EnvironmentFile=/etc/resolveflow-staging/api.env
+ExecStartPre=/usr/bin/mountpoint -q /srv/resolveflow-staging-witness
+ExecStart=/opt/resolveflow-staging/apps/api/.venv/bin/uvicorn resolveflow.main:app --app-dir src --host 127.0.0.1 --port 8000 --no-access-log --no-proxy-headers
+Restart=on-failure
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/resolveflow-staging/documents /var/lib/resolveflow-staging/erasure-journal /srv/resolveflow-staging-witness/commit-witness
