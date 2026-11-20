@@ -1,5 +1,18 @@
 # Project status
 
+## Published account release
+
+On 2026-11-21, [PR #3](https://github.com/abhi0874/resolveflow-ai/pull/3) merged the [tested implementation](https://github.com/abhi0874/resolveflow-ai/commit/fd13580baa50ed8338182ccb3802163c68d6535b) at [3a1a48ad7305cff8a277947c00234a87c4181023](https://github.com/abhi0874/resolveflow-ai/commit/3a1a48ad7305cff8a277947c00234a87c4181023). The merged tree matched the verified release. Public downloads matched the local bytes for all seven added migrations, the six handoff/status documents, account API, deletion UI and evaluation summary.
+
+| Vercel environment | Release evidence |
+| --- | --- |
+| Protected [preview](https://resolveflow-ai-showcase-hqehnj466-abhishesh1.vercel.app/) | `dpl_8gJP3mNEPpWaQbLfF4539EJNkYqD`. Using the operator’s Vercel session, the browser opened the synthetic workspace, created a ticket, recorded an exact-draft approval, followed its citation, opened analytics and Engineering, and reset the inbox from nine tickets to eight. Vercel access protection stayed enabled. |
+| [Public production](https://resolveflow-ai-showcase.vercel.app/) | `dpl_AembnLBKkMJQxgSF3fNwp9qzsZmX`. CLI promotion rebuilt the verified showcase. Vercel reported READY and the canonical alias matched the deployment ID. The previous production deployment was `dpl_9KYcC35tjqZibiTftkVruTxCjaCd`. Hobby plan and disconnected Git integration were preserved. |
+
+Final public verification passed 25 checks with no failures, skips or retries. These included 24 hosted browser/API scenarios and one source-only font/license check. The browser checked the newly published local-account disclosure, demo redirects, denied account API and callback, ticket and review journeys, mobile and desktop layouts, keyboard use, accessibility and security headers. An early run spanning the alias transition passed 23 checks and failed two: the old Engineering page lacked the new disclosure, and navigation encountered 404s for browser assets during the switch. The final run began after confirming the exact alias ID. Engineering content renders after hydration.
+
+The full account backend, real Google sign-in, external email and user databases remain outside the public deployment. The original research worktree remained on `4930fb0`; content hashes matched for all 418 pre-existing modified or untracked files. The [master handoff](AI_MASTER_HANDOFF.md) is the starting point for a fresh assistant.
+
 ## Account expansion release verification
 
 Prepared on 2026-11-21 from public main `3dbeabab98c55b34e29310a5a58c29b670fca1f9` on `codex/account-expansion-release`. Account features belong to the local full application. The free Vercel showcase uses synthetic data and precomputed workflows. See the [master handoff](AI_MASTER_HANDOFF.md), [quick start](AI_QUICK_START.md) and [starter prompt](NEW_ACCOUNT_STARTER_PROMPT.md).

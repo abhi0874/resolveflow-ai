@@ -2,6 +2,12 @@
 
 ResolveFlow helps a support agent classify a ticket, retrieve policy evidence and review an exact response draft. Recruiters can explore tickets, citations, approvals and analytics in the [public showcase](https://resolveflow-ai-showcase.vercel.app/). Use the [GitHub repository](https://github.com/abhi0874/resolveflow-ai) for the full local implementation. Running or using the project must require no hosting subscription, paid model or billing account.
 
+## Published release
+
+GitHub main received the account implementation in [PR #3](https://github.com/abhi0874/resolveflow-ai/pull/3), merged as [3a1a48ad7305cff8a277947c00234a87c4181023](https://github.com/abhi0874/resolveflow-ai/commit/3a1a48ad7305cff8a277947c00234a87c4181023) from [the tested release commit](https://github.com/abhi0874/resolveflow-ai/commit/fd13580baa50ed8338182ccb3802163c68d6535b). The subsequent release-record update changes documentation only. Read [the current main reference](https://github.com/abhi0874/resolveflow-ai/commits/main/) for its moving tip.
+
+The public [showcase](https://resolveflow-ai-showcase.vercel.app/) serves Vercel Hobby production deployment `dpl_AembnLBKkMJQxgSF3fNwp9qzsZmX` from that merge tree. Git integration remained disconnected. See the [verification record](PROJECT_STATUS.md#published-account-release) for preview, production and test scope.
+
 ## What runs where
 
 | Runtime | Source and data flow |
