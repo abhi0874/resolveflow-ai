@@ -11,6 +11,12 @@ maintainable, deployable product with a polished, responsive interface.
 
 [Live showcase](https://resolveflow-ai-showcase.vercel.app/) · [GitHub repository](https://github.com/abhi0874/resolveflow-ai) · [Project profile](docs/AI_PORTFOLIO_PROFILE.md) · [Architecture](docs/ARCHITECTURE.md) · [Evaluation evidence](docs/evaluation/PUBLIC_EVIDENCE.md) · [Resume and portfolio](docs/RESUME_PORTFOLIO_CONTENT.md)
 
+### Website Preview
+
+[![ResolveFlow AI live recruiter showcase](docs/assets/resolveflow-showcase.webp)](https://resolveflow-ai-showcase.vercel.app/)
+
+*Interactive recruiter showcase using synthetic data and precomputed AI workflows.*
+
 Start with a citation-linked workflow, review the example draft, then open
 **Under the hood** for the architecture. The showcase uses synthetic data and
 precomputed workflows. The full backend and the opt-in Gemini integration run
