@@ -5,10 +5,15 @@ teams classify tickets, retrieve relevant knowledge, draft grounded responses,
 and review those responses before taking action. The long-term goal is a secure,
 maintainable, deployable product with a polished, responsive interface.
 
-**Current showcase:** the redesigned synthetic recruiter demo is published separately from the original red/black release. It includes a responsive ticket inbox, source library, workflow replay, human review, analytics, and an engineering case study. The final local release passed 29 demo checks plus build, TypeScript, and ESLint checks.
+**Current showcase:** the synthetic recruiter demo is live on Vercel. It includes a responsive ticket inbox, source library, workflow replay, human review, analytics, and an engineering case study. The final local release passed 29 demo checks plus build, TypeScript, and ESLint checks.
 
-[Explore the recruiter demo](https://resolveflow-ai-showcase.vercel.app/demo). Start with a citation-linked workflow, review the example draft, then open **Under the hood** for the implemented architecture. The public demo uses synthetic data and precomputed examples; it does not run live Gemini or the full backend.
-The interactive recruiter demo runs alongside the complete local application and workspace analytics.
+[Live showcase](https://resolveflow-ai-showcase.vercel.app/) · [GitHub repository](https://github.com/abhi0874/resolveflow-ai) · [Project profile](docs/AI_PORTFOLIO_PROFILE.md) · [Architecture](docs/ARCHITECTURE.md) · [Evaluation evidence](docs/evaluation/PUBLIC_EVIDENCE.md) · [Resume and portfolio](docs/RESUME_PORTFOLIO_CONTENT.md)
+
+Start with a citation-linked workflow, review the example draft, then open
+**Under the hood** for the architecture. The showcase uses synthetic data and
+precomputed workflows. The full backend and the opt-in Gemini integration run
+separately in the local application.
+
 Registration, login/logout, server-side sessions, workspace selection/settings,
 and role-controlled membership management now work with the local PostgreSQL API.
 The ticket inbox adds creation/editing, assignment, search/filtering, notes and
@@ -359,21 +364,23 @@ See the authentication runbook for prerequisites and maintenance commands.
 
 ## Deployment preparation and limitations
 
-The web app uses standard Next.js scripts and configuration. For a future Vercel
-project, select `apps/web` as its root directory, select a supported compatible
-Node runtime, and set any public configuration before building. No Vercel project,
-credentials or hosting resources have been created.
+The public showcase uses a standalone Next.js demo build from `apps/web` on Vercel.
+It serves source revision [`d2af3ec`](https://github.com/abhi0874/resolveflow-ai/commit/d2af3ec4ab99cba381ef30e91c2274284733f8ab)
+on deployment `dpl_9KYcC35tjqZibiTftkVruTxCjaCd`. The five portfolio documents were
+published to GitHub `main` through [PR #1](https://github.com/abhi0874/resolveflow-ai/pull/1),
+merged at `e7f5439228990db7508d8cd6c7e6d91c1777cc18`.
+See [GitHub main](https://github.com/abhi0874/resolveflow-ai/tree/main) for the latest
+repository revision.
 
 The homepage links to the working synthetic recruiter demo at `/demo`.
-Theme tokens follow the system light/dark preference; a user theme switch is not
-implemented. shadcn/ui and Vitest remain future work. Workspace analytics are implemented. Background workers are implemented.
+The hosted showcase offers light, dark, and system themes. shadcn/ui and Vitest remain future work. Workspace analytics are implemented. Background workers are implemented.
 LangGraph orchestration is implemented. Gemini passed one approved synthetic test;
 unrestricted live inference remains disabled. Email verification, password
 recovery, MFA, authentication audit events and public-production hardening are deferred.
 The previously recorded frontend runtime dependency audit was clean; a development-only ESLint/glob advisory remains
-open and is documented in the authentication runbook. Local application startup does not establish hosted-demo or
-production readiness. Step 14 local release verification is complete; subsequent
-work requires a defined next-step scope. Document extraction is bounded
+open and is documented in the authentication runbook. Step 14 covered local demo release
+verification. Later hosted checks covered the synthetic recruiter demo. Commercial
+production readiness remains a separate scope. Document extraction is bounded
 and synchronous; production storage and operational hardening remain
 future work. See the knowledge-base runbook for recovery and residual risks.
 
@@ -454,7 +461,7 @@ Read [BACKGROUND_JOBS.md](docs/BACKGROUND_JOBS.md) for settings, bounds and reco
 semantics, and [WORKER_OPERATIONS.md](docs/WORKER_OPERATIONS.md) for exact start/stop,
 health, test and optional Docker commands. Automated verification uses deterministic
 mock AI and isolated database/broker processes. No live Gemini requests are made.
-Step 12 analytics and Step 13 local recruiter demo preparation are implemented; public hosting remains future work.
+Step 12 added local analytics. Step 13 prepared the synthetic demo for the later public showcase.
 
 
 ## Analytics and operational visibility
@@ -471,7 +478,6 @@ then restart the API, dispatcher and workers. Existing data and credentials are
 preserved. No additional service setup is needed. See [ANALYTICS.md](docs/ANALYTICS.md)
 for metric definitions, permissions, query limits and measured performance, and
 [OBSERVABILITY.md](docs/OBSERVABILITY.md) for safe request/job correlation and diagnostics.
-Step 13 adds a separate synthetic demo; public deployment remains unapproved.
 
 
 ## Recruiter demo — no backend required
@@ -493,20 +499,20 @@ and `DEMO_LIVE_AI_ENABLED=false` without changing private environment files.
 No API, database, worker or key is needed. Temporary changes use tab-local session
 storage; Reset demo restores the authored examples. Workflow replay is explicitly
 not live AI. The demo blocks the real API proxy and cannot enable public inference.
-Node 24 LTS is the prepared Vercel target. Rebuild when switching modes; both use `.next`.
+The hosted showcase uses Node 24.x. Rebuild when switching modes; both use `.next`.
 
 See [RECRUITER_DEMO.md](docs/RECRUITER_DEMO.md),
 [DEMO_SECURITY.md](docs/DEMO_SECURITY.md) and
 [VERCEL_DEPLOYMENT.md](docs/VERCEL_DEPLOYMENT.md) for architecture, exact verification
-commands, environment settings and hosting limits. Nothing is publicly deployed.
-A later approved hosted deployment will be independent of the developer’s MacBook;
-that hosted acceptance check is still pending. Stop after Step 14; Step 15 is not authorized.
+commands, environment settings and hosting limits. The public showcase runs independently
+of the local application. The November 20 recruiter acceptance run passed all 21 selected
+hosted browser checks.
 
-The [release readiness report](docs/VERCEL_RELEASE_READINESS.md) records the final
-13 passing demo checks, production build, type/lint checks, secret and bundle audit,
+The historical Step 14 [release readiness report](docs/VERCEL_RELEASE_READINESS.md)
+records 13 passing local demo checks, production build, type/lint checks, secret and bundle audit,
 zero runtime dependency advisories, and the unresolved development-only lint advisory.
 Vercel settings: **Next.js · root `apps/web` · Node 24.x · install `npm ci` · build
 `npm run demo:build` · default output**. Set `NEXT_PUBLIC_APP_MODE=demo` and
 `DEMO_LIVE_AI_ENABLED=false`; optionally `NEXT_TELEMETRY_DISABLED=1`. No secret or
-backend URL is required. Step 15A adds the reviewed initial local commit; no remote is configured. Private
-GitHub publication still needs explicit approval. No deployment has been attempted.
+backend URL is required. Step 15A recorded the initial local publication preparation.
+The repository and showcase have since been published.

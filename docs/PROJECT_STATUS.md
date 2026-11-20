@@ -4,11 +4,15 @@ Updated **2026-11-20 (Asia/Kolkata)** for the public portfolio evidence package.
 
 ## Current portfolio status
 
-Public GitHub main and the Vercel production showcase resolve to commit
-`d2af3ec4ab99cba381ef30e91c2274284733f8ab`. The GitHub repository is public, the
-showcase returned HTTPS 200, and the retired rosy address returned 404. The
-showcase replays synthetic examples with live generation disabled. Full
-application and research evidence describes local execution. [Repository](https://github.com/abhi0874/resolveflow-ai) · [Showcase](https://resolveflow-ai-showcase.vercel.app/)
+The Vercel showcase serves deployment `dpl_9KYcC35tjqZibiTftkVruTxCjaCd` from source
+revision [`d2af3ec`](https://github.com/abhi0874/resolveflow-ai/commit/d2af3ec4ab99cba381ef30e91c2274284733f8ab),
+which was also GitHub `main` before [PR #1](https://github.com/abhi0874/resolveflow-ai/pull/1).
+That documentation PR merged at `e7f5439228990db7508d8cd6c7e6d91c1777cc18`
+without changing the deployed showcase. See [GitHub main](https://github.com/abhi0874/resolveflow-ai/tree/main)
+for the latest repository revision. The [public showcase](https://resolveflow-ai-showcase.vercel.app/) returned
+HTTPS 200, and the retired rosy address returned 404. Vercel Git remains disconnected.
+The showcase replays synthetic examples with live generation disabled. Full application
+and research evidence describes local execution.
 
 - The configured local classifier is `baseline-v1`. It scored **44/56 (78.57%) / 0.7846 macro-F1** on the original held-out split. On a separate paired 210-ticket synthetic challenge, frozen V1 scored **142/210 (67.62%) / 0.6585** and inactive V2 scored **183/210 (87.14%) / 0.8701**. This was a comparison of frozen research artifacts. V2 remains inactive. [Original evaluation](https://github.com/abhi0874/resolveflow-ai/blob/d2af3ec4ab99cba381ef30e91c2274284733f8ab/docs/evaluation/classifier-v1-evaluation.json) · [Paired results](evaluation/PUBLIC_EVIDENCE.md#classifier-evaluation)
 - Recomputed MiniLM vs TF-IDF results on the same corpus and labels: **Hit@1 19/21 vs 11/21**, **Hit@5 20/21 vs 19/21**, **Recall@5 0.9286 vs 0.8492**, and **MRR@5 0.9286 vs 0.6762**. The 14-document corpus has 24 queries, including three unsupported queries reported separately. The MiniLM floor was 0.30 and the TF-IDF baseline kept positive scores. [Retrieval results](https://github.com/abhi0874/resolveflow-ai/blob/d2af3ec4ab99cba381ef30e91c2274284733f8ab/docs/evaluation/retrieval-v1.json)
